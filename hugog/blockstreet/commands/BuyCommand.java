@@ -28,7 +28,7 @@ public class BuyCommand {
 		ConfigAccessor playerReg = new ConfigAccessor(Main, "players.yml");
 		int numberOfCompanies = Main.getConfig().getInt("BlockStreet.Companies.Count");	
     	
-		if (!p.hasPermission("blockstreet.command.buy") || p.hasPermission("blockstreet.command.*")) {
+		if (!p.hasPermission("blockstreet.command.buy") && !p.hasPermission("blockstreet.command.*")) {
 			p.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
 			return;
 		}

@@ -26,7 +26,7 @@ public class CompaniesCommand{
 		Messages messages = new Messages(Main.messagesConfig);
 		int numberOfCompanies = Main.getConfig().getInt("BlockStreet.Companies.Count");	
 		
-		if (!p.hasPermission("blockstreet.command.companies") || p.hasPermission("blockstreet.command.*")) {
+		if (!p.hasPermission("blockstreet.command.companies") && !p.hasPermission("blockstreet.command.*")) {
 			p.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
 			return;
 		}

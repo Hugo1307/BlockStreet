@@ -32,7 +32,7 @@ public class ActionsCommand {
 		
 		Set<String> playerCompanies_Id = new HashSet<String>();
 		
-		if (!p.hasPermission("blockstreet.command.actions") || p.hasPermission("blockstreet.command.*")) {
+		if (!p.hasPermission("blockstreet.command.actions") && !p.hasPermission("blockstreet.command.*")) {
 			p.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
 			return;
 		}
@@ -44,25 +44,25 @@ public class ActionsCommand {
 			return;
 		}
 
-        if (playerCompanies_Id.size() != 0){
-            p.sendMessage(messages.getPluginHeader());
-            p.sendMessage("");
-            for (String company : playerCompanies_Id){
-                p.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD +
-                        Main.getConfig().getString("BlockStreet.Companies." + company + ".Name"));
-                p.sendMessage("");
-                p.sendMessage(ChatColor.GRAY + "Actions: " + ChatColor.GREEN +
-                        playerReg.getConfig().getInt("Players." + p.getName() + ".Companies." + company + ".Amount"));
-                p.sendMessage(ChatColor.GRAY + "Total value: " + ChatColor.GREEN +
-                        playerReg.getConfig().getDouble("Players." + p.getName() + ".Companies." + company + ".Value"));
-                p.sendMessage("");
-            }
-            p.sendMessage(messages.getPluginFooter());
-            
-        }else{
-            p.sendMessage(messages.getPluginPrefix() + messages.getInsufficientActions());
-            
-        }
+		if (playerCompanies_Id.size() != 0){
+		    p.sendMessage(messages.getPluginHeader());
+		    p.sendMessage("");
+		    for (String company : playerCompanies_Id){
+			p.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD +
+				Main.getConfig().getString("BlockStreet.Companies." + company + ".Name"));
+			p.sendMessage("");
+			p.sendMessage(ChatColor.GRAY + "Actions: " + ChatColor.GREEN +
+				playerReg.getConfig().getInt("Players." + p.getName() + ".Companies." + company + ".Amount"));
+			p.sendMessage(ChatColor.GRAY + "Total value: " + ChatColor.GREEN +
+				playerReg.getConfig().getDouble("Players." + p.getName() + ".Companies." + company + ".Value"));
+			p.sendMessage("");
+		    }
+		    p.sendMessage(messages.getPluginFooter());
+
+		}else{
+		    p.sendMessage(messages.getPluginPrefix() + messages.getInsufficientActions());
+
+		}
 		
 	}
 	
