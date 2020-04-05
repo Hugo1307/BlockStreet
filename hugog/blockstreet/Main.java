@@ -76,7 +76,7 @@ public class Main extends JavaPlugin {
         
         config.addDefault("BlockStreet.Companies.Count", 5);
 
-        config.addDefault("BlockStreet.Companies.1.Name", "Blocks Companion");
+        config.addDefault("BlockStreet.Companies.1.Name", "Blocks Inc");
         config.addDefault("BlockStreet.Companies.1.Price", 1253.0);
         config.addDefault("BlockStreet.Companies.1.Risk", 4);
         config.addDefault("BlockStreet.Companies.1.AvailableActions", -1);
@@ -120,6 +120,8 @@ public class Main extends JavaPlugin {
     	
     	messagesConfig.getConfig().options().copyDefaults(true);
     	
+        messagesConfig.getConfig().addDefault("pluginReload", "Plugin's config successfully reloaded.");
+    	
     	messagesConfig.getConfig().addDefault("menuMainCmd", "Show all plugin's commands.");
     	messagesConfig.getConfig().addDefault("menuCompaniesCmd", "List all companies.");
     	messagesConfig.getConfig().addDefault("menuCompanyCmd", "Show details of a company.");
@@ -127,6 +129,7 @@ public class Main extends JavaPlugin {
     	messagesConfig.getConfig().addDefault("menuSellCmd", "Sells actions from company with the specified Id.");
     	messagesConfig.getConfig().addDefault("menuActionsCmd", "List all your actions.");
     	messagesConfig.getConfig().addDefault("menuCreateCompanyCmd", "Creates a new company.");
+    	messagesConfig.getConfig().addDefault("menuReloadCmd", "Reload plugin's configuration.");
     	
     	messagesConfig.getConfig().addDefault("listNextPage", "For next page.");
     	messagesConfig.getConfig().addDefault("id", "Id");
@@ -154,7 +157,7 @@ public class Main extends JavaPlugin {
     	messagesConfig.getConfig().addDefault("invalidCmd", "Invalid Command! Try again.");
     	messagesConfig.getConfig().addDefault("interestRate", "You'll receive your interest rates within {0} minutes.");
     	messagesConfig.getConfig().addDefault("updatedInterestRate", "All actions have been updated.");
-    	
+        
     	messagesConfig.saveConfig();
     	
     }
