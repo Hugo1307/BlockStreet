@@ -65,6 +65,12 @@ public class CmdImplementer implements CommandExecutor {
         	createCmd.runCreateCompanyCommand();
         	return true;
         	
+        }else if (args[0].equalsIgnoreCase("reload")) {
+        	
+        	ReloadCommand reloadCmd = new ReloadCommand(plugin, sender);
+        	reloadCmd.runReloadCommand();
+        	return true;
+        	
         }
 
         return false;

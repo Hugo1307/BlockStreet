@@ -11,6 +11,7 @@ public class Messages {
 	private String pluginPrefix;
 	private String pluginHeader;
 	private String pluginFooter;
+	private String pluginReload;
 	private String menuMainCmd;
 	private String menuCompaniesCmd;
 	private String menuCompanyCmd;
@@ -18,6 +19,7 @@ public class Messages {
 	private String menuSellCmd;
 	private String menuActionsCmd;
 	private String menuCreateCompanyCmd;
+	private String menuReloadCmd;
 	private String buyActionsCmd;
 	private String sellActionsCmd;
 	private String listNextPage;
@@ -45,12 +47,13 @@ public class Messages {
 
 	public Messages(ConfigAccessor messagesConfig) {
 		
-		this.pluginPrefix = ChatColor.BOLD + "" + ChatColor.BLUE + "BlockStreet" + ChatColor.GOLD + " > " + ChatColor.RESET  + ChatColor.RESET + ChatColor.GRAY;
+		this.pluginPrefix = ChatColor.BOLD + "" + ChatColor.GREEN + "BlockStreet" + ChatColor.GOLD + ChatColor.BOLD + " > " + ChatColor.RESET  + ChatColor.RESET + ChatColor.GRAY;
 		this.pluginHeader = ChatColor.GREEN + "" + ChatColor.STRIKETHROUGH + "                                                                                " 
 		+ "\n" + ChatColor.RESET + ChatColor.GREEN + "                               " + 
 				ChatColor.BOLD + "BlockStreet";
 		
 		this.pluginFooter = ChatColor.GREEN + "" + ChatColor.STRIKETHROUGH + "                                                                                ";
+		this.pluginReload = messagesConfig.getConfig().getString("pluginReload");
 		this.menuMainCmd = messagesConfig.getConfig().getString("menuMainCmd");
 		this.menuCompaniesCmd = messagesConfig.getConfig().getString("menuCompaniesCmd");
 		this.menuCompanyCmd = messagesConfig.getConfig().getString("menuCompanyCmd");
@@ -58,6 +61,7 @@ public class Messages {
 		this.menuSellCmd = messagesConfig.getConfig().getString("menuSellCmd");
 		this.menuActionsCmd = messagesConfig.getConfig().getString("menuActionsCmd");
 		this.menuCreateCompanyCmd = messagesConfig.getConfig().getString("menuCreateCompanyCmd");
+		this.menuReloadCmd = messagesConfig.getConfig().getString("menuReloadCmd");
 		this.buyActionsCmd = messagesConfig.getConfig().getString("buyActionsCmd");
 		this.sellActionsCmd = messagesConfig.getConfig().getString("sellActionsCmd");
 		this.listNextPage = messagesConfig.getConfig().getString("listNextPage");
@@ -96,6 +100,10 @@ public class Messages {
 		return pluginFooter;
 	}
 
+	public String getPluginReload() {
+		return pluginReload;
+	}
+
 	public String getMenuMainCmd() {
 		return menuMainCmd;
 	}
@@ -118,6 +126,10 @@ public class Messages {
 
 	public String getMenuActionsCmd() {
 		return menuActionsCmd;
+	}
+
+	public String getMenuReloadCmd() {
+		return menuReloadCmd;
 	}
 
 	public String getBuyActionsCmd() {

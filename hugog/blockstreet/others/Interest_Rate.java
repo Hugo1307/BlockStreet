@@ -110,10 +110,26 @@ public class Interest_Rate{
 
                     for (Player onlinePlayer : Bukkit.getServer().getOnlinePlayers()){
                         for (int companyNumber = 1; companyNumber <= companiesCount; companyNumber++) {
+                        	
+                        	float companyStocksPrice = (float) Main.getConfig().getDouble("BlockStreet.Companies." + companyNumber + ".Price");
+                        	
+                        	if (companiesFees.get(companyNumber - 1)[0] == 0){
+
+                            	companyStocksPrice -= companyStocksPrice * companiesFees.get(companyNumber - 1)[1] / 100;
+
+                            }else if (companiesFees.get(companyNumber - 1)[0] == 1){
+                                
+                            	companyStocksPrice += companyStocksPrice * companiesFees.get(companyNumber - 1)[1] / 100;
+                            	
+                            }
+                        	
+                        	 Main.getConfig().set("BlockStreet.Companies." + String.valueOf(companyNumber) + ".Price", companyStocksPrice);
+                             Main.saveConfig();
+                             Main.reloadConfig();
+                             
                             if (Main.playerReg.getConfig().get("Players." + onlinePlayer.getName() + ".Companies." + companyNumber + ".Amount") != null){
 
                                 int actionsValue = Main.playerReg.getConfig().getInt("Players." + onlinePlayer.getName() + ".Companies." + companyNumber + ".Value");
-                                int companyRisk = Main.getConfig().getInt("BlockStreet.Companies." + companyNumber + ".Risk");
 
                                 if (companiesFees.get(companyNumber - 1)[0] == 0){
 
@@ -124,12 +140,13 @@ public class Interest_Rate{
                                 	actionsValue += actionsValue * companiesFees.get(companyNumber - 1)[1] / 100;
                                 	
                                 }
-
+                                
                                 Main.playerReg.getConfig().set("Players." + onlinePlayer.getName() + ".Companies." + companyNumber + ".Value", actionsValue);
                                 Main.playerReg.saveConfig();
                                 Main.playerReg.reloadConfig();
-
+                                
                             }
+                            
                         }
                     }
 

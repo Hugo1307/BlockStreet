@@ -28,24 +28,38 @@ public class MainCommand{
 		Messages messages = new Messages(Main.messagesConfig); 
 		Player p = (Player) sender;
 		
-		if (p.hasPermission("blockstreet.command.main") || p.hasPermission("blockstreet.command.*")) {
+		if (p.hasPermission("blockstreet.admin.*")) {
 			
-			p.sendMessage(messages.getPluginHeader());
-			p.sendMessage("");
-            p.sendMessage(ChatColor.GREEN + "/invest" + ChatColor.GRAY + " - " + messages.getMenuMainCmd());
-            p.sendMessage(ChatColor.GREEN + "/invest companies" + ChatColor.GRAY + " - " + messages.getMenuCompaniesCmd());
-            p.sendMessage(ChatColor.GREEN + "/invest company" + ChatColor.GOLD + " [Id]" + ChatColor.GRAY + " - " + messages.getMenuCompanyCmd());
-            p.sendMessage(ChatColor.GREEN + "/invest buy" + ChatColor.GOLD + " [amount] [Id]" + ChatColor.GRAY + " - " + messages.getMenuBuyCmd());
-            p.sendMessage(ChatColor.GREEN + "/invest sell" + ChatColor.GOLD + " [amount] [Id]" + ChatColor.GRAY + " - " + messages.getMenuSellCmd());
-            p.sendMessage(ChatColor.GREEN + "/invest actions" + ChatColor.GRAY + " - " + messages.getMenuActionsCmd());
-            p.sendMessage(ChatColor.GREEN + "/invest create" + ChatColor.GOLD + " [name] [price] [risk(1-5)]" + ChatColor.GRAY + " - " + messages.getMenuCreateCompanyCmd());
-            p.sendMessage("");
-            p.sendMessage(messages.getPluginFooter());
+	  	    p.sendMessage(messages.getPluginHeader());
+		    p.sendMessage("");
+		    p.sendMessage(ChatColor.GREEN + "/invest" + ChatColor.GRAY + " - " + messages.getMenuMainCmd());
+		    p.sendMessage(ChatColor.GREEN + "/invest companies" + ChatColor.GRAY + " - " + messages.getMenuCompaniesCmd());
+		    p.sendMessage(ChatColor.GREEN + "/invest company" + ChatColor.GOLD + " [Id]" + ChatColor.GRAY + " - " + messages.getMenuCompanyCmd());
+		    p.sendMessage(ChatColor.GREEN + "/invest buy" + ChatColor.GOLD + " [amount] [Id]" + ChatColor.GRAY + " - " + messages.getMenuBuyCmd());
+		    p.sendMessage(ChatColor.GREEN + "/invest sell" + ChatColor.GOLD + " [amount] [Id]" + ChatColor.GRAY + " - " + messages.getMenuSellCmd());
+		    p.sendMessage(ChatColor.GREEN + "/invest actions" + ChatColor.GRAY + " - " + messages.getMenuActionsCmd());
+		    p.sendMessage(ChatColor.GREEN + "/invest create" + ChatColor.GOLD + " [name] [price] [risk(1-5)]" + ChatColor.GRAY + " - " + messages.getMenuCreateCompanyCmd());
+		    p.sendMessage(ChatColor.GREEN + "/invest reload" + ChatColor.GRAY + " - " + messages.getMenuReloadCmd());
+		    p.sendMessage("");
+		    p.sendMessage(messages.getPluginFooter());
+			
+		}else if (p.hasPermission("blockstreet.command.main") || p.hasPermission("blockstreet.command.*")) {
+			
+		    p.sendMessage(messages.getPluginHeader());
+		    p.sendMessage("");
+		    p.sendMessage(ChatColor.GREEN + "/invest" + ChatColor.GRAY + " - " + messages.getMenuMainCmd());
+		    p.sendMessage(ChatColor.GREEN + "/invest companies" + ChatColor.GRAY + " - " + messages.getMenuCompaniesCmd());
+		    p.sendMessage(ChatColor.GREEN + "/invest company" + ChatColor.GOLD + " [Id]" + ChatColor.GRAY + " - " + messages.getMenuCompanyCmd());
+		    p.sendMessage(ChatColor.GREEN + "/invest buy" + ChatColor.GOLD + " [amount] [Id]" + ChatColor.GRAY + " - " + messages.getMenuBuyCmd());
+		    p.sendMessage(ChatColor.GREEN + "/invest sell" + ChatColor.GOLD + " [amount] [Id]" + ChatColor.GRAY + " - " + messages.getMenuSellCmd());
+		    p.sendMessage(ChatColor.GREEN + "/invest actions" + ChatColor.GRAY + " - " + messages.getMenuActionsCmd());
+		    p.sendMessage("");
+		    p.sendMessage(messages.getPluginFooter());
             
 		}else {
 			
-			p.sendMessage(messages.getPluginPrefix() + ChatColor.RED + messages.getNoPermission());
-			
+		    p.sendMessage(messages.getPluginPrefix() + ChatColor.RED + messages.getNoPermission());
+
 		}
 		
 	}
