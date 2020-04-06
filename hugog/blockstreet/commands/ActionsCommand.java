@@ -60,7 +60,7 @@ public class ActionsCommand {
 		    p.sendMessage(messages.getPluginFooter());
 
 		}else{
-		    p.sendMessage(messages.getPluginPrefix() + messages.getInsufficientActions());
+		    p.sendMessage(messages.getPluginPrefix() + messages.getPlayerNoActions());
 
 		}
 		
