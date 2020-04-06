@@ -40,7 +40,7 @@ public class ActionsCommand {
 		try {
 			playerCompanies_Id = playerReg.getConfig().getConfigurationSection("Players." + p.getName() + ".Companies").getKeys(false); 
 		} catch (Exception e) {
-			p.sendMessage(messages.getPluginPrefix() + messages.getPlayerNoActions());
+			p.sendMessage(messages.getPluginPrefix() + messages.getPlayerAnyActions());
 			return;
 		}
 
@@ -60,7 +60,7 @@ public class ActionsCommand {
 		    p.sendMessage(messages.getPluginFooter());
 
 		}else{
-		    p.sendMessage(messages.getPluginPrefix() + messages.getPlayerNoActions());
+		    p.sendMessage(messages.getPluginPrefix() + messages.getPlayerAnyActions());
 
 		}
 		
