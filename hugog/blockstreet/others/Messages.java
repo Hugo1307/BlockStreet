@@ -38,6 +38,7 @@ public class Messages {
 	private String insufficientMoney;
 	private String insufficientActions;
 	private String playerNoActions;
+	private String playerAnyActions;
 	private String boughtActions;
 	private String soldActions;
 	private String createdCompany;
@@ -86,6 +87,7 @@ public class Messages {
 		this.invalidCmd = messagesConfig.getConfig().getString("invalidCmd");
 		this.interestRate = messagesConfig.getConfig().getString("interestRate");
 		this.updatedInterestRate = messagesConfig.getConfig().getString("updatedInterestRate");
+		this.playerAnyActions = messagesConfig.getConfig().getString("playerAnyActions");
 	}
 	
 	public String getPluginPrefix() {
@@ -233,4 +235,7 @@ public class Messages {
 		return updatedInterestRate;
 	}
 	
+	public String getPlayerAnyActions(){
+		return playerAnyActions;
+	}
 }
