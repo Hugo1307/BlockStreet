@@ -148,6 +148,7 @@ public class Main extends JavaPlugin {
     	messagesConfig.getConfig().addDefault("insufficientMoney", "You don't have enough money.");
     	messagesConfig.getConfig().addDefault("insufficientActions", "This company doesn't have enough actions to sell.");
     	messagesConfig.getConfig().addDefault("playerNoActions", "You don't have enough actions.");
+        messagesConfig.getConfig().addDefault("playerAnyActions", "You don't have any actions.");
     	messagesConfig.getConfig().addDefault("buyActionsCmd", "Buys an amount of actions from this company.");
     	messagesConfig.getConfig().addDefault("sellActionsCmd", "Sells an amount of actions from this company.");
     	messagesConfig.getConfig().addDefault("boughtActions", "You have bought {0} actions.");
