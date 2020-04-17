@@ -65,10 +65,22 @@ public class CmdImplementer implements CommandExecutor {
         	createCmd.runCreateCompanyCommand();
         	return true;
         	
+        }else if (args[0].equalsIgnoreCase("time")) {
+        	
+        	TimeLeftCommand timeLeftCmd = new TimeLeftCommand(plugin, sender);
+        	timeLeftCmd.runTimeLeftCommand();
+        	return true;
+        	
         }else if (args[0].equalsIgnoreCase("reload")) {
         	
         	ReloadCommand reloadCmd = new ReloadCommand(plugin, sender);
         	reloadCmd.runReloadCommand();
+        	return true;
+        	
+        }else if (args[0].equalsIgnoreCase("info")) {
+        	
+        	InfoCommand infoCmd = new InfoCommand(plugin, sender);
+        	infoCmd.runInfoCommand();
         	return true;
         	
         }
