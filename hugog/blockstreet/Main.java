@@ -2,10 +2,16 @@ package hugog.blockstreet;
 
 import hugog.blockstreet.others.ConfigAccessor;
 import hugog.blockstreet.others.Interest_Rate;
+import hugog.blockstreet.update.AutoUpdate;
 import hugog.blockstreet.commands.CmdImplementer;
+import hugog.blockstreet.events.PJoinEvent;
+import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.economy.Economy;
+
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.json.simple.parser.ParseException;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.io.*;
@@ -16,12 +22,17 @@ public class Main extends JavaPlugin {
     public ConfigAccessor playerReg;
     public ConfigAccessor messagesConfig;
     public Economy economy = null;
+    public long usedMemOnStartup;
 
     @Override
     public void onEnable() {
+    	
+    	usedMemOnStartup = (long) ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / Math.pow(2, 20));
+    	
         System.out.println("[BlockStreet] Plugin successfully enabled!");
-        Interest_Rate Interest_Rate = new Interest_Rate(this);
 
+        Interest_Rate interestRate = new Interest_Rate(this);
+        
         setupEconomy();
 
         registerCommands();
@@ -32,7 +43,16 @@ public class Main extends JavaPlugin {
 
         configurePlayerReg();
 
-        Interest_Rate.startTimer();
+        interestRate.startTimer();
+        
+        try {
+			AutoUpdate.checkForUpdates();
+		} catch (ParseException e) {
+			System.out.println(ChatColor.DARK_RED + "[BlockStreet] Unable to search for new versions.");
+		}
+        
+        Bukkit.getServer().getPluginManager().registerEvents(new PJoinEvent(this), this);
+        
     }
 
     @Override
@@ -68,11 +88,11 @@ public class Main extends JavaPlugin {
 
         config.options().copyDefaults(true);
 
-        config.addDefault("BlockStreet.Permissions.AllowAllUsers", true);
-        config.addDefault("BlockStreet.Interest.Time", 30);
+        config.addDefault("BlockStreet.Timer", 30);
         config.addDefault("BlockStreet.Warnings.Active", true);
         config.addDefault("BlockStreet.Warnings.First", 10);
         config.addDefault("BlockStreet.Warnings.Second", 20);
+        config.addDefault("BlockStreet.Updates.Reminder", true);
         
         config.addDefault("BlockStreet.Companies.Count", 5);
 
@@ -112,7 +132,7 @@ public class Main extends JavaPlugin {
     
     private void configureMessages() {
     	
-    	messagesConfig = new ConfigAccessor(this, "messages.yml");
+    	this.messagesConfig = new ConfigAccessor(this, "messages.yml");
     	
     	if(!new File(getDataFolder(), "messages.yml").exists()){
             messagesConfig.saveDefaultConfig();
@@ -120,7 +140,7 @@ public class Main extends JavaPlugin {
     	
     	messagesConfig.getConfig().options().copyDefaults(true);
     	
-        messagesConfig.getConfig().addDefault("pluginReload", "Plugin's config successfully reloaded.");
+    	messagesConfig.getConfig().addDefault("pluginReload", "Plugin's config successfully reloaded.");
     	
     	messagesConfig.getConfig().addDefault("menuMainCmd", "Show all plugin's commands.");
     	messagesConfig.getConfig().addDefault("menuCompaniesCmd", "List all companies.");
@@ -130,6 +150,7 @@ public class Main extends JavaPlugin {
     	messagesConfig.getConfig().addDefault("menuActionsCmd", "List all your actions.");
     	messagesConfig.getConfig().addDefault("menuCreateCompanyCmd", "Creates a new company.");
     	messagesConfig.getConfig().addDefault("menuReloadCmd", "Reload plugin's configuration.");
+    	messagesConfig.getConfig().addDefault("menuTimeCmd", "Show time left to stocks update.");
     	
     	messagesConfig.getConfig().addDefault("listNextPage", "For next page.");
     	messagesConfig.getConfig().addDefault("id", "Id");
@@ -148,7 +169,7 @@ public class Main extends JavaPlugin {
     	messagesConfig.getConfig().addDefault("insufficientMoney", "You don't have enough money.");
     	messagesConfig.getConfig().addDefault("insufficientActions", "This company doesn't have enough actions to sell.");
     	messagesConfig.getConfig().addDefault("playerNoActions", "You don't have enough actions.");
-        messagesConfig.getConfig().addDefault("playerAnyActions", "You don't have any actions.");
+    	messagesConfig.getConfig().addDefault("playerAnyActions", "You don't have any actions.");
     	messagesConfig.getConfig().addDefault("buyActionsCmd", "Buys an amount of actions from this company.");
     	messagesConfig.getConfig().addDefault("sellActionsCmd", "Sells an amount of actions from this company.");
     	messagesConfig.getConfig().addDefault("boughtActions", "You have bought {0} actions.");
@@ -156,9 +177,12 @@ public class Main extends JavaPlugin {
     	messagesConfig.getConfig().addDefault("createdCompany", "You, sucessfully, created the company {0}.");
     	
     	messagesConfig.getConfig().addDefault("invalidCmd", "Invalid Command! Try again.");
-    	messagesConfig.getConfig().addDefault("interestRate", "You'll receive your interest rates within {0} minutes.");
-    	messagesConfig.getConfig().addDefault("updatedInterestRate", "All actions have been updated.");
-        
+    	messagesConfig.getConfig().addDefault("interestRate", "Commercial stocks will be updated within {0} minutes.");
+    	messagesConfig.getConfig().addDefault("updatedInterestRate", "All commercial stocks have been updated.");
+    	messagesConfig.getConfig().addDefault("interestRateTimeLeft", "{0} minutes left to commercial stocks update.");
+    	
+    	messagesConfig.getConfig().addDefault("newVersionAvailable", "Good news! New version of BlockStreet available.");
+    	
     	messagesConfig.saveConfig();
     	
     }
