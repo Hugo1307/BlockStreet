@@ -20,6 +20,7 @@ public class Messages {
 	private String menuActionsCmd;
 	private String menuCreateCompanyCmd;
 	private String menuReloadCmd;
+	private String menuTimeCmd;
 	private String buyActionsCmd;
 	private String sellActionsCmd;
 	private String listNextPage;
@@ -45,7 +46,9 @@ public class Messages {
 	private String invalidCmd;
 	private String interestRate;
 	private String updatedInterestRate;
-
+	private String interestRateTimeLeft;
+	private String newVersionAvailable;
+	
 	public Messages(ConfigAccessor messagesConfig) {
 		
 		this.pluginPrefix = ChatColor.BOLD + "" + ChatColor.GREEN + "BlockStreet" + ChatColor.GOLD + ChatColor.BOLD + " > " + ChatColor.RESET  + ChatColor.RESET + ChatColor.GRAY;
@@ -63,6 +66,7 @@ public class Messages {
 		this.menuActionsCmd = messagesConfig.getConfig().getString("menuActionsCmd");
 		this.menuCreateCompanyCmd = messagesConfig.getConfig().getString("menuCreateCompanyCmd");
 		this.menuReloadCmd = messagesConfig.getConfig().getString("menuReloadCmd");
+		this.menuTimeCmd = messagesConfig.getConfig().getString("menuTimeCmd");
 		this.buyActionsCmd = messagesConfig.getConfig().getString("buyActionsCmd");
 		this.sellActionsCmd = messagesConfig.getConfig().getString("sellActionsCmd");
 		this.listNextPage = messagesConfig.getConfig().getString("listNextPage");
@@ -88,6 +92,9 @@ public class Messages {
 		this.interestRate = messagesConfig.getConfig().getString("interestRate");
 		this.updatedInterestRate = messagesConfig.getConfig().getString("updatedInterestRate");
 		this.playerAnyActions = messagesConfig.getConfig().getString("playerAnyActions");
+		this.interestRateTimeLeft = messagesConfig.getConfig().getString("interestRateTimeLeft");
+		this.newVersionAvailable = messagesConfig.getConfig().getString("newVersionAvailable");
+		
 	}
 	
 	public String getPluginPrefix() {
@@ -234,8 +241,21 @@ public class Messages {
 	public String getUpdatedInterestRate() {
 		return updatedInterestRate;
 	}
-	
-	public String getPlayerAnyActions(){
+
+	public String getPlayerAnyActions() {
 		return playerAnyActions;
 	}
+
+	public String getInterestRateTimeLeft() {
+		return interestRateTimeLeft;
+	}
+
+	public String getMenuTimeCmd() {
+		return menuTimeCmd;
+	}
+
+	public String getNewVersionAvailable() {
+		return newVersionAvailable;
+	}
+	
 }
