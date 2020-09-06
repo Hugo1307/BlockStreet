@@ -1,7 +1,7 @@
 package hugog.blockstreet;
 
 import hugog.blockstreet.others.ConfigAccessor;
-import hugog.blockstreet.others.Interest_Rate;
+import hugog.blockstreet.others.InterestRate;
 import hugog.blockstreet.update.AutoUpdate;
 import hugog.blockstreet.commands.CmdImplementer;
 import hugog.blockstreet.events.PJoinEvent;
@@ -22,17 +22,10 @@ public class Main extends JavaPlugin {
     public ConfigAccessor playerReg;
     public ConfigAccessor messagesConfig;
     public Economy economy = null;
-    public long usedMemOnStartup;
 
     @Override
     public void onEnable() {
-    	
-    	usedMemOnStartup = (long) ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / Math.pow(2, 20));
-    	
-        System.out.println("[BlockStreet] Plugin successfully enabled!");
 
-        Interest_Rate interestRate = new Interest_Rate(this);
-        
         setupEconomy();
 
         registerCommands();
@@ -41,9 +34,9 @@ public class Main extends JavaPlugin {
         
         configureMessages();
 
-        configurePlayerReg();
+        configureCompaniesReg();
 
-        interestRate.startTimer();
+        InterestRate.startTimer();
         
         try {
 			AutoUpdate.checkForUpdates();
@@ -52,6 +45,8 @@ public class Main extends JavaPlugin {
 		}
         
         Bukkit.getServer().getPluginManager().registerEvents(new PJoinEvent(this), this);
+           	
+        System.out.println("[BlockStreet] Plugin successfully enabled!");
         
     }
 
@@ -60,74 +55,68 @@ public class Main extends JavaPlugin {
         System.out.println("[BlockStreet] Plugin successfully disabled!");
     }
 
-    private void configurePlayerReg(){
-
-        playerReg = new ConfigAccessor(this, "players.yml");
-
-        playerReg.saveDefaultConfig();
-
-    }
-
     private void registerCommands(){
     	getCommand("invest").setExecutor(new CmdImplementer(this));
     }
 
     private void configureConfig(){
+    	
         if(!new File(getDataFolder(), "config.yml").exists()){
             saveDefaultConfig();
         }
 
         FileConfiguration config = getConfig();
-        List<String> Variations = new ArrayList<String>();
-
-        Variations.add("+ " + 2.3 + "%");
-        Variations.add("+ " + 4.8 + "%");
-        Variations.add("- " + 2.4 + "%");
-        Variations.add("- " + 0.9 + "%");
-        Variations.add("+ " + 1.1 + "%");
 
         config.options().copyDefaults(true);
 
         config.addDefault("BlockStreet.Timer", 30);
+        config.addDefault("BlockStreet.Leverage", (double) 0);
         config.addDefault("BlockStreet.Warnings.Active", true);
         config.addDefault("BlockStreet.Warnings.First", 10);
         config.addDefault("BlockStreet.Warnings.Second", 20);
         config.addDefault("BlockStreet.Updates.Reminder", true);
         
-        config.addDefault("BlockStreet.Companies.Count", 5);
-
-        config.addDefault("BlockStreet.Companies.1.Name", "Blocks Inc");
-        config.addDefault("BlockStreet.Companies.1.Price", 1253.0);
-        config.addDefault("BlockStreet.Companies.1.Risk", 4);
-        config.addDefault("BlockStreet.Companies.1.AvailableActions", -1);
-        config.addDefault("BlockStreet.Companies.1.Variations", Variations);
-
-        config.addDefault("BlockStreet.Companies.2.Name", "iSteve");
-        config.addDefault("BlockStreet.Companies.2.Price", 989.0);
-        config.addDefault("BlockStreet.Companies.2.Risk", 3);
-        config.addDefault("BlockStreet.Companies.2.AvailableActions", -1);
-        config.addDefault("BlockStreet.Companies.2.Variations", Variations);
-
-        config.addDefault("BlockStreet.Companies.3.Name", "MineCoins");
-        config.addDefault("BlockStreet.Companies.3.Price", 645.0);
-        config.addDefault("BlockStreet.Companies.3.Risk", 1);
-        config.addDefault("BlockStreet.Companies.3.AvailableActions", -1);
-        config.addDefault("BlockStreet.Companies.3.Variations", Variations);
-
-        config.addDefault("BlockStreet.Companies.4.Name", "MineApple");
-        config.addDefault("BlockStreet.Companies.4.Price", 398.0);
-        config.addDefault("BlockStreet.Companies.4.Risk", 3);
-        config.addDefault("BlockStreet.Companies.4.AvailableActions", -1);
-        config.addDefault("BlockStreet.Companies.4.Variations", Variations);
-
-        config.addDefault("BlockStreet.Companies.5.Name", "bitCube");
-        config.addDefault("BlockStreet.Companies.5.Price", 125.0);
-        config.addDefault("BlockStreet.Companies.5.Risk", 2);
-        config.addDefault("BlockStreet.Companies.5.AvailableActions", -1);
-        config.addDefault("BlockStreet.Companies.5.Variations", Variations);
-
         saveConfig();
 
+    }
+    
+    private void configureCompaniesReg() {
+    	
+		ConfigAccessor companiesReg = new ConfigAccessor(this, "companies.yml");
+	    List<String> stocksHistoric = new ArrayList<String>();
+        
+	    if (!new File(getDataFolder(), "companies.yml").exists()) {
+	    	 companiesReg.saveConfig();
+	     }
+	    
+	   	 stocksHistoric.add("+ " + 2.3 + "%");
+	     stocksHistoric.add("+ " + 4.8 + "%");
+	     stocksHistoric.add("- " + 2.4 + "%");
+	     stocksHistoric.add("- " + 0.9 + "%");
+	     stocksHistoric.add("+ " + 1.1 + "%");
+	     
+	     companiesReg.getConfig().options().copyDefaults(true);
+    	
+	     companiesReg.getConfig().addDefault("Companies.1.Name", "Blocks Inc");
+	     companiesReg.getConfig().addDefault("Companies.1.Price", 1253.0);
+	     companiesReg.getConfig().addDefault("Companies.1.Risk", 4);
+	     companiesReg.getConfig().addDefault("Companies.1.AvailableStocks", -1);
+	     companiesReg.getConfig().addDefault("Companies.1.Historic", stocksHistoric);
+
+	     companiesReg.getConfig().addDefault("Companies.2.Name", "iSteve");
+	     companiesReg.getConfig().addDefault("Companies.2.Price", 989.0);
+	     companiesReg.getConfig().addDefault("Companies.2.Risk", 3);
+	     companiesReg.getConfig().addDefault("Companies.2.AvailableStocks", -1);
+	     companiesReg.getConfig().addDefault("Companies.2.Historic", stocksHistoric);
+
+	     companiesReg.getConfig().addDefault("Companies.3.Name", "MineCoins");
+	     companiesReg.getConfig().addDefault("Companies.3.Price", 645.0);
+	     companiesReg.getConfig().addDefault("Companies.3.Risk", 1);
+	     companiesReg.getConfig().addDefault("Companies.3.AvailableStocks", -1);
+	     companiesReg.getConfig().addDefault("Companies.3.Historic", stocksHistoric);
+        
+	     companiesReg.saveConfig();
+	     
     }
     
     private void configureMessages() {
@@ -145,9 +134,9 @@ public class Main extends JavaPlugin {
     	messagesConfig.getConfig().addDefault("menuMainCmd", "Show all plugin's commands.");
     	messagesConfig.getConfig().addDefault("menuCompaniesCmd", "List all companies.");
     	messagesConfig.getConfig().addDefault("menuCompanyCmd", "Show details of a company.");
-    	messagesConfig.getConfig().addDefault("menuBuyCmd", "Buys actions from company with the specified Id.");
-    	messagesConfig.getConfig().addDefault("menuSellCmd", "Sells actions from company with the specified Id.");
-    	messagesConfig.getConfig().addDefault("menuActionsCmd", "List all your actions.");
+    	messagesConfig.getConfig().addDefault("menuBuyCmd", "Buys stocks from company with the specified Id.");
+    	messagesConfig.getConfig().addDefault("menuSellCmd", "Sells stocks from company with the specified Id.");
+    	messagesConfig.getConfig().addDefault("menuActionsCmd", "List all your stocks.");
     	messagesConfig.getConfig().addDefault("menuCreateCompanyCmd", "Creates a new company.");
     	messagesConfig.getConfig().addDefault("menuReloadCmd", "Reload plugin's configuration.");
     	messagesConfig.getConfig().addDefault("menuTimeCmd", "Show time left to stocks update.");
@@ -167,14 +156,16 @@ public class Main extends JavaPlugin {
     	messagesConfig.getConfig().addDefault("invalidCompany", "Invalid company.");
     	messagesConfig.getConfig().addDefault("companyAlreadyExists", "This company already exists.");
     	messagesConfig.getConfig().addDefault("insufficientMoney", "You don't have enough money.");
-    	messagesConfig.getConfig().addDefault("insufficientActions", "This company doesn't have enough actions to sell.");
-    	messagesConfig.getConfig().addDefault("playerNoActions", "You don't have enough actions.");
-    	messagesConfig.getConfig().addDefault("playerAnyActions", "You don't have any actions.");
-    	messagesConfig.getConfig().addDefault("buyActionsCmd", "Buys an amount of actions from this company.");
-    	messagesConfig.getConfig().addDefault("sellActionsCmd", "Sells an amount of actions from this company.");
-    	messagesConfig.getConfig().addDefault("boughtActions", "You have bought {0} actions.");
-    	messagesConfig.getConfig().addDefault("soldActions", "You have sold {0} actions for {1}.");
-    	messagesConfig.getConfig().addDefault("createdCompany", "You, sucessfully, created the company {0}.");
+    	messagesConfig.getConfig().addDefault("insufficientActions", "This company doesn't have enough stocks to sell.");
+    	messagesConfig.getConfig().addDefault("playerNoActions", "You don't have enough stocks.");
+    	messagesConfig.getConfig().addDefault("playerAnyActions", "You don't have any stocks.");
+    	messagesConfig.getConfig().addDefault("buyActionsCmd", "Buy an amount of stocks from this company.");
+    	messagesConfig.getConfig().addDefault("sellActionsCmd", "Sell an amount of stocks from this company.");
+    	messagesConfig.getConfig().addDefault("boughtActions", "You have bought {0} stocks.");
+    	messagesConfig.getConfig().addDefault("soldActions", "You have sold {0} stocks for {1}.");
+    	messagesConfig.getConfig().addDefault("createdCompany", "You created the company {0}.");
+    	messagesConfig.getConfig().addDefault("deletedCompany", "You deleted the company {0}.");
+    	messagesConfig.getConfig().addDefault("unknownCommand", "Unknown command.");
     	
     	messagesConfig.getConfig().addDefault("invalidCmd", "Invalid Command! Try again.");
     	messagesConfig.getConfig().addDefault("interestRate", "Commercial stocks will be updated within {0} minutes.");
