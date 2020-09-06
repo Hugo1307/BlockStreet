@@ -17,5 +17,3 @@ With the in-game command <b>/invest company [id]</b> you can see the company act
 In company details, you can see the level of risk that a company offers. Companies with bigger risk will make you lose or win more money while companies with lower risk are safer, but will give you less money. 
 
 <b>You choose!</b>
-
-<h4>More features soon!</h4> 
