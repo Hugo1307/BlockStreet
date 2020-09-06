@@ -1,10 +1,6 @@
 package hugog.blockstreet.others;
 
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.StringUtils;
-import org.bukkit.util.ChatPaginator;
-
-import net.milkbowl.vault.chat.Chat;
 
 public class Messages {
 	
@@ -43,20 +39,19 @@ public class Messages {
 	private String boughtActions;
 	private String soldActions;
 	private String createdCompany;
+	private String deletedCompany;
 	private String invalidCmd;
 	private String interestRate;
 	private String updatedInterestRate;
 	private String interestRateTimeLeft;
 	private String newVersionAvailable;
+	private String unknownCommand;
 	
 	public Messages(ConfigAccessor messagesConfig) {
 		
 		this.pluginPrefix = ChatColor.BOLD + "" + ChatColor.GREEN + "BlockStreet" + ChatColor.GOLD + ChatColor.BOLD + " > " + ChatColor.RESET  + ChatColor.RESET + ChatColor.GRAY;
-		this.pluginHeader = ChatColor.GREEN + "" + ChatColor.STRIKETHROUGH + "                                                                                " 
-		+ "\n" + ChatColor.RESET + ChatColor.GREEN + "                               " + 
-				ChatColor.BOLD + "BlockStreet";
-		
-		this.pluginFooter = ChatColor.GREEN + "" + ChatColor.STRIKETHROUGH + "                                                                                ";
+		this.pluginHeader = ChatColor.GRAY + "-=-=-=-=-=-=-=-=-=-= [" + ChatColor.GREEN  + "BlockStreet" + ChatColor.GRAY + "] =-=-=-=-=-=-=-=-=-=-";
+		this.pluginFooter = ChatColor.GRAY + "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-";
 		this.pluginReload = messagesConfig.getConfig().getString("pluginReload");
 		this.menuMainCmd = messagesConfig.getConfig().getString("menuMainCmd");
 		this.menuCompaniesCmd = messagesConfig.getConfig().getString("menuCompaniesCmd");
@@ -88,12 +83,14 @@ public class Messages {
 		this.boughtActions = messagesConfig.getConfig().getString("boughtActions");
 		this.soldActions = messagesConfig.getConfig().getString("soldActions");
 		this.createdCompany = messagesConfig.getConfig().getString("createdCompany");
+		this.deletedCompany = messagesConfig.getConfig().getString("deletedCompany");
 		this.invalidCmd = messagesConfig.getConfig().getString("invalidCmd");
 		this.interestRate = messagesConfig.getConfig().getString("interestRate");
 		this.updatedInterestRate = messagesConfig.getConfig().getString("updatedInterestRate");
 		this.playerAnyActions = messagesConfig.getConfig().getString("playerAnyActions");
 		this.interestRateTimeLeft = messagesConfig.getConfig().getString("interestRateTimeLeft");
 		this.newVersionAvailable = messagesConfig.getConfig().getString("newVersionAvailable");
+		this.unknownCommand = messagesConfig.getConfig().getString("unknownCommand");
 		
 	}
 	
@@ -238,6 +235,10 @@ public class Messages {
 		return createdCompany;
 	}
 
+	public String getDeletedCompany() {
+		return deletedCompany;
+	}
+
 	public String getUpdatedInterestRate() {
 		return updatedInterestRate;
 	}
@@ -256,6 +257,10 @@ public class Messages {
 
 	public String getNewVersionAvailable() {
 		return newVersionAvailable;
+	}
+
+	public String getUnknownCommand() {
+		return unknownCommand;
 	}
 	
 }
