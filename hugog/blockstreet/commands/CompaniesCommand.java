@@ -1,21 +1,25 @@
 package hugog.blockstreet.commands;
 
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import hugog.blockstreet.Main;
+import hugog.blockstreet.others.Company;
+import hugog.blockstreet.others.ConfigAccessor;
 import hugog.blockstreet.others.Messages;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class CompaniesCommand{
 
-	private Main Main;
+	private Main main;
 	private String[] args;
 	private CommandSender sender;
 	
 	public CompaniesCommand(Main main, String[] args, CommandSender sender) {
-		this.Main = main;
+		this.main = main;
 		this.args = args;
 		this.sender = sender;
 	}
@@ -23,74 +27,88 @@ public class CompaniesCommand{
 	protected void runCompaniesCommand() {
 		
 		Player p = (Player) sender;
-		Messages messages = new Messages(Main.messagesConfig);
-		int numberOfCompanies = Main.getConfig().getInt("BlockStreet.Companies.Count");	
-		
-		if (!p.hasPermission("blockstreet.command.companies") && !p.hasPermission("blockstreet.command.*")) {
-			p.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
-			return;
-		}
-		
-		if(numberOfCompanies <= 0){
-            p.sendMessage(messages.getPluginPrefix() + messages.getNonExistantPage());
-            return;
-        }
-		
-		if (args.length == 1) {
+		Messages messages = new Messages(main.messagesConfig);
+		ConfigAccessor companiesReg = new ConfigAccessor(main, "companies.yml");
 			
-            p.sendMessage(messages.getPluginHeader());
-            for (int companyIndex = 1; companyIndex <= 3 ; companyIndex++) {
-                if(Main.getConfig().getString("BlockStreet.Companies." + companyIndex + ".Name") != null) {
-                    p.sendMessage(ChatColor.GREEN +
-                            Main.getConfig().getString("BlockStreet.Companies." + companyIndex + ".Name"));
-                    p.sendMessage(ChatColor.GRAY + messages.getPrice() + ": " + ChatColor.GREEN +
-                            Main.getConfig().getString("BlockStreet.Companies." + companyIndex + ".Price"));
-                    p.sendMessage(ChatColor.GRAY + messages.getRisk() + ": " + ChatColor.GREEN +
-                            Main.getConfig().getString("BlockStreet.Companies." + companyIndex + ".Risk"));
-                    p.sendMessage(ChatColor.GRAY + messages.getDetails() + ": " + ChatColor.GREEN +
-                            "/invest company " + companyIndex);
-                    p.sendMessage("");
-                }
-            }
-            
-            if(numberOfCompanies > 3){
-                p.sendMessage(ChatColor.GREEN + "/invest companies 1" + ChatColor.GRAY + " - " + messages.getListNextPage());
-            }
-            p.sendMessage(messages.getPluginFooter());
-            return;
-		
-		}else if (args.length > 1) {
+		if (p.hasPermission("blockstreet.command.companies") || p.hasPermission("blockstreet.command.*")) {
 			
-			for (int i = 0; i <= (int)(numberOfCompanies/3); i++) {
+			int numberOfCompanies = 0;
+			
+			if (companiesReg.getConfig().get("Companies") != null) 
+				numberOfCompanies = companiesReg.getConfig().getConfigurationSection("Companies").getKeys(false).size();
+			
+			if (numberOfCompanies > 0) {
 				
-				if (args[1].equalsIgnoreCase(String.valueOf(i))) {
+				if (args.length <= 1) {
+		            
+					p.sendMessage(messages.getPluginHeader());
+		            for (int companyIndex = 1; companyIndex <= 3 ; companyIndex++) {
+		            	
+		            	Company currentCompany = new Company(companiesReg, companyIndex);
+		            	
+		            	sendCompanyText(p, messages, currentCompany, companyIndex);
+		            	
+		            }
+		            
+		            if(numberOfCompanies > 3) 
+		            	p.sendMessage(ChatColor.GREEN + "/invest companies 2" + ChatColor.GRAY + " - " + messages.getListNextPage());
+		            
+		            p.sendMessage(messages.getPluginFooter());
+					
+				}else {
+					
+					int pageNumber, firstCompanyOfPage, lastCompanyOfPage;
+					
+					try {
+						pageNumber = Integer.parseInt(args[1]);
+					} catch (NumberFormatException e) {
+						p.sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
+						return;
+					}
+					
+					firstCompanyOfPage = (pageNumber-1)*3+1;
+					lastCompanyOfPage = pageNumber*3;
 					
 					p.sendMessage(messages.getPluginHeader());
-	                for (int companyIndex = i * 3 + 1; companyIndex <= i * 3 + 3; companyIndex++) {
-	                    if(Main.getConfig().getString("BlockStreet.Companies." + companyIndex + ".Name") != null) {
-	                        p.sendMessage(ChatColor.GREEN +
-	                                Main.getConfig().getString("BlockStreet.Companies." + companyIndex + ".Name"));
-	                        p.sendMessage(ChatColor.GRAY + messages.getPrice() + ": " + ChatColor.GREEN +
-	                                Main.getConfig().getString("BlockStreet.Companies." + companyIndex + ".Price"));
-	                        p.sendMessage(ChatColor.GRAY + messages.getRisk() + ": " + ChatColor.GREEN +
-	                                Main.getConfig().getString("BlockStreet.Companies." + companyIndex + ".Risk"));
-	                        p.sendMessage(ChatColor.GRAY + messages.getDetails() + ": " + ChatColor.GREEN +
-	                                "/invest company " + companyIndex);
-	                        p.sendMessage("");
-	                    }
-	                }
-	                p.sendMessage(ChatColor.GREEN + "/invest companies " + (i + 1) + ChatColor.GRAY + " - " + messages.getListNextPage());
-	                p.sendMessage(messages.getPluginFooter());
-	                return;
+		            for (int companyIndex = firstCompanyOfPage; companyIndex <= lastCompanyOfPage; companyIndex++) {
+		            	
+		            	Company currentCompany = new Company(companiesReg, companyIndex);
+		            	
+		            	sendCompanyText(p, messages, currentCompany, companyIndex);
+		            	
+		            }
+		            
+		            if(numberOfCompanies > lastCompanyOfPage + 1) 
+		            	p.sendMessage(ChatColor.GREEN + "/invest companies " + pageNumber  + ChatColor.GRAY + " - " + messages.getListNextPage());
+		            
+		            p.sendMessage(messages.getPluginFooter());
 					
 				}
 				
-			}
-			
-			p.sendMessage(messages.getPluginPrefix() + messages.getNonExistantPage());
-			return;
-			
+			}else {
+	        	p.sendMessage(messages.getPluginPrefix() + messages.getNonExistantPage());
+	        }
+
+		}else {
+			p.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
 		}
+		
+	}
+	
+	private void sendCompanyText(Player p,  Messages messages, Company currentCompany, int companyIndex) {
+		
+		TextComponent companyDetails = new TextComponent(ChatColor.GRAY + "[Details]");
+		companyDetails.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, 
+				new ComponentBuilder(ChatColor.GRAY + "Click to see company's details.").create()));
+		companyDetails.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/invest company " + companyIndex));
+    	
+        if(currentCompany.getName() != null) {
+            p.sendMessage(ChatColor.GREEN + currentCompany.getName());
+            p.sendMessage(ChatColor.GRAY + messages.getPrice() + ": " + currentCompany.getStocksPrice());
+            p.sendMessage(ChatColor.GRAY + messages.getRisk() + ": " + ChatColor.GREEN + currentCompany.getRisk());
+            p.spigot().sendMessage(companyDetails);
+            p.sendMessage("");
+        }
 		
 	}
 	

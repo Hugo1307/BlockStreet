@@ -23,19 +23,10 @@ public class InfoCommand {
 		Player p = (Player) sender;
 		
 		Messages messages = new Messages(main.messagesConfig);
-		long totalMemUsed = (long) ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / Math.pow(2, 20));
-		long memUsedByPlugin = (long) (main.usedMemOnStartup - totalMemUsed); 
 		
 		p.sendMessage(messages.getPluginHeader());
 		p.sendMessage("");
-		/*
-		if (memUsedByPlugin <= 0) {
-			p.sendMessage(ChatColor.GREEN + "Memory used by plugin: " + ChatColor.GRAY + "~0 MB");
-		}else {
-			p.sendMessage(ChatColor.GREEN + "Memory used by plugin: " + ChatColor.GRAY + memUsedByPlugin + " MB");
-		}
-		p.sendMessage("");
-		*/
+
 		p.sendMessage(ChatColor.GREEN + "Current Version: " + ChatColor.GRAY + AutoUpdate.getCurrentVersion());
 		p.sendMessage(ChatColor.GREEN + "Last Version: " + ChatColor.GRAY + AutoUpdate.getLastVersion());
 		p.sendMessage("");

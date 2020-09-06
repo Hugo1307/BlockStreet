@@ -13,11 +13,9 @@ public class ReloadCommand {
 	private Main main;
 	private CommandSender sender;
 	
-	public ReloadCommand(Main main, CommandSender sender) {
-		
+	public ReloadCommand(Main main, CommandSender sender) {		
 		this.main = main;
-		this.sender = sender;
-		
+		this.sender = sender;		
 	}
 	
 	protected void runReloadCommand() {
@@ -25,22 +23,19 @@ public class ReloadCommand {
 		Player p = (Player) sender;
 		
 		Messages messages = new Messages(main.messagesConfig);
-		ConfigAccessor playersConfig = new ConfigAccessor(main, "players.yml");
+		ConfigAccessor playersReg = new ConfigAccessor(main, "players.yml");
+		ConfigAccessor companiesReg = new ConfigAccessor(main, "companies.yml");
 		
 		if (p.hasPermission("blockstreet.admin.*") || p.hasPermission("blockstreet.admin.reload")) {
 			
-			playersConfig.saveConfig();
-			playersConfig.reloadConfig();
-			
-			main.saveConfig();
+			playersReg.reloadConfig();
+			companiesReg.reloadConfig();
 			main.reloadConfig();
 			
 			p.sendMessage(messages.getPluginPrefix() + ChatColor.GREEN + messages.getPluginReload());
 			
-		}else {
-			
-			p.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
-			
+		}else {			
+			p.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());			
 		}
 		
 	}

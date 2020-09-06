@@ -5,16 +5,22 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import hugog.blockstreet.Main;
+import hugog.blockstreet.others.Company;
+import hugog.blockstreet.others.ConfigAccessor;
 import hugog.blockstreet.others.Messages;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class CompanyCommand {
 
-	private Main Main;
+	private Main main;
 	private String[] args;
 	private CommandSender sender;
 	
 	public CompanyCommand (Main main, String[] args, CommandSender sender) {
-		this.Main = main;
+		this.main = main;
 		this.args = args;
 		this.sender = sender;
 	}
@@ -22,59 +28,71 @@ public class CompanyCommand {
 	protected void runCompanyCommand () {
 		
 		Player p = (Player) sender;
-		Messages messages = new Messages(Main.messagesConfig);
-		int numberOfCompanies = Main.getConfig().getInt("BlockStreet.Companies.Count");	
+		Messages messages = new Messages(main.messagesConfig);
+		ConfigAccessor companiesReg = new ConfigAccessor(main, "companies.yml");
 		
-		if (!p.hasPermission("blockstreet.command.company") && !p.hasPermission("blockstreet.command.*")) {
+		if (p.hasPermission("blockstreet.command.company") || p.hasPermission("blockstreet.command.*")) {
+			
+			if (args.length > 1) {
+				
+				int numberOfCompanies = 0;
+				
+				if (companiesReg.getConfig().get("Companies") != null) 
+					numberOfCompanies = companiesReg.getConfig().getConfigurationSection("Companies").getKeys(false).size();
+				
+				if (numberOfCompanies > 0) {
+					
+					for (int i = 1; i <= numberOfCompanies; i++) {
+			        	
+			            if(args[1].equals(String.valueOf(i))){
+			            	
+			            	Company currentCompany = new Company(companiesReg, i);
+			            	
+			            	TextComponent buyStocks = new TextComponent(ChatColor.GRAY + "[Buy Stocks]");
+			        		buyStocks.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, 
+			        				new ComponentBuilder(ChatColor.GRAY + "Click to see company's details.").create()));
+			        		buyStocks.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/invest buy 1 " + i));
+			            	
+			                p.sendMessage(messages.getPluginHeader());
+			                p.sendMessage("");
+			                p.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + currentCompany.getName());
+			                p.sendMessage("");
+			                p.sendMessage(ChatColor.GRAY + "Id: " + ChatColor.GREEN + currentCompany.getId());
+			                p.sendMessage(ChatColor.GRAY + messages.getPrice() + ": " + ChatColor.GREEN + currentCompany.getStocksPrice());
+			                p.sendMessage(ChatColor.GRAY + messages.getRisk() + ": " + ChatColor.GREEN + currentCompany.getRisk());
+			                
+			                if (currentCompany.getAvailableStocks() < 0)
+			                    p.sendMessage(ChatColor.GRAY + messages.getAvailableActions() + ": " + ChatColor.GREEN + "Unlimited");
+			                else
+			                    p.sendMessage(ChatColor.GRAY + messages.getAvailableActions() + ": " + ChatColor.GREEN + currentCompany.getAvailableStocks());
+
+			                p.sendMessage(ChatColor.GRAY + messages.getActionHistoric() + ": ");
+			                p.sendMessage("");
+			                
+			                for (String element : currentCompany.getCompanyHistoric()){
+			                    if (element.contains("+")) p.sendMessage(ChatColor.GREEN + "  " + element);
+			                    else if (element.contains("-")) p.sendMessage(ChatColor.RED + "  " + element);
+			                }
+			                
+			                p.sendMessage("");
+			                p.spigot().sendMessage(buyStocks);
+			                p.sendMessage(messages.getPluginFooter());
+			                
+			            }
+			            
+			        }
+					
+				}else {
+					p.sendMessage(messages.getPluginPrefix() + messages.getInvalidCompany());
+				}
+			
+			}else {
+				p.sendMessage(messages.getPluginPrefix() + messages.getInvalidCmd());
+			}
+
+		}else {
 			p.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
-			return;
 		}
-		
-		if (args.length == 1){
-            p.sendMessage(messages.getPluginPrefix() + messages.getInvalidCmd());
-            return;
-        }
-
-        for (int i = 1; i <= numberOfCompanies; i++) {
-        	
-            if(args[1].equalsIgnoreCase(String.valueOf(i))){
-            	
-                p.sendMessage(messages.getPluginHeader());
-                p.sendMessage("");
-                p.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD +
-                        Main.getConfig().getString("BlockStreet.Companies." + i + ".Name"));
-                p.sendMessage("");
-                p.sendMessage(ChatColor.GRAY + "Id: " + ChatColor.GREEN + i);
-                p.sendMessage(ChatColor.GRAY + messages.getPrice() + ": " + ChatColor.GREEN +
-                        Main.getConfig().getString("BlockStreet.Companies." + i + ".Price"));
-                p.sendMessage(ChatColor.GRAY + messages.getRisk() + ": " + ChatColor.GREEN +
-                        Main.getConfig().getString("BlockStreet.Companies." + i + ".Risk"));
-                if (Main.getConfig().getInt("BlockStreet.Companies." + i + ".AvailableActions") < 0){
-                    p.sendMessage(ChatColor.GRAY + messages.getAvailableActions() + ": " + ChatColor.GREEN + "Unlimited");
-                }else{
-                    p.sendMessage(ChatColor.GRAY + messages.getAvailableActions() + ": " + ChatColor.GREEN +
-                            Main.getConfig().getString("BlockStreet.Companies." + i + ".AvailableActions"));
-                }
-
-                p.sendMessage(ChatColor.GRAY + messages.getActionHistoric() + ": ");
-                p.sendMessage("");
-                for (String element : Main.getConfig().getStringList("BlockStreet.Companies." + i + ".Variations")){
-                    if(element.contains("+")){
-                        p.sendMessage(ChatColor.GREEN + "  " + element);
-                    }else if (element.contains("-")){
-                        p.sendMessage(ChatColor.RED + "  " + element);
-                    }
-                }
-                p.sendMessage("");
-                p.sendMessage(ChatColor.GREEN + "/invest buy {amount} " + i + ChatColor.GRAY +
-                        " - " + messages.getBuyActionsCmd());
-                p.sendMessage(messages.getPluginFooter());
-                return;
-            }
-        }
-        
-        p.sendMessage(messages.getPluginPrefix() + messages.getInvalidCompany());
-        return;
 		
 	}
 	

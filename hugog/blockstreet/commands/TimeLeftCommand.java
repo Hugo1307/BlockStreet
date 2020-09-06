@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import hugog.blockstreet.Main;
-import hugog.blockstreet.others.Interest_Rate;
+import hugog.blockstreet.others.InterestRate;
 import hugog.blockstreet.others.Messages;
 
 public class TimeLeftCommand {
@@ -29,15 +29,13 @@ public class TimeLeftCommand {
 		if (p.hasPermission("blockstreet.command.time") || p.hasPermission("blockstreet.command.*")) {
 			
 			int totalMinutes = main.getConfig().getInt("BlockStreet.Timer");
-			int timeElapsed = Interest_Rate.minutesCounter;
+			int timeElapsed = InterestRate.minutesCounter;
 			int timeLeft = totalMinutes - timeElapsed;
 			
 			p.sendMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getInterestRateTimeLeft(), timeLeft));
 			
-		}else {
-			
-			p.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
-			
+		}else {			
+			p.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());			
 		}
 		
 	}

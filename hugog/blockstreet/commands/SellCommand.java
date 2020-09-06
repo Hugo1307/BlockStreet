@@ -6,95 +6,94 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import hugog.blockstreet.Main;
+import hugog.blockstreet.others.Company;
 import hugog.blockstreet.others.ConfigAccessor;
+import hugog.blockstreet.others.Investment;
+import hugog.blockstreet.others.Investor;
 import hugog.blockstreet.others.Messages;
 
 public class SellCommand {
 
-	private Main Main;
+	private Main main;
 	private String[] args;
 	private CommandSender sender;
 	
 	public SellCommand (Main main, String[] args, CommandSender sender) {
-		this.Main = main;
+		this.main = main;
 		this.args = args;
 		this.sender = sender;
 	}
 
 	public void runSellCommand() {
 		
+		// /invest sell [amount] [Id] 
+		
 		Player p = (Player) sender;
-		Messages messages = new Messages(Main.messagesConfig);
-		ConfigAccessor playerReg = new ConfigAccessor(Main, "players.yml");
-		int numberOfCompanies = Main.getConfig().getInt("BlockStreet.Companies.Count");	
+		Messages messages = new Messages(main.messagesConfig);
+		ConfigAccessor companiesReg = new ConfigAccessor(main, "companies.yml");
 		
-		if (!p.hasPermission("blockstreet.command.sell") && !p.hasPermission("blockstreet.command.*")) {
-			p.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
-			return;
-		}
-		
-		
-		if (args.length == 1 || args.length == 2){
+		if (p.hasPermission("blockstreet.command.sell") || p.hasPermission("blockstreet.command.*")) {
 			
-            p.sendMessage(messages.getPluginPrefix() + messages.getMissingArguments());
-            
-        } else {
-        	
-        	int amount;
-            int company;
-            try{
-                amount = Integer.parseInt(args[1]);
-                company = Integer.parseInt(args[2]);
-            }catch (NumberFormatException nfe){
-                p.sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
-                return;
-            }
+			if (args.length >= 3) {
+				
+				int sellingAmount, companyId;
+				Company currentCompany;
 
-            if (company > numberOfCompanies){
-                p.sendMessage(messages.getPluginPrefix() + messages.getInvalidCompany());
-                return;
-            }
-            
-            if (amount == 0) {
-           	 p.sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
-           	 return;
-            }
+	            try{
+	                sellingAmount = Integer.parseInt(args[1]);
+	                companyId = Integer.parseInt(args[2]);
+	            }catch (NumberFormatException nfe){
+	                p.sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
+	                return;
+	            }
 
-            int playerActions = 0;
-            try{
-                playerActions = playerReg.getConfig().getInt("Players." + p.getName() + ".Companies." + company + ".Amount");
-            }catch (Exception ignored){
-                p.sendMessage(messages.getPluginPrefix() + messages.getInsufficientActions());
-                return;
-            }
+	            currentCompany = new Company(companiesReg, companyId);
+	            
+	            if (currentCompany.exists()) {
+	            	
+	            	if (sellingAmount > 0) {
+	            		
+	            		Investor playerInvestorProfile = new Investor(p.getName());
+	            		Investment currentInvestment = playerInvestorProfile.getInvestment(currentCompany.getId());
+	            		
+	            		if (currentInvestment != null) {
+	            			
+	            			int playerActions = currentInvestment.getStocksAmount();
+	            			
+	            			if (sellingAmount <= playerActions && playerActions != 0){
+	            				         				
+		    	                double pricePerAction = currentCompany.getStocksPrice();
+		    	                
+		    	                playerInvestorProfile.addInvestment(new Investment(currentCompany.getId(), playerActions - sellingAmount));		    	                
+		    	                playerInvestorProfile.saveToYml();
 
-            if (amount <= playerActions && playerActions != 0){
-
-                double pricePerAction = (double) (playerReg.getConfig().getInt("Players." + p.getName() +
-                        ".Companies." + company + ".Value") / playerActions);
-                playerActions -= amount;
-                playerReg.getConfig().set("Players." + p.getName() + ".Companies." + company + ".Amount", playerActions);
-                playerReg.getConfig().set("Players." + p.getName() + ".Companies." + company + ".Value",
-                        playerReg.getConfig().getInt("Players." + p.getName() + ".Companies." + company
-                                + ".Value") - pricePerAction * amount);
-                Main.economy.depositPlayer(p.getName(), pricePerAction * amount);
-                playerReg.saveConfig();
-                playerReg.reloadConfig();
-                p.sendMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getSoldActions().replace("'", "''"), amount, pricePerAction * amount));
-                
-                if (playerReg.getConfig().getInt("Players." + p.getName() + ".Companies." + company + ".Amount") == 0) {
-                	playerReg.getConfig().set("Players." + p.getName() + ".Companies." + company, null);
-                	playerReg.saveConfig();
-                	playerReg.reloadConfig();
-                }
-                
-            }else{
-                p.sendMessage(messages.getPluginPrefix() + messages.getPlayerNoActions());
-                
-            }
-        	
-        }
-
+		    	                main.economy.depositPlayer(p, pricePerAction * sellingAmount);
+		    	                
+		    	                p.sendMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getSoldActions().replace("'", "''"), sellingAmount, pricePerAction * sellingAmount));		    	                
+		    	                
+		    	            }else{
+		    	                p.sendMessage(messages.getPluginPrefix() + messages.getPlayerNoActions());	    	                
+		    	            }
+	            			
+	            		}else {
+	            			p.sendMessage(messages.getPluginPrefix() + messages.getInsufficientActions());
+	            		}
+	
+	            	}else {
+	            		p.sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
+	            	}
+	            	
+	            }else {
+	            	p.sendMessage(messages.getPluginPrefix() + messages.getInvalidCompany());
+	            }
+	            	
+			}else {
+				p.sendMessage(messages.getPluginPrefix() + messages.getMissingArguments());
+			}
+			
+		}else {
+			p.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
+		}
         
 	}
 	

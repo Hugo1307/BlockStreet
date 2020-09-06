@@ -1,69 +1,61 @@
 package hugog.blockstreet.commands;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import hugog.blockstreet.Main;
+import hugog.blockstreet.others.Company;
 import hugog.blockstreet.others.ConfigAccessor;
+import hugog.blockstreet.others.Investment;
+import hugog.blockstreet.others.Investor;
 import hugog.blockstreet.others.Messages;
 
-public class ActionsCommand {
+public class StocksCommand {
 
-	private Main Main;
+	private Main main;
 	private CommandSender sender;
 	
-	public ActionsCommand(Main main, CommandSender sender) {
-		
-		this.Main = main;
-		this.sender = sender;
-		
+	public StocksCommand(Main main, CommandSender sender) {		
+		this.main = main;
+		this.sender = sender;		
 	}
 	
 	public void runActionsCommand() {
 		
 		Player p = (Player) sender;
-		Messages messages = new Messages(Main.messagesConfig);
-		ConfigAccessor playerReg = new ConfigAccessor(Main, "players.yml");
+		Messages messages = new Messages(main.messagesConfig);
+		ConfigAccessor companiesReg = new ConfigAccessor(main, "companies.yml");
 		
-		Set<String> playerCompanies_Id = new HashSet<String>();
-		
-		if (!p.hasPermission("blockstreet.command.actions") && !p.hasPermission("blockstreet.command.*")) {
+		if (p.hasPermission("blockstreet.command.actions") || p.hasPermission("blockstreet.command.*")) {
+			
+			Investor playerInvestProfile = new Investor(p.getName());
+			
+			if (playerInvestProfile.getInvestments().size() > 0) {
+				
+				p.sendMessage(messages.getPluginHeader());
+	            p.sendMessage("");
+	            
+	            for (Investment investment : playerInvestProfile.getInvestments()) {
+	            	
+	            	Company investedCompany = new Company(companiesReg, investment.getId());
+	            	
+	                p.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + investedCompany.getName());
+	                p.sendMessage("");
+	                p.sendMessage(ChatColor.GRAY + "Actions: " + ChatColor.GREEN + investment.getStocksAmount());
+	                p.sendMessage(ChatColor.GRAY + "Total value: " + ChatColor.GREEN + (investment.getStocksAmount()*investedCompany.getStocksPrice()));
+	                p.sendMessage("");
+	            }
+	            p.sendMessage(messages.getPluginFooter());
+				
+			}else {
+				 p.sendMessage(messages.getPluginPrefix() + messages.getPlayerAnyActions());
+			}
+			
+		}else {
 			p.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
-			return;
 		}
-		
-		try {
-			playerCompanies_Id = playerReg.getConfig().getConfigurationSection("Players." + p.getName() + ".Companies").getKeys(false); 
-		} catch (Exception e) {
-			p.sendMessage(messages.getPluginPrefix() + messages.getPlayerAnyActions());
-			return;
-		}
-
-		if (playerCompanies_Id.size() != 0){
-		    p.sendMessage(messages.getPluginHeader());
-		    p.sendMessage("");
-		    for (String company : playerCompanies_Id){
-			p.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD +
-				Main.getConfig().getString("BlockStreet.Companies." + company + ".Name"));
-			p.sendMessage("");
-			p.sendMessage(ChatColor.GRAY + "Actions: " + ChatColor.GREEN +
-				playerReg.getConfig().getInt("Players." + p.getName() + ".Companies." + company + ".Amount"));
-			p.sendMessage(ChatColor.GRAY + "Total value: " + ChatColor.GREEN +
-				playerReg.getConfig().getDouble("Players." + p.getName() + ".Companies." + company + ".Value"));
-			p.sendMessage("");
-		    }
-		    p.sendMessage(messages.getPluginFooter());
-
-		}else{
-		    p.sendMessage(messages.getPluginPrefix() + messages.getPlayerAnyActions());
-
-		}
-		
+	
 	}
 	
 }
