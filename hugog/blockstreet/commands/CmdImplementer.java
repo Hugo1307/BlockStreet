@@ -1,7 +1,9 @@
 package hugog.blockstreet.commands;
 
 import hugog.blockstreet.Main;
+import hugog.blockstreet.others.Messages;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,14 +22,14 @@ public class CmdImplementer implements CommandExecutor {
         
         if (!(sender instanceof Player)) {
         	sender.sendMessage("[BlockStreet] Player Command only.");
-			return false;
-		}
+		return false;
+	}
         
         if (args.length == 0) {
         	
-        	 MainCommand mainCmd = new MainCommand(plugin, args, sender);
-             mainCmd.runMainCommand();
-             return true;
+        	MainCommand mainCmd = new MainCommand(plugin, sender);
+             	mainCmd.runMainCommand();
+             	return true;
   
         }else if (args[0].equalsIgnoreCase("companies")) {
         	
@@ -53,9 +55,9 @@ public class CmdImplementer implements CommandExecutor {
         	sellCmd.runSellCommand();
         	return true;
         	
-        }else if (args[0].equalsIgnoreCase("actions")) {
+        }else if (args[0].equalsIgnoreCase("stocks")) {
         	
-        	ActionsCommand actionsCmd = new ActionsCommand(plugin, sender);
+        	StocksCommand actionsCmd = new StocksCommand(plugin, sender);
         	actionsCmd.runActionsCommand();
         	return true;
         	
@@ -63,6 +65,12 @@ public class CmdImplementer implements CommandExecutor {
         	
         	CreateCompanyCommand createCmd = new CreateCompanyCommand(plugin, args, sender);
         	createCmd.runCreateCompanyCommand();
+        	return true;
+        	
+        }else if (args[0].equalsIgnoreCase("delete")) {
+        	
+        	DeleteCompanyCommand deleteCmd = new DeleteCompanyCommand(plugin, args, sender);
+        	deleteCmd.runDeleteCompanyCmd();
         	return true;
         	
         }else if (args[0].equalsIgnoreCase("time")) {
@@ -83,8 +91,11 @@ public class CmdImplementer implements CommandExecutor {
         	infoCmd.runInfoCommand();
         	return true;
         	
+        }else {       	
+        	Messages messages = new Messages(plugin.messagesConfig);        	
+        	((Player) sender).sendMessage(messages.getPluginPrefix() + ChatColor.RED + messages.getUnknownCommand());
+        	return false;
         }
 
-        return false;
     }
 }
