@@ -41,16 +41,16 @@ public abstract class InterestRate{
 
                 if (minutesCounter == interestTime){
                 	
-                	int companiesCount = 0, randomSignal = -1;
+                	int companiesCount = 0, randomSignal = -1, leverage = 0;
                 	double[] randomFeesByRisk = new double[5];
-                	double multiplier = 0, leverage = 0;
+                	double multiplier = 0;
                     String signal;
                     List<String> feesHistoric = new ArrayList<String>();                    
                 	
                 	if (companiesReg.getConfig().get("Companies") != null) 
                 		companiesCount = companiesReg.getConfig().getConfigurationSection("Companies").getKeys(false).size();
                 	              	              	
-                	leverage = new ConfigAccessor(plugin, "config.yml").getConfig().getDouble("BlockStreet.Leverage");
+                	leverage = new ConfigAccessor(plugin, "config.yml").getConfig().getInt("BlockStreet.Leverage");
                 	
                     Bukkit.broadcastMessage(messages.getPluginPrefix() + messages.getUpdatedInterestRate());
                 	minutesCounter = 0;                                      
@@ -59,23 +59,31 @@ public abstract class InterestRate{
 
                     	Company currentCompany = new Company(companiesReg, companyId);
                     	
-                        randomSignal = (int)(Math.random() * 2);
-                        randomFeesByRisk[0] = Math.round((Math.random() * 1) * 100.0) / 100.0 + leverage;
-                        randomFeesByRisk[1] = Math.round((Math.random() * 2.5) * 100.0) / 100.0 + leverage;
-                        randomFeesByRisk[2] = Math.round((Math.random() * 4) * 100.0) / 100.0 + leverage;
-                        randomFeesByRisk[3] = Math.round((Math.random() * 7) * 100.0) / 100.0 + leverage;
-                        randomFeesByRisk[4] = Math.round((Math.random() * 10) * 100.0) / 100.0 + leverage;
-
+                        randomSignal = (int) (Math.random() * 10);
+                        randomFeesByRisk[0] = Math.round((Math.random() * 1) * 100.0) / 100.0;
+                        randomFeesByRisk[1] = Math.round((Math.random() * 2.5) * 100.0) / 100.0;
+                        randomFeesByRisk[2] = Math.round((Math.random() * 4) * 100.0) / 100.0;
+                        randomFeesByRisk[3] = Math.round((Math.random() * 7) * 100.0) / 100.0;
+                        randomFeesByRisk[4] = Math.round((Math.random() * 10) * 100.0) / 100.0;
+                        
                         feesHistoric = currentCompany.getCompanyHistoric();
                         feesHistoric.remove(feesHistoric.size() - 1);
-
-                        signal = randomSignal == 0 ? "-" : "+";                        
-
+                        
+                        if (leverage >= 0 && leverage < 10) {
+                        	
+                        	 if (randomSignal > leverage) signal = "-";
+                             else signal = "+";
+                        	
+                        }else { 
+                        	randomSignal = (int) (Math.random() * 2);
+                        	signal = randomSignal == 0 ? "-" : "+";           
+                        }
+                        
                         for (int i = 0; i < randomFeesByRisk.length; i++) {
                         	
                         	if (i+1 == currentCompany.getRisk()) {
                         		feesHistoric.add(0, signal + " " + randomFeesByRisk[i] + " %");
-                        		multiplier = randomSignal == 0 ? 1 - randomFeesByRisk[i]/100 : 1 + randomFeesByRisk[i]/100; 
+                        		multiplier = signal.equals("-") ? 1 - randomFeesByRisk[i]/100 : 1 + randomFeesByRisk[i]/100; 
                         	}
                         	                       	
                         }
@@ -90,7 +98,7 @@ public abstract class InterestRate{
 
             }
             
-        }, 20 * 60, 20 * 60); 
+        }, 20*60, 20*60); 
 
     }
 
