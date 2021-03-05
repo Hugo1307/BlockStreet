@@ -1,4 +1,4 @@
-# lockStreet
+# BlockStreet
 This is the first release of a Minecraft plugin which allows you to trade actions inside a Minecraft server, like in real life.
 
 ## Trade Actions like in real life
