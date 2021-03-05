@@ -1,0 +1,8 @@
+name: BlockStreet
+main: hugog.blockstreet.Main
+version: 1.0.1
+description: This plugin allows you to make investments with your money.
+
+commands:
+  invest:
+    description: Plugin's main command.
