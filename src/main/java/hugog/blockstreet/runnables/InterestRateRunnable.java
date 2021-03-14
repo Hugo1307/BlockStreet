@@ -9,6 +9,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class InterestRateRunnable extends BukkitRunnable {
 	
@@ -43,7 +45,7 @@ public class InterestRateRunnable extends BukkitRunnable {
 
         if (timeTillInterests == 0){
 
-            int companiesCount, randomSignal, leverage;
+            int randomSignal;
             double[] randomFeesByRisk = new double[5];
             double multiplier = 0;
             String signal;
@@ -51,14 +53,13 @@ public class InterestRateRunnable extends BukkitRunnable {
 
             if (companiesReg.getConfig().get("Companies") == null) return;
 
-            companiesCount = companiesReg.getConfig().getConfigurationSection("Companies").getKeys(false).size();
-
-            leverage = new ConfigAccessor(Main.getInstance(), "config.yml").getConfig().getInt("BlockStreet.Leverage");
+            Set<Integer> allCompaniesIds = companiesReg.getConfig().getConfigurationSection("Companies").getKeys(false).stream().map(Integer::parseInt).collect(Collectors.toSet());
+            int leverage = new ConfigAccessor(Main.getInstance(), "config.yml").getConfig().getInt("BlockStreet.Leverage");
 
             Bukkit.broadcastMessage(messages.getPluginPrefix() + messages.getUpdatedInterestRate());
             minutesCounter = 0;
 
-            for (int companyId = 1; companyId <= companiesCount; companyId++) {
+            for (int companyId : allCompaniesIds) {
 
                 Company currentCompany = new Company(companyId).load();
 
