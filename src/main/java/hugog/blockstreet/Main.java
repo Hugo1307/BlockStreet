@@ -2,8 +2,8 @@ package hugog.blockstreet;
 
 import hugog.blockstreet.commands.CmdImplementer;
 import hugog.blockstreet.enums.ConfigurationFiles;
-import hugog.blockstreet.events.PJoinEvent;
-import hugog.blockstreet.events.SignHandlerEvent;
+import hugog.blockstreet.listeners.PlayerJoin;
+import hugog.blockstreet.listeners.SignHandler;
 import hugog.blockstreet.others.ConfigAccessor;
 import hugog.blockstreet.runnables.InterestRateRunnable;
 import hugog.blockstreet.runnables.SignCheckerRunnable;
@@ -82,8 +82,8 @@ public class Main extends JavaPlugin {
     }
 
     private void registerEvents() {
-        getServer().getPluginManager().registerEvents(new PJoinEvent(this), this);
-        getServer().getPluginManager().registerEvents(new SignHandlerEvent(), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoin(this), this);
+        getServer().getPluginManager().registerEvents(new SignHandler(), this);
     }
 
     public void registerRunnables() {

@@ -1,4 +1,4 @@
-package hugog.blockstreet.events;
+package hugog.blockstreet.listeners;
 
 import hugog.blockstreet.Main;
 import hugog.blockstreet.others.Company;
@@ -6,7 +6,6 @@ import hugog.blockstreet.others.CompanyContainer;
 import hugog.blockstreet.others.CompanySign;
 import hugog.blockstreet.others.CompanySignsContainer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
@@ -14,13 +13,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class SignHandlerEvent implements Listener {
+public class SignHandler implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {

@@ -1,5 +1,7 @@
 package hugog.blockstreet.others;
 
+import hugog.blockstreet.Main;
+import hugog.blockstreet.enums.ConfigurationFiles;
 import org.bukkit.ChatColor;
 
 public class Messages {
@@ -48,8 +50,10 @@ public class Messages {
 	private final String newVersionAvailable;
 	private final String unknownCommand;
 	
-	public Messages(ConfigAccessor messagesConfig) {
-		
+	public Messages() {
+
+		final ConfigAccessor messagesConfig = new ConfigAccessor(Main.getInstance(), ConfigurationFiles.MESSAGES.getFileName());
+
 		this.pluginPrefix = ChatColor.BOLD + "" + ChatColor.GREEN + "BlockStreet" + ChatColor.GOLD + ChatColor.BOLD + " > " + ChatColor.RESET  + ChatColor.RESET + ChatColor.GRAY;
 		this.pluginHeader = ChatColor.GRAY + "-=-=-=-=-=-=-=-=-=-= [" + ChatColor.GREEN  + "BlockStreet" + ChatColor.GRAY + "] =-=-=-=-=-=-=-=-=-=-";
 		this.pluginFooter = ChatColor.GRAY + "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-";

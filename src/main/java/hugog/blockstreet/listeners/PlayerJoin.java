@@ -1,4 +1,4 @@
-package hugog.blockstreet.events;
+package hugog.blockstreet.listeners;
 
 import hugog.blockstreet.Main;
 import hugog.blockstreet.others.Messages;
@@ -11,12 +11,12 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class PJoinEvent implements Listener{
+public class PlayerJoin implements Listener{
 
 	private Main main;
 	Timer timer = new Timer();
 	
-	public PJoinEvent(Main main) {
+	public PlayerJoin(Main main) {
 		this.main = main;
 	}
 	
@@ -24,7 +24,7 @@ public class PJoinEvent implements Listener{
 	public void onPlayerJoinEvent (PlayerJoinEvent e) {
 		
 		final Player p = e.getPlayer();
-		final Messages messages = new Messages(main.messagesConfig);
+		final Messages messages = new Messages();
 		
 		if (main.getConfig().getBoolean("BlockStreet.Updates.Reminder")) {
 			if (p.isOp() || p.hasPermission("blockstreet.admin.*")) {

@@ -1,6 +1,7 @@
-package hugog.blockstreet.commands;
+package hugog.blockstreet.commands.implementation;
 
 import hugog.blockstreet.Main;
+import hugog.blockstreet.commands.PluginCommand;
 import hugog.blockstreet.enums.ConfigurationFiles;
 import hugog.blockstreet.others.Company;
 import hugog.blockstreet.others.ConfigAccessor;
@@ -10,32 +11,37 @@ import org.bukkit.entity.Player;
 
 import java.text.MessageFormat;
 
-public class CreateCompanyCommand {
+/**
+ * Create Company Command
+ *
+ * Command which allow players to create companies while in game.
+ *
+ * Syntax: /invest create [CompanyName] [StocksPrice] [Risk]
+ *
+ * @author Hugo1307
+ * @since v1.0.0
+ */
+public class CreateCompanyCommand extends PluginCommand {
 
-	private final String[] args;
-	private final CommandSender sender;
-	
-	public CreateCompanyCommand(String[] args, CommandSender sender) {
-		this.args = args;
-		this.sender = sender;
+	public CreateCompanyCommand(CommandSender sender, String[] args) {
+		super(sender, args);
 	}
-	
-	public void runCreateCompanyCommand() {
-		
-		// invest create {companyName} {price} {risk}
-		
+
+	@Override
+	public void execute() {
+
 		Player p = (Player) sender;
-		Messages messages = new Messages(Main.getInstance().messagesConfig);
-		
+		Messages messages = new Messages();
+
 		if (p.hasPermission("blockstreet.admin.createcompany") || p.hasPermission("blockstreet.admin.*")) {
-			
+
 			if (args.length >= 4) {
-				
+
 				String companyName = args[1];
 				int stocksPrice;
 				int companyRisk;
 				Company newCompany;
-				
+
 				try {
 					stocksPrice = Integer.parseInt(args[2]);
 					companyRisk = Integer.parseInt(args[3]);
@@ -49,13 +55,13 @@ public class CreateCompanyCommand {
 				p.sendMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getCreatedCompany(), newCompany.getName()));
 
 			}else {
-				p.sendMessage(messages.getPluginPrefix() + messages.getMissingArguments());				
+				p.sendMessage(messages.getPluginPrefix() + messages.getMissingArguments());
 			}
-			
+
 		}else {
 			p.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
-		}	
-			
+		}
+
 	}
-	
+
 }
