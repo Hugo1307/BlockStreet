@@ -6,7 +6,7 @@ With this plugin, you can buy actions from companies and wait for the future to 
 
 However, if the company's actions devalue and you decide to sell them then you'll lose some money.
 
-##Follow the company actions historic
+## Follow the company actions historic
 With the in-game command /invest company [id] you can see the company actions historic and predict if that company will make you lose or win money.
 
 ## Take a risk, but not that much
