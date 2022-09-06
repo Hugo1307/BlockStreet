@@ -1,8 +1,9 @@
-package hugog.blockstreet.commands.implementation;
+package hugog.blockstreet.commands;
 
-import hugog.blockstreet.Main;
-import hugog.blockstreet.commands.PluginCommand;
 import hugog.blockstreet.others.*;
+import me.hgsoft.minecraft.devcommand.annotations.Command;
+import me.hgsoft.minecraft.devcommand.commands.BukkitDevCommand;
+import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -17,16 +18,17 @@ import org.bukkit.entity.Player;
  * @author Hugo1307
  * @version v1.0.0
  */
-public class StocksCommand extends PluginCommand {
+@Command(alias = "stocks", permission = "blockstreet.command.actions")
+public class StocksCommand extends BukkitDevCommand {
 
-	public StocksCommand(CommandSender sender, String[] args) {
-		super(sender, args);
+	public StocksCommand(BukkitCommandData commandData, CommandSender commandSender, String[] args) {
+		super(commandData, commandSender, args);
 	}
 
 	@Override
 	public void execute() {
 
-		Player p = (Player) sender;
+		Player p = (Player) getCommandSender();
 		Messages messages = new Messages();
 
 		if (p.hasPermission("blockstreet.command.actions") || p.hasPermission("blockstreet.command.*")) {

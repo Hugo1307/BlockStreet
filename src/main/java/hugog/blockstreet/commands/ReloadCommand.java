@@ -1,11 +1,12 @@
-package hugog.blockstreet.commands.implementation;
+package hugog.blockstreet.commands;
 
 import hugog.blockstreet.Main;
-import hugog.blockstreet.commands.PluginCommand;
 import hugog.blockstreet.enums.ConfigurationFiles;
 import hugog.blockstreet.others.ConfigAccessor;
 import hugog.blockstreet.others.Messages;
-import hugog.blockstreet.runnables.InterestRateRunnable;
+import me.hgsoft.minecraft.devcommand.annotations.Command;
+import me.hgsoft.minecraft.devcommand.commands.BukkitDevCommand;
+import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -20,16 +21,17 @@ import org.bukkit.entity.Player;
  * @author Hugo1307
  * @since v1.0.0
  */
-public class ReloadCommand extends PluginCommand {
+@Command(alias = "reload", permission = "blockstreet.admin.reload")
+public class ReloadCommand extends BukkitDevCommand {
 
-	public ReloadCommand(CommandSender sender, String[] args) {
-		super(sender, args);
+	public ReloadCommand(BukkitCommandData commandData, CommandSender commandSender, String[] args) {
+		super(commandData, commandSender, args);
 	}
 
 	@Override
 	public void execute() {
 
-		Player p = (Player) sender;
+		Player p = (Player) getCommandSender();
 
 		Messages messages = new Messages();
 		ConfigAccessor playersReg = new ConfigAccessor(Main.getInstance(), ConfigurationFiles.PLAYERS.getFileName());

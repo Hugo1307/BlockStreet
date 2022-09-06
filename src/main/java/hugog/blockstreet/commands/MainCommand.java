@@ -1,8 +1,9 @@
-package hugog.blockstreet.commands.implementation;
+package hugog.blockstreet.commands;
 
-import hugog.blockstreet.Main;
-import hugog.blockstreet.commands.PluginCommand;
 import hugog.blockstreet.others.Messages;
+import me.hgsoft.minecraft.devcommand.annotations.Command;
+import me.hgsoft.minecraft.devcommand.commands.BukkitDevCommand;
+import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -17,17 +18,18 @@ import org.bukkit.entity.Player;
  * @author Hugo1307
  * @since v1.0.0
  */
-public class MainCommand extends PluginCommand {
+@Command(alias = "")
+public class MainCommand extends BukkitDevCommand {
 
-	public MainCommand(CommandSender sender, String[] args) {
-		super(sender, args);
+	public MainCommand(BukkitCommandData commandData, CommandSender commandSender, String[] args) {
+		super(commandData, commandSender, args);
 	}
 
 	@Override
 	public void execute() {
 
 		Messages messages = new Messages();
-		Player p = (Player) sender;
+		Player p = (Player) getCommandSender();
 
 		if (p.hasPermission("blockstreet.admin.*")) {
 

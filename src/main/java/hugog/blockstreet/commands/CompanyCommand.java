@@ -1,11 +1,13 @@
-package hugog.blockstreet.commands.implementation;
+package hugog.blockstreet.commands;
 
 import hugog.blockstreet.Main;
-import hugog.blockstreet.commands.PluginCommand;
 import hugog.blockstreet.enums.ConfigurationFiles;
 import hugog.blockstreet.others.Company;
 import hugog.blockstreet.others.ConfigAccessor;
 import hugog.blockstreet.others.Messages;
+import me.hgsoft.minecraft.devcommand.annotations.Command;
+import me.hgsoft.minecraft.devcommand.commands.BukkitDevCommand;
+import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -24,22 +26,23 @@ import org.bukkit.entity.Player;
  * @author Hugo1307
  * @since v1.0.0
  */
-public class CompanyCommand extends PluginCommand {
+@Command(alias = "company", permission = "blockstreet.command.company")
+public class CompanyCommand extends BukkitDevCommand {
 
-	public CompanyCommand(CommandSender sender, String[] args) {
-		super(sender, args);
+	public CompanyCommand(BukkitCommandData command, CommandSender commandSender, String[] args) {
+		super(command, commandSender, args);
 	}
 
 	@Override
 	public void execute() {
 
-		Player p = (Player) sender;
+		Player p = (Player) getCommandSender();
 		Messages messages = new Messages();
 		ConfigAccessor companiesReg = new ConfigAccessor(Main.getInstance(), ConfigurationFiles.COMPANIES.getFileName());
 
 		if (p.hasPermission("blockstreet.command.company") || p.hasPermission("blockstreet.command.*")) {
 
-			if (args.length > 1) {
+			if (getArgs().length > 1) {
 
 				int numberOfCompanies = 0;
 
@@ -50,7 +53,7 @@ public class CompanyCommand extends PluginCommand {
 
 					for (int i = 1; i <= numberOfCompanies; i++) {
 
-						if(args[1].equals(String.valueOf(i))){
+						if(getArgs()[1].equals(String.valueOf(i))){
 
 							Company currentCompany = new Company(i).load();
 

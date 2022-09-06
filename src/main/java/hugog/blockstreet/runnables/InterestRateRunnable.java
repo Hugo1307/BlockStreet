@@ -16,7 +16,7 @@ public class InterestRateRunnable extends BukkitRunnable {
 	
     private static int minutesCounter = 0;
 
-    private final Messages messages = new Messages(new ConfigAccessor(Main.getInstance(), "messages.yml"));
+    private final Messages messages = new Messages();
     private final ConfigAccessor companiesReg = new ConfigAccessor(Main.getInstance(), "companies.yml");
     private final int interestTime = Main.getInstance().getConfig().getInt("BlockStreet.Timer");
 

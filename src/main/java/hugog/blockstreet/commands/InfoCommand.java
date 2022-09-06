@@ -1,9 +1,10 @@
-package hugog.blockstreet.commands.implementation;
+package hugog.blockstreet.commands;
 
-import hugog.blockstreet.Main;
-import hugog.blockstreet.commands.PluginCommand;
 import hugog.blockstreet.others.Messages;
 import hugog.blockstreet.update.AutoUpdate;
+import me.hgsoft.minecraft.devcommand.annotations.Command;
+import me.hgsoft.minecraft.devcommand.commands.BukkitDevCommand;
+import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -18,16 +19,17 @@ import org.bukkit.entity.Player;
  * @author Hugo1307
  * @version 1.0.0
  */
-public class InfoCommand extends PluginCommand {
+@Command(alias = "info")
+public class InfoCommand extends BukkitDevCommand {
 
-	public InfoCommand(CommandSender sender, String[] args) {
-		super(sender, args);
+	public InfoCommand(BukkitCommandData commandData, CommandSender commandSender, String[] args) {
+		super(commandData, commandSender, args);
 	}
 
 	@Override
 	public void execute() {
 
-		Player p = (Player) sender;
+		Player p = (Player) getCommandSender();
 
 		Messages messages = new Messages();
 

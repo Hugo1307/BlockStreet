@@ -1,9 +1,11 @@
-package hugog.blockstreet.commands.implementation;
+package hugog.blockstreet.commands;
 
 import hugog.blockstreet.Main;
-import hugog.blockstreet.commands.PluginCommand;
 import hugog.blockstreet.runnables.InterestRateRunnable;
 import hugog.blockstreet.others.Messages;
+import me.hgsoft.minecraft.devcommand.annotations.Command;
+import me.hgsoft.minecraft.devcommand.commands.BukkitDevCommand;
+import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -19,16 +21,17 @@ import java.text.MessageFormat;
  * @author Hugo1307
  * @since v1.0.0
  */
-public class InterestTimeCommand extends PluginCommand {
+@Command(alias = "time", permission = "blockstreet.command.time")
+public class InterestTimeCommand extends BukkitDevCommand {
 
-	public InterestTimeCommand(CommandSender sender, String[] args) {
-		super(sender, args);
+	public InterestTimeCommand(BukkitCommandData commandData, CommandSender commandSender, String[] args) {
+		super(commandData, commandSender, args);
 	}
 
 	@Override
 	public void execute() {
 
-		Player p = (Player) sender;
+		Player p = (Player) getCommandSender();
 		Messages messages = new Messages();
 
 		if (p.hasPermission("blockstreet.command.time") || p.hasPermission("blockstreet.command.*")) {

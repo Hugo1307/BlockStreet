@@ -1,6 +1,5 @@
 package hugog.blockstreet;
 
-import hugog.blockstreet.commands.CmdImplementer;
 import hugog.blockstreet.enums.ConfigurationFiles;
 import hugog.blockstreet.listeners.PlayerJoin;
 import hugog.blockstreet.listeners.SignHandler;
@@ -8,9 +7,12 @@ import hugog.blockstreet.others.ConfigAccessor;
 import hugog.blockstreet.runnables.InterestRateRunnable;
 import hugog.blockstreet.runnables.SignCheckerRunnable;
 import hugog.blockstreet.update.AutoUpdate;
+import me.hgsoft.minecraft.devcommand.commands.executors.DevCommandExecutor;
+import me.hgsoft.minecraft.devcommand.integration.Integration;
 import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -60,8 +62,17 @@ public class Main extends JavaPlugin {
         System.out.println("[BlockStreet] Plugin successfully disabled!");
     }
 
-    private void registerCommands(){
-    	getCommand("invest").setExecutor(new CmdImplementer());
+    private void registerCommands() {
+
+        PluginCommand mainPluginCommand = getCommand("invest");
+
+        if (mainPluginCommand != null) {
+
+            DevCommandExecutor devCommandExecutor = new DevCommandExecutor("invest", Integration.createFromPlugin(this));
+            mainPluginCommand.setExecutor(devCommandExecutor);
+
+        }
+
     }
 
     private void configureConfig(){

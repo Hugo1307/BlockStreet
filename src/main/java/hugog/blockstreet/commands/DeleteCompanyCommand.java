@@ -1,10 +1,10 @@
-package hugog.blockstreet.commands.implementation;
+package hugog.blockstreet.commands;
 
-import hugog.blockstreet.Main;
-import hugog.blockstreet.commands.PluginCommand;
 import hugog.blockstreet.others.Company;
-import hugog.blockstreet.others.ConfigAccessor;
 import hugog.blockstreet.others.Messages;
+import me.hgsoft.minecraft.devcommand.annotations.Command;
+import me.hgsoft.minecraft.devcommand.commands.BukkitDevCommand;
+import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -21,26 +21,27 @@ import java.text.MessageFormat;
  * @author Hugo1307
  * @version 1.0.0
  */
-public class DeleteCompanyCommand extends PluginCommand {
+@Command(alias = "delete", permission = "blockstreet.admin.company_delete")
+public class DeleteCompanyCommand extends BukkitDevCommand {
 
-	public DeleteCompanyCommand(CommandSender sender, String[] args) {
-		super(sender, args);
+	public DeleteCompanyCommand(BukkitCommandData commandData, CommandSender commandSender, String[] args) {
+		super(commandData, commandSender, args);
 	}
 
 	@Override
 	public void execute() {
 
-		Player p = (Player) sender;
+		Player p = (Player) getCommandSender();
 		Messages messages = new Messages();
 
 		if (p.hasPermission("blockstreet.admin.delete") || p.hasPermission("blockstreet.admin.*")) {
 
-			if (args.length > 1) {
+			if (getArgs().length > 1) {
 
 				int companyId;
 
 				try {
-					companyId = Integer.parseInt(args[1]);
+					companyId = Integer.parseInt(getArgs()[1]);
 				} catch (NumberFormatException e) {
 					p.sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
 					return;

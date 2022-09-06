@@ -1,8 +1,10 @@
-package hugog.blockstreet.commands.implementation;
+package hugog.blockstreet.commands;
 
 import hugog.blockstreet.Main;
-import hugog.blockstreet.commands.PluginCommand;
 import hugog.blockstreet.others.*;
+import me.hgsoft.minecraft.devcommand.annotations.Command;
+import me.hgsoft.minecraft.devcommand.commands.BukkitDevCommand;
+import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -18,22 +20,23 @@ import java.text.MessageFormat;
  * @author Hugo1307
  * @since v1.0.0
  */
-public class BuyCommand extends PluginCommand {
+@Command(alias = "buy", permission = "blockstreet.command.buy")
+public class BuyCommand extends BukkitDevCommand {
 
-	public BuyCommand(CommandSender sender, String[] args) {
-		super(sender, args);
+	public BuyCommand(BukkitCommandData command, CommandSender commandSender, String[] args) {
+		super(command, commandSender, args);
 	}
 
 	@Override
 	public void execute() {
 
-		Player p = (Player) sender;
+		Player p = (Player) getCommandSender();
 		Messages messages = new Messages();
 		ConfigAccessor companiesReg = new ConfigAccessor(Main.getInstance(), "companies.yml");
 
 		if (p.hasPermission("blockstreet.command.buy") || p.hasPermission("blockstreet.command.*")) {
 
-			if (args.length > 1) {
+			if (getArgs().length > 1) {
 
 				int amount, companyId;
 				int numberOfCompanies = 0;
@@ -42,8 +45,8 @@ public class BuyCommand extends PluginCommand {
 					numberOfCompanies = companiesReg.getConfig().getConfigurationSection("Companies").getKeys(false).size();
 
 				try{
-					amount = Integer.parseInt(args[1]);
-					companyId = Integer.parseInt(args[2]);
+					amount = Integer.parseInt(getArgs()[1]);
+					companyId = Integer.parseInt(getArgs()[2]);
 				}catch (NumberFormatException nfe){
 					p.sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
 					return;

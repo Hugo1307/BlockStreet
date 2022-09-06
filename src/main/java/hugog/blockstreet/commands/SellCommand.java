@@ -1,8 +1,10 @@
-package hugog.blockstreet.commands.implementation;
+package hugog.blockstreet.commands;
 
 import hugog.blockstreet.Main;
-import hugog.blockstreet.commands.PluginCommand;
 import hugog.blockstreet.others.*;
+import me.hgsoft.minecraft.devcommand.annotations.Command;
+import me.hgsoft.minecraft.devcommand.commands.BukkitDevCommand;
+import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -18,28 +20,29 @@ import java.text.MessageFormat;
  * @author Hugo1307
  * @since v1.0.0
  */
-public class SellCommand extends PluginCommand {
+@Command(alias = "sell", permission = "blockstreet.command.sell")
+public class SellCommand extends BukkitDevCommand {
 
-	public SellCommand(CommandSender sender, String[] args) {
-		super(sender, args);
+	public SellCommand(BukkitCommandData commandData, CommandSender commandSender, String[] args) {
+		super(commandData, commandSender, args);
 	}
 
 	@Override
 	public void execute() {
 
-		Player p = (Player) sender;
+		Player p = (Player) getCommandSender();
 		Messages messages = new Messages();
 
 		if (p.hasPermission("blockstreet.command.sell") || p.hasPermission("blockstreet.command.*")) {
 
-			if (args.length >= 3) {
+			if (getArgs().length >= 3) {
 
 				int sellingAmount, companyId;
 				Company currentCompany;
 
 				try{
-					sellingAmount = Integer.parseInt(args[1]);
-					companyId = Integer.parseInt(args[2]);
+					sellingAmount = Integer.parseInt(getArgs()[1]);
+					companyId = Integer.parseInt(getArgs()[2]);
 				}catch (NumberFormatException nfe){
 					p.sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
 					return;
