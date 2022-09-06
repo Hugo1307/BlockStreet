@@ -1,12 +1,13 @@
-package hugog.blockstreet.commands.implementation;
+package hugog.blockstreet.commands;
 
 import hugog.blockstreet.Main;
-import hugog.blockstreet.commands.CmdDependencyInjector;
-import hugog.blockstreet.commands.PluginCommand;
 import hugog.blockstreet.enums.ConfigurationFiles;
 import hugog.blockstreet.others.Company;
 import hugog.blockstreet.others.ConfigAccessor;
 import hugog.blockstreet.others.Messages;
+import me.hgsoft.minecraft.devcommand.annotations.Command;
+import me.hgsoft.minecraft.devcommand.commands.BukkitDevCommand;
+import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -25,20 +26,21 @@ import org.bukkit.entity.Player;
  * @author Hugo1307
  * @since v1.0.0
  */
-public class CompaniesCommand extends PluginCommand {
+@Command(alias = "companies", permission = "blockstreet.command.companies")
+public class CompaniesCommand extends BukkitDevCommand {
 
-	public CompaniesCommand(CommandSender sender, String[] args, CmdDependencyInjector cmdDependencyInjector) {
-		super(sender, args, cmdDependencyInjector);
+	public CompaniesCommand(BukkitCommandData command, CommandSender commandSender, String[] args) {
+		super(command, commandSender, args);
 	}
 
 	@Override
 	public void execute() {
 
-		Player player = (Player) sender;
+		Player p = (Player) getCommandSender();
 		Messages messages = new Messages();
 		ConfigAccessor companiesReg = new ConfigAccessor(Main.getInstance(), ConfigurationFiles.COMPANIES.getFileName());
 
-		if (player.isOp() || player.hasPermission("blockstreet.command.companies") || player.hasPermission("blockstreet.command.*")) {
+		if (p.hasPermission("blockstreet.command.companies") || p.hasPermission("blockstreet.command.*")) {
 
 			int numberOfCompanies = 0;
 
@@ -47,58 +49,58 @@ public class CompaniesCommand extends PluginCommand {
 
 			if (numberOfCompanies > 0) {
 
-				if (args.length <= 1) {
+				if (getArgs().length <= 1) {
 
-					player.sendMessage(messages.getPluginHeader());
+					p.sendMessage(messages.getPluginHeader());
 					for (int companyIndex = 1; companyIndex <= 3 ; companyIndex++) {
 
 						Company currentCompany = new Company(companyIndex).load();
 
-						sendCompanyText(player, messages, currentCompany, companyIndex);
+						sendCompanyText(p, messages, currentCompany, companyIndex);
 
 					}
 
 					if(numberOfCompanies > 3)
-						player.sendMessage(ChatColor.GREEN + "/invest companies 2" + ChatColor.GRAY + " - " + messages.getListNextPage());
+						p.sendMessage(ChatColor.GREEN + "/invest companies 2" + ChatColor.GRAY + " - " + messages.getListNextPage());
 
-					player.sendMessage(messages.getPluginFooter());
+					p.sendMessage(messages.getPluginFooter());
 
 				}else {
 
 					int pageNumber, firstCompanyOfPage, lastCompanyOfPage;
 
 					try {
-						pageNumber = Integer.parseInt(args[1]);
+						pageNumber = Integer.parseInt(getArgs()[1]);
 					} catch (NumberFormatException e) {
-						player.sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
+						p.sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
 						return;
 					}
 
 					firstCompanyOfPage = (pageNumber-1)*3+1;
 					lastCompanyOfPage = pageNumber*3;
 
-					player.sendMessage(messages.getPluginHeader());
+					p.sendMessage(messages.getPluginHeader());
 					for (int companyIndex = firstCompanyOfPage; companyIndex <= lastCompanyOfPage; companyIndex++) {
 
 						Company currentCompany = new Company(companyIndex).load();
 
-						sendCompanyText(player, messages, currentCompany, companyIndex);
+						sendCompanyText(p, messages, currentCompany, companyIndex);
 
 					}
 
 					if(numberOfCompanies > lastCompanyOfPage + 1)
-						player.sendMessage(ChatColor.GREEN + "/invest companies " + pageNumber  + ChatColor.GRAY + " - " + messages.getListNextPage());
+						p.sendMessage(ChatColor.GREEN + "/invest companies " + pageNumber  + ChatColor.GRAY + " - " + messages.getListNextPage());
 
-					player.sendMessage(messages.getPluginFooter());
+					p.sendMessage(messages.getPluginFooter());
 
 				}
 
 			}else {
-				player.sendMessage(messages.getPluginPrefix() + messages.getNonExistentPage());
+				p.sendMessage(messages.getPluginPrefix() + messages.getNonExistentPage());
 			}
 
 		}else {
-			player.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
+			p.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
 		}
 
 	}

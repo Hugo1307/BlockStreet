@@ -1,88 +1,78 @@
 package hugog.blockstreet;
 
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import hugog.blockstreet.commands.CmdImplementer;
-import hugog.blockstreet.dependencyinjection.BasicBinderModule;
 import hugog.blockstreet.enums.ConfigurationFiles;
 import hugog.blockstreet.listeners.PlayerJoin;
 import hugog.blockstreet.listeners.SignHandler;
 import hugog.blockstreet.others.ConfigAccessor;
 import hugog.blockstreet.runnables.InterestRateRunnable;
 import hugog.blockstreet.runnables.SignCheckerRunnable;
-import hugog.blockstreet.update.UpdateChecker;
-import lombok.Getter;
-import lombok.Setter;
+import hugog.blockstreet.update.AutoUpdate;
+import me.hgsoft.minecraft.devcommand.commands.executors.DevCommandExecutor;
+import me.hgsoft.minecraft.devcommand.integration.Integration;
+import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.Bukkit;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.scheduler.BukkitTask;
+import org.json.simple.parser.ParseException;
 
 import java.io.File;
-import java.util.Objects;
+import java.util.logging.Level;
 
 public class Main extends JavaPlugin {
 
-    @Getter
-    private static Main instance;
-
-    @Inject
-    private CmdImplementer cmdImplementer;
-
-    @Inject
-    private UpdateChecker updateChecker;
-
-    @Inject
-    private PlayerJoin playerJoin;
-
     public ConfigAccessor messagesConfig;
-    @Getter private Economy economy;
-
+    public Economy economy = null;
+    private static Main instance;
     private BukkitTask interestRateTask, signCheckerTask;
-
-    @Getter
-    private boolean inTestMode = false;
-
-    public Main() {
-        super();
-    }
-
-    public Main(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file, Boolean inTestMode) {
-        super(loader, description, dataFolder, file);
-        this.inTestMode = inTestMode;
-    }
 
     @Override
     public void onEnable() {
 
     	instance = this;
 
-        configureDI();
-
-        if (!inTestMode)
-            setupEconomy();
+        setupEconomy();
 
         registerCommands();
-        configureConfig();
-        configureMessages();
-        configureCompaniesReg();
-        registerRunnables();
-        checkForUpdates();
+
         registerEvents();
 
-        getLogger().info("Plugin successfully enabled.");
+        configureConfig();
+        
+        configureMessages();
+
+        configureCompaniesReg();
+
+        registerRunnables();
+
+        try {
+			AutoUpdate.checkForUpdates();
+		} catch (ParseException e) {
+			System.out.println(ChatColor.DARK_RED + "[BlockStreet] Unable to search for new versions.");
+		}
+           	
+        System.out.println("[BlockStreet] Plugin successfully enabled!");
         
     }
 
     @Override
     public void onDisable() {
-        getLogger().info("Plugin successfully disabled!");
+        System.out.println("[BlockStreet] Plugin successfully disabled!");
     }
 
-    private void registerCommands(){
-    	Objects.requireNonNull(getCommand("invest")).setExecutor(cmdImplementer);
+    private void registerCommands() {
+
+        PluginCommand mainPluginCommand = getCommand("invest");
+
+        if (mainPluginCommand != null) {
+
+            DevCommandExecutor devCommandExecutor = new DevCommandExecutor("invest", Integration.createFromPlugin(this));
+            mainPluginCommand.setExecutor(devCommandExecutor);
+
+        }
+
     }
 
     private void configureConfig(){
@@ -103,7 +93,7 @@ public class Main extends JavaPlugin {
     }
 
     private void registerEvents() {
-        getServer().getPluginManager().registerEvents(playerJoin, this);
+        getServer().getPluginManager().registerEvents(new PlayerJoin(this), this);
         getServer().getPluginManager().registerEvents(new SignHandler(), this);
     }
 
@@ -118,29 +108,20 @@ public class Main extends JavaPlugin {
         signCheckerTask.cancel();
     }
 
-    public void checkForUpdates() {
-        boolean updateAvailable = updateChecker.checkForUpdates();
-        if (updateAvailable)
-            getLogger().info("New update available. Please update to " + updateChecker.getLastVersion().toString() + "!");
-    }
-
-    private void configureDI() {
-        BasicBinderModule module = new BasicBinderModule(this);
-        Injector injector = module.createInjector();
-        injector.injectMembers(this);
-    }
-
-    private void setupEconomy() {
-
+    private boolean setupEconomy()
+    {
         RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
-
         if (economyProvider != null) {
             economy = economyProvider.getProvider();
-        } else {
-            getLogger().severe("Vault dependency not found. Disabling plugin...");
+        }else {
+            Bukkit.getLogger().log(Level.SEVERE, "[BlockStreet] Vault not found. Disabling plugin.");
             getServer().getPluginManager().disablePlugin(this);
         }
-
+        return economy != null;
     }
+
+	public static Main getInstance() {
+		return instance;
+	}
 
 }
