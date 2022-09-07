@@ -1,11 +1,10 @@
-package hugog.blockstreet.commands;
+package hugog.blockstreet.commands.implementation;
 
 import hugog.blockstreet.Main;
+import hugog.blockstreet.commands.CmdDependencyInjector;
+import hugog.blockstreet.commands.PluginCommand;
 import hugog.blockstreet.runnables.InterestRateRunnable;
 import hugog.blockstreet.others.Messages;
-import me.hgsoft.minecraft.devcommand.annotations.Command;
-import me.hgsoft.minecraft.devcommand.commands.BukkitDevCommand;
-import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -21,29 +20,28 @@ import java.text.MessageFormat;
  * @author Hugo1307
  * @since v1.0.0
  */
-@Command(alias = "time", permission = "blockstreet.command.time")
-public class InterestTimeCommand extends BukkitDevCommand {
+public class InterestTimeCommand extends PluginCommand {
 
-	public InterestTimeCommand(BukkitCommandData commandData, CommandSender commandSender, String[] args) {
-		super(commandData, commandSender, args);
+	public InterestTimeCommand(CommandSender sender, String[] args, CmdDependencyInjector cmdDependencyInjector) {
+		super(sender, args, cmdDependencyInjector);
 	}
 
 	@Override
 	public void execute() {
 
-		Player p = (Player) getCommandSender();
+		Player player = (Player) sender;
 		Messages messages = new Messages();
 
-		if (p.hasPermission("blockstreet.command.time") || p.hasPermission("blockstreet.command.*")) {
+		if (player.isOp() || player.hasPermission("blockstreet.command.time") || player.hasPermission("blockstreet.command.*")) {
 
 			int totalMinutes = Main.getInstance().getConfig().getInt("BlockStreet.Timer");
 			int timeElapsed = InterestRateRunnable.getMinutesCounter();
 			int timeLeft = totalMinutes - timeElapsed;
 
-			p.sendMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getInterestRateTimeLeft(), timeLeft));
+			player.sendMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getInterestRateTimeLeft(), timeLeft));
 
 		}else {
-			p.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
+			player.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
 		}
 
 	}

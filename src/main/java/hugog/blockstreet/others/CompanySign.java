@@ -2,25 +2,21 @@ package hugog.blockstreet.others;
 
 import hugog.blockstreet.Main;
 import hugog.blockstreet.enums.ConfigurationFiles;
+import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Getter
 public class CompanySign implements Savable<CompanySign> {
 
-    private int id;
+    private final int id;
     private int companyId;
     private Location location;
-
-    public CompanySign(int id, int companyId, Location location) {
-        this.id = id;
-        this.location = location;
-    }
 
     public CompanySign(int companyId, Location location) {
 
@@ -40,22 +36,28 @@ public class CompanySign implements Savable<CompanySign> {
         this.id = id;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public int getCompanyId() {
-        return companyId;
-    }
-
     public Sign toBukkitSign() {
         if (this.getLocation().getBlock().getState() instanceof Sign)
             return (Sign) this.getLocation().getBlock().getState();
         return null;
+    }
+
+    public void update() {
+
+        Sign sign = this.toBukkitSign();
+        Company signCompany = new Company(this.companyId).load();
+
+        if (!CompanyContainer.companyExists(this.companyId)) return;
+
+        if (sign == null) return;
+
+        sign.setLine(0, ChatColor.BOLD + "" + ChatColor.GREEN + "BlockStreet");
+        sign.setLine(1, ChatColor.YELLOW + signCompany.getName());
+        sign.setLine(2, ChatColor.GREEN + "Stocks: " + ChatColor.GRAY + signCompany.getStocksPrice() + "$");
+        sign.setLine(3, ChatColor.GRAY + "Click for details");
+
+        sign.update(true);
+
     }
 
     @Override
@@ -80,23 +82,6 @@ public class CompanySign implements Savable<CompanySign> {
         this.companyId = signsReg.getConfig().getInt("Signs." + this.id + ".CompanyId");
 
         return this;
-    }
-
-    public void update() {
-
-        Sign sign = this.toBukkitSign();
-        Company signCompany = new Company(this.companyId).load();
-
-        if (!CompanyContainer.companyExists(this.companyId)) return;
-
-        if (sign == null) return;
-
-        sign.setLine(0, ChatColor.BOLD + "" + ChatColor.GREEN + "BlockStreet");
-        sign.setLine(1, ChatColor.YELLOW + signCompany.getName());
-        sign.setLine(2, ChatColor.GREEN + "Stocks: " + ChatColor.GRAY + signCompany.getStocksPrice() + "$");
-        sign.setLine(3, ChatColor.GRAY + "Click for details");
-
-        sign.update(true);
 
     }
 

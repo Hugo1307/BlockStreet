@@ -4,6 +4,7 @@ import hugog.blockstreet.Main;
 import hugog.blockstreet.others.Company;
 import hugog.blockstreet.others.ConfigAccessor;
 import hugog.blockstreet.others.Messages;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -13,7 +14,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class InterestRateRunnable extends BukkitRunnable {
-	
+
+    @Getter
     private static int minutesCounter = 0;
 
     private final Messages messages = new Messages();
@@ -23,10 +25,8 @@ public class InterestRateRunnable extends BukkitRunnable {
     @Override
     public void run() {
 
-        minutesCounter++;
-
         boolean areWarningsEnabled = Main.getInstance().getConfig().getBoolean("BlockStreet.Warnings.Enabled");
-        int timeTillInterests = interestTime - minutesCounter;
+        int timeTillInterests = interestTime - ++minutesCounter;
 
         if (areWarningsEnabled){
 
@@ -43,7 +43,7 @@ public class InterestRateRunnable extends BukkitRunnable {
 
         }
 
-        if (timeTillInterests == 0){
+        if (timeTillInterests <= 0) {
 
             int randomSignal;
             double[] randomFeesByRisk = new double[5];
@@ -55,9 +55,6 @@ public class InterestRateRunnable extends BukkitRunnable {
 
             Set<Integer> allCompaniesIds = companiesReg.getConfig().getConfigurationSection("Companies").getKeys(false).stream().map(Integer::parseInt).collect(Collectors.toSet());
             int leverage = new ConfigAccessor(Main.getInstance(), "config.yml").getConfig().getInt("BlockStreet.Leverage");
-
-            Bukkit.broadcastMessage(messages.getPluginPrefix() + messages.getUpdatedInterestRate());
-            minutesCounter = 0;
 
             for (int companyId : allCompaniesIds) {
 
@@ -98,12 +95,11 @@ public class InterestRateRunnable extends BukkitRunnable {
 
             }
 
+            Main.getInstance().getServer().broadcastMessage(messages.getPluginPrefix() + messages.getUpdatedInterestRate());
+            minutesCounter = 0;
+
         }
 
-    }
-
-    public static int getMinutesCounter() {
-        return minutesCounter;
     }
 
 }

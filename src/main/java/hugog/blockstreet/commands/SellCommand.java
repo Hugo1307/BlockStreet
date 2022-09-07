@@ -1,10 +1,9 @@
-package hugog.blockstreet.commands;
+package hugog.blockstreet.commands.implementation;
 
 import hugog.blockstreet.Main;
+import hugog.blockstreet.commands.CmdDependencyInjector;
+import hugog.blockstreet.commands.PluginCommand;
 import hugog.blockstreet.others.*;
-import me.hgsoft.minecraft.devcommand.annotations.Command;
-import me.hgsoft.minecraft.devcommand.commands.BukkitDevCommand;
-import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -20,31 +19,30 @@ import java.text.MessageFormat;
  * @author Hugo1307
  * @since v1.0.0
  */
-@Command(alias = "sell", permission = "blockstreet.command.sell")
-public class SellCommand extends BukkitDevCommand {
+public class SellCommand extends PluginCommand {
 
-	public SellCommand(BukkitCommandData commandData, CommandSender commandSender, String[] args) {
-		super(commandData, commandSender, args);
+	public SellCommand(CommandSender sender, String[] args, CmdDependencyInjector cmdDependencyInjector) {
+		super(sender, args, cmdDependencyInjector);
 	}
 
 	@Override
 	public void execute() {
 
-		Player p = (Player) getCommandSender();
+		Player player = (Player) sender;
 		Messages messages = new Messages();
 
-		if (p.hasPermission("blockstreet.command.sell") || p.hasPermission("blockstreet.command.*")) {
+		if (player.isOp() || player.hasPermission("blockstreet.command.sell") || player.hasPermission("blockstreet.command.*")) {
 
-			if (getArgs().length >= 3) {
+			if (args.length >= 3) {
 
 				int sellingAmount, companyId;
 				Company currentCompany;
 
 				try{
-					sellingAmount = Integer.parseInt(getArgs()[1]);
-					companyId = Integer.parseInt(getArgs()[2]);
+					sellingAmount = Integer.parseInt(args[1]);
+					companyId = Integer.parseInt(args[2]);
 				}catch (NumberFormatException nfe){
-					p.sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
+					player.sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
 					return;
 				}
 
@@ -54,7 +52,7 @@ public class SellCommand extends BukkitDevCommand {
 
 					if (sellingAmount > 0) {
 
-						Investor playerInvestorProfile = new Investor(p.getName());
+						Investor playerInvestorProfile = new Investor(player.getName());
 						Investment currentInvestment = playerInvestorProfile.getInvestment(currentCompany.getId());
 
 						if (currentInvestment != null) {
@@ -68,32 +66,32 @@ public class SellCommand extends BukkitDevCommand {
 								playerInvestorProfile.addInvestment(new Investment(currentCompany.getId(), playerActions - sellingAmount));
 								playerInvestorProfile.saveToYml();
 
-								Main.getInstance().economy.depositPlayer(p, pricePerAction * sellingAmount);
+								cmdDependencyInjector.getMain().getEconomy().depositPlayer(player, pricePerAction * sellingAmount);
 
-								p.sendMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getSoldActions().replace("'", "''"), sellingAmount, pricePerAction * sellingAmount));
+								player.sendMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getSoldActions().replace("'", "''"), sellingAmount, pricePerAction * sellingAmount));
 
 							}else{
-								p.sendMessage(messages.getPluginPrefix() + messages.getPlayerNoActions());
+								player.sendMessage(messages.getPluginPrefix() + messages.getPlayerNoActions());
 							}
 
 						}else {
-							p.sendMessage(messages.getPluginPrefix() + messages.getInsufficientActions());
+							player.sendMessage(messages.getPluginPrefix() + messages.getInsufficientActions());
 						}
 
 					}else {
-						p.sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
+						player.sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
 					}
 
 				}else {
-					p.sendMessage(messages.getPluginPrefix() + messages.getInvalidCompany());
+					player.sendMessage(messages.getPluginPrefix() + messages.getInvalidCompany());
 				}
 
 			}else {
-				p.sendMessage(messages.getPluginPrefix() + messages.getMissingArguments());
+				player.sendMessage(messages.getPluginPrefix() + messages.getMissingArguments());
 			}
 
 		}else {
-			p.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
+			player.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
 		}
 
 	}

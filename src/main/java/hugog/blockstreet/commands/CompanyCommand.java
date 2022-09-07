@@ -1,13 +1,12 @@
-package hugog.blockstreet.commands;
+package hugog.blockstreet.commands.implementation;
 
 import hugog.blockstreet.Main;
+import hugog.blockstreet.commands.CmdDependencyInjector;
+import hugog.blockstreet.commands.PluginCommand;
 import hugog.blockstreet.enums.ConfigurationFiles;
 import hugog.blockstreet.others.Company;
 import hugog.blockstreet.others.ConfigAccessor;
 import hugog.blockstreet.others.Messages;
-import me.hgsoft.minecraft.devcommand.annotations.Command;
-import me.hgsoft.minecraft.devcommand.commands.BukkitDevCommand;
-import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -26,23 +25,22 @@ import org.bukkit.entity.Player;
  * @author Hugo1307
  * @since v1.0.0
  */
-@Command(alias = "company", permission = "blockstreet.command.company")
-public class CompanyCommand extends BukkitDevCommand {
+public class CompanyCommand extends PluginCommand {
 
-	public CompanyCommand(BukkitCommandData command, CommandSender commandSender, String[] args) {
-		super(command, commandSender, args);
+	public CompanyCommand(CommandSender sender, String[] args, CmdDependencyInjector cmdDependencyInjector) {
+		super(sender, args, cmdDependencyInjector);
 	}
 
 	@Override
 	public void execute() {
 
-		Player p = (Player) getCommandSender();
+		Player player = (Player) sender;
 		Messages messages = new Messages();
 		ConfigAccessor companiesReg = new ConfigAccessor(Main.getInstance(), ConfigurationFiles.COMPANIES.getFileName());
 
-		if (p.hasPermission("blockstreet.command.company") || p.hasPermission("blockstreet.command.*")) {
+		if (player.isOp() || player.hasPermission("blockstreet.command.company") || player.hasPermission("blockstreet.command.*")) {
 
-			if (getArgs().length > 1) {
+			if (args.length > 1) {
 
 				int numberOfCompanies = 0;
 
@@ -53,7 +51,7 @@ public class CompanyCommand extends BukkitDevCommand {
 
 					for (int i = 1; i <= numberOfCompanies; i++) {
 
-						if(getArgs()[1].equals(String.valueOf(i))){
+						if(args[1].equals(String.valueOf(i))){
 
 							Company currentCompany = new Company(i).load();
 
@@ -62,45 +60,45 @@ public class CompanyCommand extends BukkitDevCommand {
 									new ComponentBuilder(ChatColor.GRAY + "Click to see company's details.").create()));
 							buyStocks.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/invest buy 1 " + i));
 
-							p.sendMessage(messages.getPluginHeader());
-							p.sendMessage("");
-							p.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + currentCompany.getName());
-							p.sendMessage("");
-							p.sendMessage(ChatColor.GRAY + "Id: " + ChatColor.GREEN + currentCompany.getId());
-							p.sendMessage(ChatColor.GRAY + messages.getPrice() + ": " + ChatColor.GREEN + currentCompany.getStocksPrice());
-							p.sendMessage(ChatColor.GRAY + messages.getRisk() + ": " + ChatColor.GREEN + currentCompany.getRisk());
+							player.sendMessage(messages.getPluginHeader());
+							player.sendMessage("");
+							player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + currentCompany.getName());
+							player.sendMessage("");
+							player.sendMessage(ChatColor.GRAY + "Id: " + ChatColor.GREEN + currentCompany.getId());
+							player.sendMessage(ChatColor.GRAY + messages.getPrice() + ": " + ChatColor.GREEN + currentCompany.getStocksPrice());
+							player.sendMessage(ChatColor.GRAY + messages.getRisk() + ": " + ChatColor.GREEN + currentCompany.getRisk());
 
 							if (currentCompany.getAvailableStocks() < 0)
-								p.sendMessage(ChatColor.GRAY + messages.getAvailableActions() + ": " + ChatColor.GREEN + "Unlimited");
+								player.sendMessage(ChatColor.GRAY + messages.getAvailableActions() + ": " + ChatColor.GREEN + "Unlimited");
 							else
-								p.sendMessage(ChatColor.GRAY + messages.getAvailableActions() + ": " + ChatColor.GREEN + currentCompany.getAvailableStocks());
+								player.sendMessage(ChatColor.GRAY + messages.getAvailableActions() + ": " + ChatColor.GREEN + currentCompany.getAvailableStocks());
 
-							p.sendMessage(ChatColor.GRAY + messages.getActionHistoric() + ": ");
-							p.sendMessage("");
+							player.sendMessage(ChatColor.GRAY + messages.getActionHistoric() + ": ");
+							player.sendMessage("");
 
 							for (String element : currentCompany.getCompanyHistoric()){
-								if (element.contains("+")) p.sendMessage(ChatColor.GREEN + "  " + element);
-								else if (element.contains("-")) p.sendMessage(ChatColor.RED + "  " + element);
+								if (element.contains("+")) player.sendMessage(ChatColor.GREEN + "  " + element);
+								else if (element.contains("-")) player.sendMessage(ChatColor.RED + "  " + element);
 							}
 
-							p.sendMessage("");
-							p.spigot().sendMessage(buyStocks);
-							p.sendMessage(messages.getPluginFooter());
+							player.sendMessage("");
+							player.spigot().sendMessage(buyStocks);
+							player.sendMessage(messages.getPluginFooter());
 
 						}
 
 					}
 
 				}else {
-					p.sendMessage(messages.getPluginPrefix() + messages.getInvalidCompany());
+					player.sendMessage(messages.getPluginPrefix() + messages.getInvalidCompany());
 				}
 
 			}else {
-				p.sendMessage(messages.getPluginPrefix() + messages.getInvalidCmd());
+				player.sendMessage(messages.getPluginPrefix() + messages.getInvalidCmd());
 			}
 
 		}else {
-			p.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
+			player.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
 		}
 
 	}

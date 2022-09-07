@@ -1,10 +1,9 @@
-package hugog.blockstreet.commands;
+package hugog.blockstreet.commands.implementation;
 
+import hugog.blockstreet.commands.CmdDependencyInjector;
+import hugog.blockstreet.commands.PluginCommand;
 import hugog.blockstreet.others.Company;
 import hugog.blockstreet.others.Messages;
-import me.hgsoft.minecraft.devcommand.annotations.Command;
-import me.hgsoft.minecraft.devcommand.commands.BukkitDevCommand;
-import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -21,29 +20,28 @@ import java.text.MessageFormat;
  * @author Hugo1307
  * @version 1.0.0
  */
-@Command(alias = "delete", permission = "blockstreet.admin.company_delete")
-public class DeleteCompanyCommand extends BukkitDevCommand {
+public class DeleteCompanyCommand extends PluginCommand {
 
-	public DeleteCompanyCommand(BukkitCommandData commandData, CommandSender commandSender, String[] args) {
-		super(commandData, commandSender, args);
+	public DeleteCompanyCommand(CommandSender sender, String[] args, CmdDependencyInjector cmdDependencyInjector) {
+		super(sender, args, cmdDependencyInjector);
 	}
 
 	@Override
 	public void execute() {
 
-		Player p = (Player) getCommandSender();
+		Player player = (Player) sender;
 		Messages messages = new Messages();
 
-		if (p.hasPermission("blockstreet.admin.delete") || p.hasPermission("blockstreet.admin.*")) {
+		if (player.isOp() || player.hasPermission("blockstreet.admin.delete") || player.hasPermission("blockstreet.admin.*")) {
 
-			if (getArgs().length > 1) {
+			if (args.length > 1) {
 
 				int companyId;
 
 				try {
-					companyId = Integer.parseInt(getArgs()[1]);
+					companyId = Integer.parseInt(args[1]);
 				} catch (NumberFormatException e) {
-					p.sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
+					player.sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
 					return;
 				}
 
@@ -53,19 +51,19 @@ public class DeleteCompanyCommand extends BukkitDevCommand {
 
 					companyToDelete.delete(true);
 
-					p.sendMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getDeletedCompany(),
+					player.sendMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getDeletedCompany(),
 							ChatColor.GOLD + companyToDelete.getName() + ChatColor.GRAY));
 
 				}else {
-					p.sendMessage(messages.getPluginPrefix() + messages.getInvalidCompany());
+					player.sendMessage(messages.getPluginPrefix() + messages.getInvalidCompany());
 				}
 
 			}else {
-				p.sendMessage(messages.getPluginPrefix() + messages.getMissingArguments());
+				player.sendMessage(messages.getPluginPrefix() + messages.getMissingArguments());
 			}
 
 		}else {
-			p.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
+			player.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
 		}
 
 	}

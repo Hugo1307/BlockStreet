@@ -1,10 +1,9 @@
-package hugog.blockstreet.commands;
+package hugog.blockstreet.commands.implementation;
 
 import hugog.blockstreet.Main;
+import hugog.blockstreet.commands.CmdDependencyInjector;
+import hugog.blockstreet.commands.PluginCommand;
 import hugog.blockstreet.others.*;
-import me.hgsoft.minecraft.devcommand.annotations.Command;
-import me.hgsoft.minecraft.devcommand.commands.BukkitDevCommand;
-import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -20,23 +19,22 @@ import java.text.MessageFormat;
  * @author Hugo1307
  * @since v1.0.0
  */
-@Command(alias = "buy", permission = "blockstreet.command.buy")
-public class BuyCommand extends BukkitDevCommand {
+public class BuyCommand extends PluginCommand {
 
-	public BuyCommand(BukkitCommandData command, CommandSender commandSender, String[] args) {
-		super(command, commandSender, args);
+	public BuyCommand(CommandSender sender, String[] args, CmdDependencyInjector cmdDependencyInjector) {
+		super(sender, args, cmdDependencyInjector);
 	}
 
 	@Override
 	public void execute() {
 
-		Player p = (Player) getCommandSender();
+		Player player = (Player) sender;
 		Messages messages = new Messages();
 		ConfigAccessor companiesReg = new ConfigAccessor(Main.getInstance(), "companies.yml");
 
-		if (p.hasPermission("blockstreet.command.buy") || p.hasPermission("blockstreet.command.*")) {
+		if (player.isOp() || player.hasPermission("blockstreet.command.buy") || player.hasPermission("blockstreet.command.*")) {
 
-			if (getArgs().length > 1) {
+			if (args.length > 2) {
 
 				int amount, companyId;
 				int numberOfCompanies = 0;
@@ -45,17 +43,20 @@ public class BuyCommand extends BukkitDevCommand {
 					numberOfCompanies = companiesReg.getConfig().getConfigurationSection("Companies").getKeys(false).size();
 
 				try{
-					amount = Integer.parseInt(getArgs()[1]);
-					companyId = Integer.parseInt(getArgs()[2]);
+					amount = Integer.parseInt(args[1]);
+					companyId = Integer.parseInt(args[2]);
 				}catch (NumberFormatException nfe){
-					p.sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
+					player.sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
 					return;
 				}
 
 				if (companyId <= numberOfCompanies){
 
 					Company currentCompany = new Company(companyId).load();
-					double playerMoney = Main.getInstance().economy.getBalance(p);
+					double playerMoney = 5000d;
+
+					if (!cmdDependencyInjector.getMain().isInTestMode())
+						cmdDependencyInjector.getMain().getEconomy().getBalance(player);
 
 					if (amount > 0) {
 
@@ -63,7 +64,7 @@ public class BuyCommand extends BukkitDevCommand {
 
 							if (playerMoney >= amount * currentCompany.getStocksPrice()) {
 
-								Investor playerInvestorProfile = new Investor(p.getName());
+								Investor playerInvestorProfile = new Investor(player.getName());
 								Investment currentInvestment;
 
 								if (playerInvestorProfile.contains(currentCompany.getId())) {
@@ -73,36 +74,38 @@ public class BuyCommand extends BukkitDevCommand {
 									currentInvestment = new Investment(currentCompany.getId(), amount);
 								}
 
-								Main.getInstance().economy.withdrawPlayer(p, amount * currentCompany.getStocksPrice());
+								if (!cmdDependencyInjector.getMain().isInTestMode())
+									cmdDependencyInjector.getMain().getEconomy().withdrawPlayer(player, amount * currentCompany.getStocksPrice());
+
 								currentCompany.setAvailableStocks(currentCompany.getAvailableStocks() - amount);
 
 								playerInvestorProfile.addInvestment(currentInvestment);
 								playerInvestorProfile.saveToYml();
 
-								p.sendMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getBoughtActions().replace("'", "''"), amount));
+								player.sendMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getBoughtActions().replace("'", "''"), amount));
 
 							}else {
-								p.sendMessage(messages.getPluginPrefix() + messages.getInsufficientMoney());
+								player.sendMessage(messages.getPluginPrefix() + messages.getInsufficientMoney());
 							}
 
 						}else {
-							p.sendMessage(messages.getPluginPrefix() + messages.getInsufficientActions());
+							player.sendMessage(messages.getPluginPrefix() + messages.getInsufficientActions());
 						}
 
 					}else {
-						p.sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
+						player.sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
 					}
 
 				}else {
-					p.sendMessage(messages.getPluginPrefix() + messages.getInvalidCompany());
+					player.sendMessage(messages.getPluginPrefix() + messages.getInvalidCompany());
 				}
 
 			}else {
-				p.sendMessage(messages.getPluginPrefix() + messages.getMissingArguments());
+				player.sendMessage(messages.getPluginPrefix() + messages.getMissingArguments());
 			}
 
 		}else {
-			p.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
+			player.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
 		}
 
 

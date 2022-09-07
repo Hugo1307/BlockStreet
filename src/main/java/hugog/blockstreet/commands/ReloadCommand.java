@@ -1,12 +1,11 @@
-package hugog.blockstreet.commands;
+package hugog.blockstreet.commands.implementation;
 
 import hugog.blockstreet.Main;
+import hugog.blockstreet.commands.CmdDependencyInjector;
+import hugog.blockstreet.commands.PluginCommand;
 import hugog.blockstreet.enums.ConfigurationFiles;
 import hugog.blockstreet.others.ConfigAccessor;
 import hugog.blockstreet.others.Messages;
-import me.hgsoft.minecraft.devcommand.annotations.Command;
-import me.hgsoft.minecraft.devcommand.commands.BukkitDevCommand;
-import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -21,23 +20,22 @@ import org.bukkit.entity.Player;
  * @author Hugo1307
  * @since v1.0.0
  */
-@Command(alias = "reload", permission = "blockstreet.admin.reload")
-public class ReloadCommand extends BukkitDevCommand {
+public class ReloadCommand extends PluginCommand {
 
-	public ReloadCommand(BukkitCommandData commandData, CommandSender commandSender, String[] args) {
-		super(commandData, commandSender, args);
+	public ReloadCommand(CommandSender sender, String[] args, CmdDependencyInjector cmdDependencyInjector) {
+		super(sender, args, cmdDependencyInjector);
 	}
 
 	@Override
 	public void execute() {
 
-		Player p = (Player) getCommandSender();
+		Player player = (Player) sender;
 
 		Messages messages = new Messages();
 		ConfigAccessor playersReg = new ConfigAccessor(Main.getInstance(), ConfigurationFiles.PLAYERS.getFileName());
 		ConfigAccessor companiesReg = new ConfigAccessor(Main.getInstance(), ConfigurationFiles.COMPANIES.getFileName());
 
-		if (p.hasPermission("blockstreet.admin.*") || p.hasPermission("blockstreet.admin.reload")) {
+		if (player.isOp() || player.hasPermission("blockstreet.admin.*") || player.hasPermission("blockstreet.admin.reload")) {
 
 			playersReg.reloadConfig();
 			companiesReg.reloadConfig();
@@ -46,10 +44,10 @@ public class ReloadCommand extends BukkitDevCommand {
 			Main.getInstance().stopRunnables();
 			Main.getInstance().registerRunnables();
 
-			p.sendMessage(messages.getPluginPrefix() + ChatColor.GREEN + messages.getPluginReload());
+			player.sendMessage(messages.getPluginPrefix() + ChatColor.GREEN + messages.getPluginReload());
 
 		}else {
-			p.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
+			player.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
 		}
 
 	}
