@@ -5,7 +5,6 @@ description: This plugin allows you to make investments with your money.
 prefix: 'BlockStreet'
 depend:
   - Vault
-
 commands:
   invest:
     description: Plugin's main command.
