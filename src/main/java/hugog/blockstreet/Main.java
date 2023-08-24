@@ -7,7 +7,9 @@ import hugog.blockstreet.others.ConfigAccessor;
 import hugog.blockstreet.runnables.InterestRateRunnable;
 import hugog.blockstreet.runnables.SignCheckerRunnable;
 import hugog.blockstreet.update.AutoUpdate;
+import me.hgsoft.minecraft.devcommand.DevCommand;
 import me.hgsoft.minecraft.devcommand.commands.executors.DevCommandExecutor;
+import me.hgsoft.minecraft.devcommand.commands.handler.CommandHandler;
 import me.hgsoft.minecraft.devcommand.integration.Integration;
 import net.md_5.bungee.api.ChatColor;
 import net.milkbowl.vault.economy.Economy;
@@ -16,7 +18,6 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
-import org.json.simple.parser.ParseException;
 
 import java.io.File;
 import java.util.logging.Level;
@@ -68,8 +69,13 @@ public class Main extends JavaPlugin {
 
         if (mainPluginCommand != null) {
 
-            DevCommandExecutor devCommandExecutor = new DevCommandExecutor("invest", Integration.createFromPlugin(this));
+            DevCommand devCommand = DevCommand.getOrCreateInstance();
+            Integration integration = Integration.createFromPlugin(this);
+            CommandHandler commandHandler = devCommand.getCommandHandler();
+            DevCommandExecutor devCommandExecutor = new DevCommandExecutor("invest", integration);
+
             mainPluginCommand.setExecutor(devCommandExecutor);
+            commandHandler.initCommandsAutoConfiguration(integration);
 
         }
 
