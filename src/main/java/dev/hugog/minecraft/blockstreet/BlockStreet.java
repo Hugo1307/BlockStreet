@@ -1,19 +1,20 @@
 package dev.hugog.minecraft.blockstreet;
 
 import com.google.inject.Injector;
-import dev.hugog.minecraft.blockstreet.data.repositories.UpdatesRepository;
+import dev.hugog.minecraft.blockstreet.data.repositories.implementations.CompaniesRepository;
+import dev.hugog.minecraft.blockstreet.data.repositories.implementations.UpdatesRepository;
 import dev.hugog.minecraft.blockstreet.dependencyinjection.BasicBinderModule;
 import dev.hugog.minecraft.blockstreet.enums.ConfigurationFiles;
 import dev.hugog.minecraft.blockstreet.listeners.PlayerJoinListener;
 import dev.hugog.minecraft.blockstreet.listeners.SignHandler;
 import dev.hugog.minecraft.blockstreet.others.ConfigAccessor;
+import dev.hugog.minecraft.blockstreet.others.Messages;
 import dev.hugog.minecraft.blockstreet.runnables.InterestRateRunnable;
 import dev.hugog.minecraft.blockstreet.runnables.SignCheckerRunnable;
 import dev.hugog.minecraft.dev_command.DevCommand;
 import dev.hugog.minecraft.dev_command.commands.executors.DevCommandExecutor;
 import dev.hugog.minecraft.dev_command.commands.handler.CommandHandler;
 import dev.hugog.minecraft.dev_command.dependencies.DependencyHandler;
-import dev.hugog.minecraft.dev_command.injection.GuiceBinderModule;
 import dev.hugog.minecraft.dev_command.integration.Integration;
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
@@ -30,18 +31,24 @@ import java.util.logging.Level;
 public class BlockStreet extends JavaPlugin {
 
     public ConfigAccessor messagesConfig;
-    public Economy economy = null;
-    @Getter
-    private static BlockStreet instance;
+
+    @Getter private Economy economy;
+    @Getter private static BlockStreet instance;
     private BukkitTask interestRateTask, signCheckerTask;
 
     private Integration pluginDevCommandsIntegration;
 
+    // Listeners
     @Inject
     private PlayerJoinListener playerJoinListener;
 
+    // Repositories
+    @Inject private UpdatesRepository updatesRepository;
+    @Inject private CompaniesRepository companiesRepository;
+
     @Inject
-    private UpdatesRepository updatesRepository;
+    private Messages messages;
+
 
     @Override
     public void onEnable() {
@@ -115,7 +122,13 @@ public class BlockStreet extends JavaPlugin {
         DevCommand devCommand = DevCommand.getOrCreateInstance();
         DependencyHandler dependencyHandler = devCommand.getDependencyHandler();
 
+        dependencyHandler.registerDependency(pluginDevCommandsIntegration, messages);
+        dependencyHandler.registerDependency(pluginDevCommandsIntegration, getLogger());
+
+        dependencyHandler.registerDependency(pluginDevCommandsIntegration, economy);
+
         dependencyHandler.registerDependency(pluginDevCommandsIntegration, updatesRepository);
+        dependencyHandler.registerDependency(pluginDevCommandsIntegration, companiesRepository);
 
     }
 

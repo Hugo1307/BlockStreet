@@ -19,6 +19,7 @@ availableActions: "Available Actions"
 actionHistoric: "Historic"
 details: "Details"
 
+playerOnlyCommand: "This command is only for players."
 noPermission: "You don't have enough permissions."
 nonExistantPage: "This page does not exists."
 missingArguments: "There are missing arguments."

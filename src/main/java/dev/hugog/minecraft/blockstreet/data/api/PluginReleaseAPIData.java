@@ -1,4 +1,4 @@
-package dev.hugog.minecraft.blockstreet.data.sources.api;
+package dev.hugog.minecraft.blockstreet.data.api;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -14,9 +14,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Log4j2
-public class PluginReleaseAPIDataSource extends APIDataSourceImpl {
+public class PluginReleaseAPIData extends APIDataImpl {
 
-    public PluginReleaseAPIDataSource() {
+    public PluginReleaseAPIData() {
         super("https://api.github.com/repos/Hugo1307/BlockStreet/releases/latest");
     }
 

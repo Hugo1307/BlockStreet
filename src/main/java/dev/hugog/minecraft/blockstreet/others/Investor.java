@@ -15,6 +15,7 @@ public class Investor {
 	private final ConfigAccessor ymlReg = new ConfigAccessor(plugin, "players.yml");
 	
 	public Investor(String name) {
+
 		this.name = name;
 		this.investments = new ArrayList<Investment>();
 		

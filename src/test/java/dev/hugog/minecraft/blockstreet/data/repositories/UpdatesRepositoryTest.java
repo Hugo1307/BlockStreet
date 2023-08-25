@@ -2,7 +2,8 @@ package dev.hugog.minecraft.blockstreet.data.repositories;
 
 import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.data.entities.PluginReleaseEntity;
-import dev.hugog.minecraft.blockstreet.data.sources.api.PluginReleaseAPIDataSource;
+import dev.hugog.minecraft.blockstreet.data.repositories.implementations.UpdatesRepository;
+import dev.hugog.minecraft.blockstreet.data.api.PluginReleaseAPIData;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +17,7 @@ import static org.mockito.Mockito.when;
 class UpdatesRepositoryTest {
 
     @Mock
-    private PluginReleaseAPIDataSource pluginReleaseAPIDataSource;
+    private PluginReleaseAPIData pluginReleaseAPIDataSource;
 
     @Mock
     private BlockStreet plugin;

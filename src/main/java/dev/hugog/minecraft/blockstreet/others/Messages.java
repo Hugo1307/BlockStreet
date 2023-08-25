@@ -2,8 +2,10 @@ package dev.hugog.minecraft.blockstreet.others;
 
 import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.enums.ConfigurationFiles;
+import lombok.Getter;
 import org.bukkit.ChatColor;
 
+@Getter
 public class Messages {
 	
 	private final String pluginPrefix;
@@ -29,6 +31,7 @@ public class Messages {
 	private final String availableActions;
 	private final String actionHistoric;
 	private final String details;
+	private final String playerOnlyCommand;
 	private final String noPermission;
 	private final String nonExistentPage;
 	private final String missingArguments;
@@ -77,6 +80,7 @@ public class Messages {
 		this.availableActions = messagesConfig.getConfig().getString("availableActions");
 		this.actionHistoric = messagesConfig.getConfig().getString("actionHistoric");
 		this.details = messagesConfig.getConfig().getString("details");
+		this.playerOnlyCommand = messagesConfig.getConfig().getString("playerOnlyCommand");
 		this.noPermission = messagesConfig.getConfig().getString("noPermission");
 		this.nonExistentPage = messagesConfig.getConfig().getString("nonExistantPage");
 		this.missingArguments = messagesConfig.getConfig().getString("missingArguments");
@@ -99,177 +103,5 @@ public class Messages {
 		this.unknownCommand = messagesConfig.getConfig().getString("unknownCommand");
 		
 	}
-	
-	public String getPluginPrefix() {
-		return pluginPrefix;
-	}
 
-	public String getPluginHeader() {
-		return pluginHeader;
-	}
-
-	public String getPluginFooter() {
-		return pluginFooter;
-	}
-
-	public String getPluginReload() {
-		return pluginReload;
-	}
-
-	public String getMenuMainCmd() {
-		return menuMainCmd;
-	}
-
-	public String getMenuCompaniesCmd() {
-		return menuCompaniesCmd;
-	}
-
-	public String getMenuCompanyCmd() {
-		return menuCompanyCmd;
-	}
-
-	public String getMenuBuyCmd() {
-		return menuBuyCmd;
-	}
-
-	public String getMenuSellCmd() {
-		return menuSellCmd;
-	}
-
-	public String getMenuActionsCmd() {
-		return menuActionsCmd;
-	}
-
-	public String getMenuReloadCmd() {
-		return menuReloadCmd;
-	}
-
-	public String getBuyActionsCmd() {
-		return buyActionsCmd;
-	}
-	
-	public String getSellActionsCmd() {
-		return sellActionsCmd;
-	}
-
-	public String getListNextPage() {
-		return listNextPage;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public String getPrice() {
-		return price;
-	}
-
-	public String getRisk() {
-		return risk;
-	}
-
-	public String getAvailableActions() {
-		return availableActions;
-	}
-
-	public String getActionHistoric() {
-		return actionHistoric;
-	}
-	
-	public String getDetails() {
-		return details;
-	}
-	
-	public String getNoPermission() {
-		return noPermission;
-	}
-
-	public String getNonExistentPage() {
-		return nonExistentPage;
-	}
-
-	public String getMissingArguments() {
-		return missingArguments;
-	}
-
-	public String getWrongArguments() {
-		return wrongArguments;
-	}
-
-	public String getInvalidCompany() {
-		return invalidCompany;
-	}
-
-	public String getCompanyAlreadyExists() {
-		return companyAlreadyExists;
-	}
-
-	public String getInsufficientMoney() {
-		return insufficientMoney;
-	}
-
-	public String getInsufficientActions() {
-		return insufficientActions;
-	}
-
-	public String getPlayerNoActions() {
-		return playerNoActions;
-	}
-
-	public String getBoughtActions() {
-		return boughtActions;
-	}
-	
-	public String getSoldActions() {
-		return soldActions;
-	}
-
-	public String getInvalidCmd() {
-		return invalidCmd;
-	}
-	
-	public String getInterestRate() {
-		return interestRate;
-	}
-
-	public String getMenuCreateCompanyCmd() {
-		return menuCreateCompanyCmd;
-	}
-
-	public String getMenuDeleteCompanyCmd() {
-		return menuDeleteCompanyCmd;
-	}
-
-	public String getCreatedCompany() {
-		return createdCompany;
-	}
-
-	public String getDeletedCompany() {
-		return deletedCompany;
-	}
-
-	public String getUpdatedInterestRate() {
-		return updatedInterestRate;
-	}
-
-	public String getPlayerAnyActions() {
-		return playerAnyActions;
-	}
-
-	public String getInterestRateTimeLeft() {
-		return interestRateTimeLeft;
-	}
-
-	public String getMenuTimeCmd() {
-		return menuTimeCmd;
-	}
-
-	public String getNewVersionAvailable() {
-		return newVersionAvailable;
-	}
-
-	public String getUnknownCommand() {
-		return unknownCommand;
-	}
-	
 }

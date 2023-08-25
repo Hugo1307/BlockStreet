@@ -1,4 +1,4 @@
-package dev.hugog.minecraft.blockstreet.data.sources.api;
+package dev.hugog.minecraft.blockstreet.data.api;
 
 import lombok.extern.log4j.Log4j2;
 import okhttp3.OkHttpClient;
@@ -6,12 +6,12 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 @Log4j2
-public abstract class APIDataSourceImpl implements ApiDataSource {
+public abstract class APIDataImpl implements ApiData {
 
     protected OkHttpClient httpClient;
     protected String apiEndpoint;
 
-    public APIDataSourceImpl(String apiEndpoint) {
+    public APIDataImpl(String apiEndpoint) {
         this.httpClient = new OkHttpClient();
         this.apiEndpoint = apiEndpoint;
     }

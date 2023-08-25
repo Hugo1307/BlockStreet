@@ -1,12 +1,14 @@
 Companies:
-  '1':
-    Name: 'Blocks Inc'
-    Price: 1250.0
-    Risk: 4
-    AvailableStocks: -1
+  - Id: 1
+    Name: "Blocks Corp"
+    Description: "Blocks Corp is a company that sells blocks."
+    PricePerStock: 1000
+    Risk: 3
+    TotalStocks: 100
+    AvailableStocks: 99
     Historic:
-      - '+ 2.3%'
-      - '+ 4.8%'
-      - '- 2.4%'
-      - '- 0.9%'
-      - '+ 1.1%'
+      - "+ 1.2%"
+      - "+ 0.8%"
+      - "- 0.4%"
+      - "+ 0.9%"
+      - "+ 1.1%"

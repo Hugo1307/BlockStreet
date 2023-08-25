@@ -5,8 +5,10 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.commands.CmdDependencyInjector;
-import dev.hugog.minecraft.blockstreet.data.repositories.UpdatesRepository;
-import dev.hugog.minecraft.blockstreet.data.sources.api.PluginReleaseAPIDataSource;
+import dev.hugog.minecraft.blockstreet.data.repositories.implementations.CompaniesRepository;
+import dev.hugog.minecraft.blockstreet.data.repositories.implementations.UpdatesRepository;
+import dev.hugog.minecraft.blockstreet.data.api.PluginReleaseAPIData;
+import dev.hugog.minecraft.blockstreet.data.sources.yml.implementations.CompaniesYml;
 import dev.hugog.minecraft.blockstreet.listeners.PlayerJoinListener;
 
 public class BasicBinderModule extends AbstractModule {
@@ -26,7 +28,9 @@ public class BasicBinderModule extends AbstractModule {
 
         this.bind(BlockStreet.class).toInstance(plugin);
 
-        this.bind(UpdatesRepository.class).toInstance(new UpdatesRepository(new PluginReleaseAPIDataSource(), plugin));
+        // TODO: Change bindings depending on the data source being used
+        this.bind(UpdatesRepository.class).toInstance(new UpdatesRepository(new PluginReleaseAPIData(), plugin));
+        this.bind(CompaniesRepository.class).toInstance(new CompaniesRepository(new CompaniesYml(plugin.getDataFolder())));
 
         this.bind(CmdDependencyInjector.class);
 
