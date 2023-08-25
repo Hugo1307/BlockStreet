@@ -25,10 +25,12 @@ public class UpdatesRepository extends RepositoryImpl {
         }
 
         PluginReleaseAPIDataSource pluginReleaseAPIDataSource = (PluginReleaseAPIDataSource) dataSource;
-        PluginReleaseEntity pluginReleaseEntity = (PluginReleaseEntity) pluginReleaseAPIDataSource.parseData();
+        return (PluginReleaseEntity) pluginReleaseAPIDataSource.parseData();
 
-        return pluginReleaseEntity;
+    }
 
+    public String getCurrentVersion() {
+        return plugin.getDescription().getVersion();
     }
 
     public boolean isUpdateAvailable() {

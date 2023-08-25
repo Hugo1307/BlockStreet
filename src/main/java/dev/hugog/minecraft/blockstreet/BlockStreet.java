@@ -1,6 +1,8 @@
 package dev.hugog.minecraft.blockstreet;
 
+import com.google.inject.Injector;
 import dev.hugog.minecraft.blockstreet.data.repositories.UpdatesRepository;
+import dev.hugog.minecraft.blockstreet.dependencyinjection.BasicBinderModule;
 import dev.hugog.minecraft.blockstreet.enums.ConfigurationFiles;
 import dev.hugog.minecraft.blockstreet.listeners.PlayerJoinListener;
 import dev.hugog.minecraft.blockstreet.listeners.SignHandler;
@@ -10,7 +12,10 @@ import dev.hugog.minecraft.blockstreet.runnables.SignCheckerRunnable;
 import dev.hugog.minecraft.dev_command.DevCommand;
 import dev.hugog.minecraft.dev_command.commands.executors.DevCommandExecutor;
 import dev.hugog.minecraft.dev_command.commands.handler.CommandHandler;
+import dev.hugog.minecraft.dev_command.dependencies.DependencyHandler;
+import dev.hugog.minecraft.dev_command.injection.GuiceBinderModule;
 import dev.hugog.minecraft.dev_command.integration.Integration;
+import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
@@ -26,8 +31,11 @@ public class BlockStreet extends JavaPlugin {
 
     public ConfigAccessor messagesConfig;
     public Economy economy = null;
+    @Getter
     private static BlockStreet instance;
     private BukkitTask interestRateTask, signCheckerTask;
+
+    private Integration pluginDevCommandsIntegration;
 
     @Inject
     private PlayerJoinListener playerJoinListener;
@@ -40,9 +48,12 @@ public class BlockStreet extends JavaPlugin {
 
     	instance = this;
 
+        initDependencyInjectionModules();
+
         setupEconomy();
 
-        registerCommands();
+        initializeDevCommands();
+        registerCommandsDependencies();
 
         registerEvents();
 
@@ -65,6 +76,12 @@ public class BlockStreet extends JavaPlugin {
         System.out.println("[BlockStreet] Plugin successfully disabled!");
     }
 
+    private void initDependencyInjectionModules() {
+        BasicBinderModule guiceBinderModule = new BasicBinderModule(this);
+        Injector injector = guiceBinderModule.createInjector();
+        injector.injectMembers(this);
+    }
+
     public void checkForUpdates() {
 
         if (updatesRepository.isUpdateAvailable()) {
@@ -75,21 +92,30 @@ public class BlockStreet extends JavaPlugin {
 
     }
 
-    private void registerCommands() {
+    private void initializeDevCommands() {
 
         PluginCommand mainPluginCommand = getCommand("invest");
+        pluginDevCommandsIntegration = Integration.createFromPlugin(this);
 
         if (mainPluginCommand != null) {
 
             DevCommand devCommand = DevCommand.getOrCreateInstance();
-            Integration integration = Integration.createFromPlugin(this);
             CommandHandler commandHandler = devCommand.getCommandHandler();
-            DevCommandExecutor devCommandExecutor = new DevCommandExecutor("invest", integration);
+            DevCommandExecutor devCommandExecutor = new DevCommandExecutor("invest", pluginDevCommandsIntegration);
 
             mainPluginCommand.setExecutor(devCommandExecutor);
-            commandHandler.initCommandsAutoConfiguration(integration);
+            commandHandler.initCommandsAutoConfiguration(pluginDevCommandsIntegration);
 
         }
+
+    }
+
+    private void registerCommandsDependencies() {
+
+        DevCommand devCommand = DevCommand.getOrCreateInstance();
+        DependencyHandler dependencyHandler = devCommand.getDependencyHandler();
+
+        dependencyHandler.registerDependency(pluginDevCommandsIntegration, updatesRepository);
 
     }
 
@@ -137,9 +163,5 @@ public class BlockStreet extends JavaPlugin {
         }
         return economy != null;
     }
-
-	public static BlockStreet getInstance() {
-		return instance;
-	}
 
 }

@@ -10,8 +10,6 @@ public abstract class APIDataSourceImpl implements ApiDataSource {
 
     protected OkHttpClient httpClient;
     protected String apiEndpoint;
-    protected String responseBody;
-    protected int responseCode;
 
     public APIDataSourceImpl(String apiEndpoint) {
         this.httpClient = new OkHttpClient();
@@ -27,8 +25,8 @@ public abstract class APIDataSourceImpl implements ApiDataSource {
     @Override
     public Response executeRequest() {
 
-        try (Response response = httpClient.newCall(buildRequest()).execute()) {
-            return response;
+        try {
+            return httpClient.newCall(buildRequest()).execute();
         } catch (Exception e) {
             log.error("Error while executing request to API endpoint: " + this.apiEndpoint, e);
         }

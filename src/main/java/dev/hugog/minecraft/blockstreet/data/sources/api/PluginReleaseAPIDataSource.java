@@ -6,6 +6,7 @@ import dev.hugog.minecraft.blockstreet.data.entities.DataEntity;
 import dev.hugog.minecraft.blockstreet.data.entities.PluginReleaseEntity;
 import lombok.extern.log4j.Log4j2;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -16,7 +17,7 @@ import java.util.Date;
 public class PluginReleaseAPIDataSource extends APIDataSourceImpl {
 
     public PluginReleaseAPIDataSource() {
-        super("https://api.github.com/repos/HugoGresse/BlockStreet/releases/latest");
+        super("https://api.github.com/repos/Hugo1307/BlockStreet/releases/latest");
     }
 
     @Override
@@ -29,17 +30,19 @@ public class PluginReleaseAPIDataSource extends APIDataSourceImpl {
             return null;
         }
 
-        if (apiResponse.isSuccessful() && apiResponse.body() != null) {
+        ResponseBody responseBody = apiResponse.body();
+
+        if (apiResponse.isSuccessful() && responseBody != null) {
 
             try {
 
-                String apiResponseBody = apiResponse.body().string();
+                String apiResponseBody = responseBody.string();
                 JsonObject jsonObject = new Gson().fromJson(apiResponseBody, JsonObject.class);
 
                 if (jsonObject == null)
                     return null;
 
-                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
                 String authorName = jsonObject.get("author").getAsJsonObject().get("login").getAsString();
                 String authorUrl = jsonObject.get("author").getAsJsonObject().get("html_url").getAsString();

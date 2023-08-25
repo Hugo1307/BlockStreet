@@ -9,18 +9,18 @@ import java.util.Date;
 @Builder
 public class PluginReleaseEntity implements DataEntity {
 
-    public String authorName;
-    public String authorUrl;
+    private String authorName;
+    private String authorUrl;
 
-    public String releaseName;
-    public String releaseUrl;
-    public Date releaseDate;
-    public String releaseVersion;
-    public long releaseSize;
-    public int releaseDownloadCount;
-    public boolean isPreRelease;
-    public boolean isDraft;
+    private String releaseName;
+    private String releaseUrl;
+    private Date releaseDate;
+    private String releaseVersion;
+    private long releaseSize;
+    private int releaseDownloadCount;
+    private boolean isPreRelease;
+    private boolean isDraft;
 
-    public String downloadUrl;
+    private String downloadUrl;
 
 }
