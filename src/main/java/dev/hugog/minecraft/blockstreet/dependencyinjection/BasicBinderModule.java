@@ -3,16 +3,17 @@ package dev.hugog.minecraft.blockstreet.dependencyinjection;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import dev.hugog.minecraft.blockstreet.Main;
+import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.commands.CmdDependencyInjector;
-import hugog.blockstreet.commands.CmdImplementer;
-import dev.hugog.minecraft.blockstreet.listeners.PlayerJoin;
+import dev.hugog.minecraft.blockstreet.data.repositories.UpdatesRepository;
+import dev.hugog.minecraft.blockstreet.data.sources.api.PluginReleaseAPIDataSource;
+import dev.hugog.minecraft.blockstreet.listeners.PlayerJoinListener;
 
 public class BasicBinderModule extends AbstractModule {
 
-    private final Main plugin;
+    private final BlockStreet plugin;
 
-    public BasicBinderModule(Main plugin) {
+    public BasicBinderModule(BlockStreet plugin) {
         this.plugin = plugin;
     }
 
@@ -23,12 +24,13 @@ public class BasicBinderModule extends AbstractModule {
     @Override
     protected void configure() {
 
-        this.bind(Main.class).toInstance(plugin);
+        this.bind(BlockStreet.class).toInstance(plugin);
+
+        this.bind(UpdatesRepository.class).toInstance(new UpdatesRepository(new PluginReleaseAPIDataSource(), plugin));
 
         this.bind(CmdDependencyInjector.class);
-        this.bind(CmdImplementer.class);
 
-        this.bind(PlayerJoin.class);
+        this.bind(PlayerJoinListener.class);
 
     }
 

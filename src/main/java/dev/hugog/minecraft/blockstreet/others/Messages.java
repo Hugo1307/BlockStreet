@@ -1,6 +1,6 @@
 package dev.hugog.minecraft.blockstreet.others;
 
-import dev.hugog.minecraft.blockstreet.Main;
+import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.enums.ConfigurationFiles;
 import org.bukkit.ChatColor;
 
@@ -52,7 +52,7 @@ public class Messages {
 	
 	public Messages() {
 
-		final ConfigAccessor messagesConfig = new ConfigAccessor(Main.getInstance(), ConfigurationFiles.MESSAGES.getFileName());
+		final ConfigAccessor messagesConfig = new ConfigAccessor(BlockStreet.getInstance(), ConfigurationFiles.MESSAGES.getFileName());
 
 		this.pluginPrefix = ChatColor.BOLD + "" + ChatColor.GREEN + "BlockStreet" + ChatColor.GOLD + ChatColor.BOLD + " > " + ChatColor.RESET  + ChatColor.RESET + ChatColor.GRAY;
 		this.pluginHeader = ChatColor.GRAY + "-=-=-=-=-=-=-=-=-=-= [" + ChatColor.GREEN  + "BlockStreet" + ChatColor.GRAY + "] =-=-=-=-=-=-=-=-=-=-";

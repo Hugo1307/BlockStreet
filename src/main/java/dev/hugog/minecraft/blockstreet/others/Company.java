@@ -1,6 +1,6 @@
 package dev.hugog.minecraft.blockstreet.others;
 
-import dev.hugog.minecraft.blockstreet.Main;
+import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.enums.ConfigurationFiles;
 
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.List;
 
 public class Company implements Savable<Company> {
 
-	private final ConfigAccessor ymlReg = new ConfigAccessor(Main.getInstance(), ConfigurationFiles.COMPANIES.getFileName());
+	private final ConfigAccessor ymlReg = new ConfigAccessor(BlockStreet.getInstance(), ConfigurationFiles.COMPANIES.getFileName());
 
 	private int id;
 	private String name;
@@ -111,11 +111,7 @@ public class Company implements Savable<Company> {
 	}
 	
 	public boolean exists() {
-		if (this.name == null) {
-			return false;
-		}else {
-			return true;
-		}
+        return this.name != null;
 	}
 	
 	public void removeStocks(int amount) {
@@ -226,10 +222,8 @@ public class Company implements Savable<Company> {
 			return false;
 		if (risk != other.risk)
 			return false;
-		if (Double.doubleToLongBits(stocksPrice) != Double.doubleToLongBits(other.stocksPrice))
-			return false;
-		return true;
-	}
+        return Double.doubleToLongBits(stocksPrice) == Double.doubleToLongBits(other.stocksPrice);
+    }
 
 	@Override
 	public String toString() {

@@ -1,10 +1,9 @@
 package dev.hugog.minecraft.blockstreet.commands;
 
 import dev.hugog.minecraft.blockstreet.others.Messages;
-import hugog.blockstreet.update.AutoUpdate;
-import me.hgsoft.minecraft.devcommand.annotations.Command;
-import me.hgsoft.minecraft.devcommand.commands.BukkitDevCommand;
-import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
+import dev.hugog.minecraft.dev_command.annotations.Command;
+import dev.hugog.minecraft.dev_command.commands.BukkitDevCommand;
+import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -36,16 +35,18 @@ public class InfoCommand extends BukkitDevCommand {
 		p.sendMessage(messages.getPluginHeader());
 		p.sendMessage("");
 
-		p.sendMessage(ChatColor.GREEN + "Current Version: " + ChatColor.GRAY + AutoUpdate.getCurrentVersion());
-		p.sendMessage(ChatColor.GREEN + "Last Version: " + ChatColor.GRAY + AutoUpdate.getLastVersion());
-		p.sendMessage("");
+		// TODO: Add information about automatic updates
 
-		if (AutoUpdate.isNewVersionAvailable()) {
-			p.sendMessage(ChatColor.GRAY + "New version available!");
-			p.sendMessage(ChatColor.GRAY + "Download it on: https://www.spigotmc.org/resources/blockstreet.75712/");
-		}else {
-			p.sendMessage(ChatColor.GRAY + "Your plugin is up to date.");
-		}
+//		p.sendMessage(ChatColor.GREEN + "Current Version: " + ChatColor.GRAY + AutoUpdate.getCurrentVersion());
+//		p.sendMessage(ChatColor.GREEN + "Last Version: " + ChatColor.GRAY + AutoUpdate.getLastVersion());
+//		p.sendMessage("");
+//
+//		if (AutoUpdate.isNewVersionAvailable()) {
+//			p.sendMessage(ChatColor.GRAY + "New version available!");
+//			p.sendMessage(ChatColor.GRAY + "Download it on: https://www.spigotmc.org/resources/blockstreet.75712/");
+//		}else {
+//			p.sendMessage(ChatColor.GRAY + "Your plugin is up to date.");
+//		}
 
 		p.sendMessage("");
 		p.sendMessage(ChatColor.GRAY + "Plugin created by: " + ChatColor.GREEN + "Hugo1307");

@@ -1,6 +1,6 @@
 package dev.hugog.minecraft.blockstreet.others;
 
-import dev.hugog.minecraft.blockstreet.Main;
+import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.enums.ConfigurationFiles;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ public abstract class CompanyContainer {
 
     public static List<Company> getCompanies() {
 
-        ConfigAccessor companiesReg = new ConfigAccessor(Main.getInstance(), ConfigurationFiles.COMPANIES.getFileName());
+        ConfigAccessor companiesReg = new ConfigAccessor(BlockStreet.getInstance(), ConfigurationFiles.COMPANIES.getFileName());
         Set<Integer> companiesIds = Objects.requireNonNull(companiesReg.getConfig().getConfigurationSection("Companies"))
                 .getKeys(false).stream().map(Integer::parseInt).collect(Collectors.toSet());
         List<Company> companiesToReturn = new ArrayList<>();
@@ -25,7 +25,7 @@ public abstract class CompanyContainer {
     }
 
     public static boolean companyExists(int id) {
-        ConfigAccessor companiesReg = new ConfigAccessor(Main.getInstance(), ConfigurationFiles.COMPANIES.getFileName());
+        ConfigAccessor companiesReg = new ConfigAccessor(BlockStreet.getInstance(), ConfigurationFiles.COMPANIES.getFileName());
         companiesReg.reloadConfig();
         return companiesReg.getConfig().get("Companies." + id) != null;
     }

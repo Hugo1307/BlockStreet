@@ -1,6 +1,6 @@
 package dev.hugog.minecraft.blockstreet.others;
 
-import dev.hugog.minecraft.blockstreet.Main;
+import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.enums.ConfigurationFiles;
 
 import java.util.*;
@@ -10,7 +10,7 @@ public abstract class CompanySignsContainer {
 
     public static List<CompanySign> getSigns() {
 
-        ConfigAccessor companiesReg = new ConfigAccessor(Main.getInstance(), ConfigurationFiles.SIGNS.getFileName());
+        ConfigAccessor companiesReg = new ConfigAccessor(BlockStreet.getInstance(), ConfigurationFiles.SIGNS.getFileName());
         List<CompanySign> companiesSignsToReturn = new ArrayList<>();
 
         if (companiesReg.getConfig().getConfigurationSection("Signs") == null) return Collections.emptyList();

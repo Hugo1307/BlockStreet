@@ -1,6 +1,6 @@
 package dev.hugog.minecraft.blockstreet.runnables;
 
-import dev.hugog.minecraft.blockstreet.Main;
+import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.others.Company;
 import dev.hugog.minecraft.blockstreet.others.ConfigAccessor;
 import dev.hugog.minecraft.blockstreet.others.Messages;
@@ -19,19 +19,19 @@ public class InterestRateRunnable extends BukkitRunnable {
     private static int minutesCounter = 0;
 
     private final Messages messages = new Messages();
-    private final ConfigAccessor companiesReg = new ConfigAccessor(Main.getInstance(), "companies.yml");
-    private final int interestTime = Main.getInstance().getConfig().getInt("BlockStreet.Timer");
+    private final ConfigAccessor companiesReg = new ConfigAccessor(BlockStreet.getInstance(), "companies.yml");
+    private final int interestTime = BlockStreet.getInstance().getConfig().getInt("BlockStreet.Timer");
 
     @Override
     public void run() {
 
-        boolean areWarningsEnabled = Main.getInstance().getConfig().getBoolean("BlockStreet.Warnings.Enabled");
+        boolean areWarningsEnabled = BlockStreet.getInstance().getConfig().getBoolean("BlockStreet.Warnings.Enabled");
         int timeTillInterests = interestTime - ++minutesCounter;
 
         if (areWarningsEnabled){
 
-            int firstWarningTime = Main.getInstance().getConfig().getInt("BlockStreet.Warnings.First");
-            int secondWarningTime = Main.getInstance().getConfig().getInt("BlockStreet.Warnings.Second");
+            int firstWarningTime = BlockStreet.getInstance().getConfig().getInt("BlockStreet.Warnings.First");
+            int secondWarningTime = BlockStreet.getInstance().getConfig().getInt("BlockStreet.Warnings.Second");
 
             if (timeTillInterests == firstWarningTime && firstWarningTime != 0) {
                 Bukkit.broadcastMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getInterestRate().replace("'", "''"), timeTillInterests));
@@ -54,7 +54,7 @@ public class InterestRateRunnable extends BukkitRunnable {
             if (companiesReg.getConfig().get("Companies") == null) return;
 
             Set<Integer> allCompaniesIds = companiesReg.getConfig().getConfigurationSection("Companies").getKeys(false).stream().map(Integer::parseInt).collect(Collectors.toSet());
-            int leverage = new ConfigAccessor(Main.getInstance(), "config.yml").getConfig().getInt("BlockStreet.Leverage");
+            int leverage = new ConfigAccessor(BlockStreet.getInstance(), "config.yml").getConfig().getInt("BlockStreet.Leverage");
 
             for (int companyId : allCompaniesIds) {
 
@@ -95,7 +95,7 @@ public class InterestRateRunnable extends BukkitRunnable {
 
             }
 
-            Main.getInstance().getServer().broadcastMessage(messages.getPluginPrefix() + messages.getUpdatedInterestRate());
+            BlockStreet.getInstance().getServer().broadcastMessage(messages.getPluginPrefix() + messages.getUpdatedInterestRate());
             minutesCounter = 0;
 
         }

@@ -27,9 +27,9 @@ public class Investor {
 				int stocksAmount = ymlReg.getConfig().getInt("Players." + name + ".Companies." + companyId + ".Amount");
 				this.investments.add(new Investment(Integer.parseInt(companyId), stocksAmount));
 							
-			});;
-			
-		}
+			});
+
+        }
 		
 	}
 
@@ -81,18 +81,15 @@ public class Investor {
 	}
 	
 	public void addInvestment(Investment investment) {
-		
-		if (this.investments.contains(investment)) {
-			this.investments.remove(investment);
-		}
+
+		this.investments.remove(investment);
 		
 		this.investments.add(investment);
 				
 	}
 	
-	public void removeInvestment(Investment investment) {	
-		if (this.investments.contains(investment)) 
-			this.investments.remove(investment);	
+	public void removeInvestment(Investment investment) {
+		this.investments.remove(investment);
 	}
 	
 	public boolean contains(int investmentId) {

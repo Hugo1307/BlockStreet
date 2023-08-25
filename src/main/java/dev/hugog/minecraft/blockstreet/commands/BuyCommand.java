@@ -1,11 +1,10 @@
 package dev.hugog.minecraft.blockstreet.commands;
 
 import dev.hugog.minecraft.blockstreet.others.*;
-import dev.hugog.minecraft.blockstreet.Main;
-import hugog.blockstreet.others.*;
-import me.hgsoft.minecraft.devcommand.annotations.Command;
-import me.hgsoft.minecraft.devcommand.commands.BukkitDevCommand;
-import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
+import dev.hugog.minecraft.blockstreet.BlockStreet;
+import dev.hugog.minecraft.dev_command.annotations.Command;
+import dev.hugog.minecraft.dev_command.commands.BukkitDevCommand;
+import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -33,7 +32,7 @@ public class BuyCommand extends BukkitDevCommand {
 
 		Player p = (Player) getCommandSender();
 		Messages messages = new Messages();
-		ConfigAccessor companiesReg = new ConfigAccessor(Main.getInstance(), "companies.yml");
+		ConfigAccessor companiesReg = new ConfigAccessor(BlockStreet.getInstance(), "companies.yml");
 
 		if (p.hasPermission("blockstreet.command.buy") || p.hasPermission("blockstreet.command.*")) {
 
@@ -56,7 +55,7 @@ public class BuyCommand extends BukkitDevCommand {
 				if (companyId <= numberOfCompanies){
 
 					Company currentCompany = new Company(companyId).load();
-					double playerMoney = Main.getInstance().economy.getBalance(p);
+					double playerMoney = BlockStreet.getInstance().economy.getBalance(p);
 
 					if (amount > 0) {
 
@@ -74,7 +73,7 @@ public class BuyCommand extends BukkitDevCommand {
 									currentInvestment = new Investment(currentCompany.getId(), amount);
 								}
 
-								Main.getInstance().economy.withdrawPlayer(p, amount * currentCompany.getStocksPrice());
+								BlockStreet.getInstance().economy.withdrawPlayer(p, amount * currentCompany.getStocksPrice());
 								currentCompany.setAvailableStocks(currentCompany.getAvailableStocks() - amount);
 
 								playerInvestorProfile.addInvestment(currentInvestment);

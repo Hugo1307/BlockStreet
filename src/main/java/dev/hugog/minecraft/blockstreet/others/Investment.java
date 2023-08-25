@@ -2,7 +2,7 @@ package dev.hugog.minecraft.blockstreet.others;
 
 public class Investment {
 
-	private int id;
+	private final int id;
 	private int stocksAmount;
 	
 	public Investment(int id, int stocksAmount) {
@@ -46,9 +46,7 @@ public class Investment {
 		if (getClass() != obj.getClass())
 			return false;
 		Investment other = (Investment) obj;
-		if (id != other.id)
-			return false;
-		return true;
-	}
+        return id == other.id;
+    }
 	
 }

@@ -1,12 +1,12 @@
 package dev.hugog.minecraft.blockstreet.commands;
 
-import dev.hugog.minecraft.blockstreet.Main;
+import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.enums.ConfigurationFiles;
 import dev.hugog.minecraft.blockstreet.others.ConfigAccessor;
 import dev.hugog.minecraft.blockstreet.others.Messages;
-import me.hgsoft.minecraft.devcommand.annotations.Command;
-import me.hgsoft.minecraft.devcommand.commands.BukkitDevCommand;
-import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
+import dev.hugog.minecraft.dev_command.annotations.Command;
+import dev.hugog.minecraft.dev_command.commands.BukkitDevCommand;
+import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -34,17 +34,17 @@ public class ReloadCommand extends BukkitDevCommand {
 		Player p = (Player) getCommandSender();
 
 		Messages messages = new Messages();
-		ConfigAccessor playersReg = new ConfigAccessor(Main.getInstance(), ConfigurationFiles.PLAYERS.getFileName());
-		ConfigAccessor companiesReg = new ConfigAccessor(Main.getInstance(), ConfigurationFiles.COMPANIES.getFileName());
+		ConfigAccessor playersReg = new ConfigAccessor(BlockStreet.getInstance(), ConfigurationFiles.PLAYERS.getFileName());
+		ConfigAccessor companiesReg = new ConfigAccessor(BlockStreet.getInstance(), ConfigurationFiles.COMPANIES.getFileName());
 
 		if (p.hasPermission("blockstreet.admin.*") || p.hasPermission("blockstreet.admin.reload")) {
 
 			playersReg.reloadConfig();
 			companiesReg.reloadConfig();
-			Main.getInstance().reloadConfig();
+			BlockStreet.getInstance().reloadConfig();
 
-			Main.getInstance().stopRunnables();
-			Main.getInstance().registerRunnables();
+			BlockStreet.getInstance().stopRunnables();
+			BlockStreet.getInstance().registerRunnables();
 
 			p.sendMessage(messages.getPluginPrefix() + ChatColor.GREEN + messages.getPluginReload());
 

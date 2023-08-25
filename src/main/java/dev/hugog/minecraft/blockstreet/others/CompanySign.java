@@ -1,6 +1,6 @@
 package dev.hugog.minecraft.blockstreet.others;
 
-import dev.hugog.minecraft.blockstreet.Main;
+import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.enums.ConfigurationFiles;
 import lombok.Getter;
 import org.bukkit.ChatColor;
@@ -20,7 +20,7 @@ public class CompanySign implements Savable<CompanySign> {
 
     public CompanySign(int companyId, Location location) {
 
-        ConfigAccessor signsReg = new ConfigAccessor(Main.getInstance(), ConfigurationFiles.SIGNS.getFileName());
+        ConfigAccessor signsReg = new ConfigAccessor(BlockStreet.getInstance(), ConfigurationFiles.SIGNS.getFileName());
         Optional<ConfigurationSection> signsSection = Optional.ofNullable(signsReg.getConfig().getConfigurationSection("Signs"));
         AtomicInteger nextId = new AtomicInteger();
 
@@ -63,7 +63,7 @@ public class CompanySign implements Savable<CompanySign> {
     @Override
     public void save() {
 
-        ConfigAccessor signsReg = new ConfigAccessor(Main.getInstance(), ConfigurationFiles.SIGNS.getFileName());
+        ConfigAccessor signsReg = new ConfigAccessor(BlockStreet.getInstance(), ConfigurationFiles.SIGNS.getFileName());
 
         signsReg.getConfig().set("Signs." + this.id + ".CompanyId", this.companyId);
         signsReg.getConfig().set("Signs." + this.id + ".Location", this.location);
@@ -74,7 +74,7 @@ public class CompanySign implements Savable<CompanySign> {
     @Override
     public CompanySign load() {
 
-        ConfigAccessor signsReg = new ConfigAccessor(Main.getInstance(), ConfigurationFiles.SIGNS.getFileName());
+        ConfigAccessor signsReg = new ConfigAccessor(BlockStreet.getInstance(), ConfigurationFiles.SIGNS.getFileName());
 
         signsReg.reloadConfig();
 

@@ -1,6 +1,6 @@
 package dev.hugog.minecraft.blockstreet.listeners;
 
-import dev.hugog.minecraft.blockstreet.Main;
+import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.others.Company;
 import dev.hugog.minecraft.blockstreet.others.CompanyContainer;
 import dev.hugog.minecraft.blockstreet.others.CompanySign;
@@ -60,7 +60,7 @@ public class SignHandler implements Listener {
                     Sign sign = (Sign)event.getBlock().getState();
                     CompanySign companySign = new CompanySign(company.getId(), sign.getLocation());
 
-                    Bukkit.getScheduler().runTaskLater(Main.getInstance(), ()->{
+                    Bukkit.getScheduler().runTaskLater(BlockStreet.getInstance(), ()->{
                         companySign.update();
                         companySign.save();
                     }, 20L);

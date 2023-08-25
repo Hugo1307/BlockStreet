@@ -1,17 +1,16 @@
 package dev.hugog.minecraft.blockstreet;
 
+import dev.hugog.minecraft.blockstreet.data.repositories.UpdatesRepository;
 import dev.hugog.minecraft.blockstreet.enums.ConfigurationFiles;
-import dev.hugog.minecraft.blockstreet.others.ConfigAccessor;
-import dev.hugog.minecraft.blockstreet.listeners.PlayerJoin;
+import dev.hugog.minecraft.blockstreet.listeners.PlayerJoinListener;
 import dev.hugog.minecraft.blockstreet.listeners.SignHandler;
+import dev.hugog.minecraft.blockstreet.others.ConfigAccessor;
 import dev.hugog.minecraft.blockstreet.runnables.InterestRateRunnable;
 import dev.hugog.minecraft.blockstreet.runnables.SignCheckerRunnable;
-import hugog.blockstreet.update.AutoUpdate;
-import me.hgsoft.minecraft.devcommand.DevCommand;
-import me.hgsoft.minecraft.devcommand.commands.executors.DevCommandExecutor;
-import me.hgsoft.minecraft.devcommand.commands.handler.CommandHandler;
-import me.hgsoft.minecraft.devcommand.integration.Integration;
-import net.md_5.bungee.api.ChatColor;
+import dev.hugog.minecraft.dev_command.DevCommand;
+import dev.hugog.minecraft.dev_command.commands.executors.DevCommandExecutor;
+import dev.hugog.minecraft.dev_command.commands.handler.CommandHandler;
+import dev.hugog.minecraft.dev_command.integration.Integration;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
@@ -19,15 +18,22 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.util.logging.Level;
 
-public class Main extends JavaPlugin {
+public class BlockStreet extends JavaPlugin {
 
     public ConfigAccessor messagesConfig;
     public Economy economy = null;
-    private static Main instance;
+    private static BlockStreet instance;
     private BukkitTask interestRateTask, signCheckerTask;
+
+    @Inject
+    private PlayerJoinListener playerJoinListener;
+
+    @Inject
+    private UpdatesRepository updatesRepository;
 
     @Override
     public void onEnable() {
@@ -48,11 +54,7 @@ public class Main extends JavaPlugin {
 
         registerRunnables();
 
-        try {
-			AutoUpdate.checkForUpdates();
-		} catch (ParseException e) {
-			System.out.println(ChatColor.DARK_RED + "[BlockStreet] Unable to search for new versions.");
-		}
+        checkForUpdates();
            	
         System.out.println("[BlockStreet] Plugin successfully enabled!");
         
@@ -61,6 +63,16 @@ public class Main extends JavaPlugin {
     @Override
     public void onDisable() {
         System.out.println("[BlockStreet] Plugin successfully disabled!");
+    }
+
+    public void checkForUpdates() {
+
+        if (updatesRepository.isUpdateAvailable()) {
+            getLogger().warning("An update is available! Download it at: https://www.spigotmc.org/resources/blockstreet.75791/");
+        } else {
+            getLogger().info("You are using the latest version of BlockStreet!");
+        }
+
     }
 
     private void registerCommands() {
@@ -99,12 +111,12 @@ public class Main extends JavaPlugin {
     }
 
     private void registerEvents() {
-        getServer().getPluginManager().registerEvents(new PlayerJoin(this), this);
+        getServer().getPluginManager().registerEvents(playerJoinListener, this);
         getServer().getPluginManager().registerEvents(new SignHandler(), this);
     }
 
     public void registerRunnables() {
-        int interestTime = Main.getInstance().getConfig().getInt("BlockStreet.Timer");
+        int interestTime = BlockStreet.getInstance().getConfig().getInt("BlockStreet.Timer");
         interestRateTask = new InterestRateRunnable().runTaskTimerAsynchronously(this, 20L*10, 20L*60);
         signCheckerTask = new SignCheckerRunnable().runTaskTimer(this, 20L*10, 20L*60*interestTime);
     }
@@ -126,7 +138,7 @@ public class Main extends JavaPlugin {
         return economy != null;
     }
 
-	public static Main getInstance() {
+	public static BlockStreet getInstance() {
 		return instance;
 	}
 

@@ -15,7 +15,7 @@ public class ConfigAccessor {
     private final String fileName;
     private final JavaPlugin plugin;
     
-    private File configFile;
+    private final File configFile;
     private FileConfiguration fileConfiguration;
 
     public ConfigAccessor(JavaPlugin plugin, String fileName) {
@@ -49,7 +49,6 @@ public class ConfigAccessor {
 
     public void saveConfig() {
         if (fileConfiguration == null || configFile == null) {
-            return;
         } else {
             try {
                 getConfig().save(configFile);

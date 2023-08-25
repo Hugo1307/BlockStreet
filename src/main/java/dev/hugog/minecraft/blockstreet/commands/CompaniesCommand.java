@@ -1,13 +1,13 @@
 package dev.hugog.minecraft.blockstreet.commands;
 
-import dev.hugog.minecraft.blockstreet.Main;
+import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.enums.ConfigurationFiles;
 import dev.hugog.minecraft.blockstreet.others.Company;
 import dev.hugog.minecraft.blockstreet.others.ConfigAccessor;
 import dev.hugog.minecraft.blockstreet.others.Messages;
-import me.hgsoft.minecraft.devcommand.annotations.Command;
-import me.hgsoft.minecraft.devcommand.commands.BukkitDevCommand;
-import me.hgsoft.minecraft.devcommand.commands.data.BukkitCommandData;
+import dev.hugog.minecraft.dev_command.annotations.Command;
+import dev.hugog.minecraft.dev_command.commands.BukkitDevCommand;
+import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -38,7 +38,7 @@ public class CompaniesCommand extends BukkitDevCommand {
 
 		Player p = (Player) getCommandSender();
 		Messages messages = new Messages();
-		ConfigAccessor companiesReg = new ConfigAccessor(Main.getInstance(), ConfigurationFiles.COMPANIES.getFileName());
+		ConfigAccessor companiesReg = new ConfigAccessor(BlockStreet.getInstance(), ConfigurationFiles.COMPANIES.getFileName());
 
 		if (p.hasPermission("blockstreet.command.companies") || p.hasPermission("blockstreet.command.*")) {
 
