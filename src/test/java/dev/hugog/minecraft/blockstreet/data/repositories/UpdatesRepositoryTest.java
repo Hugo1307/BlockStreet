@@ -1,9 +1,9 @@
 package dev.hugog.minecraft.blockstreet.data.repositories;
 
 import dev.hugog.minecraft.blockstreet.BlockStreet;
-import dev.hugog.minecraft.blockstreet.data.entities.PluginReleaseEntity;
+import dev.hugog.minecraft.blockstreet.api.entities.PluginReleaseEntity;
 import dev.hugog.minecraft.blockstreet.data.repositories.implementations.UpdatesRepository;
-import dev.hugog.minecraft.blockstreet.data.api.PluginReleaseAPIData;
+import dev.hugog.minecraft.blockstreet.api.PluginReleaseAPIData;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

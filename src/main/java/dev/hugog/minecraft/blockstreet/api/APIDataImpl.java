@@ -1,4 +1,4 @@
-package dev.hugog.minecraft.blockstreet.data.api;
+package dev.hugog.minecraft.blockstreet.api;
 
 import lombok.extern.log4j.Log4j2;
 import okhttp3.OkHttpClient;

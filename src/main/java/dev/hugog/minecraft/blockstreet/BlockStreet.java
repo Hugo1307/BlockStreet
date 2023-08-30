@@ -2,9 +2,11 @@ package dev.hugog.minecraft.blockstreet;
 
 import com.google.inject.Injector;
 import dev.hugog.minecraft.blockstreet.data.repositories.implementations.CompaniesRepository;
+import dev.hugog.minecraft.blockstreet.data.repositories.implementations.PlayersRepository;
 import dev.hugog.minecraft.blockstreet.data.repositories.implementations.UpdatesRepository;
 import dev.hugog.minecraft.blockstreet.dependencyinjection.BasicBinderModule;
 import dev.hugog.minecraft.blockstreet.enums.ConfigurationFiles;
+import dev.hugog.minecraft.blockstreet.enums.DataFilePath;
 import dev.hugog.minecraft.blockstreet.listeners.PlayerJoinListener;
 import dev.hugog.minecraft.blockstreet.listeners.SignHandler;
 import dev.hugog.minecraft.blockstreet.others.ConfigAccessor;
@@ -26,6 +28,9 @@ import org.bukkit.scheduler.BukkitTask;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.logging.Level;
 
 public class BlockStreet extends JavaPlugin {
@@ -45,6 +50,7 @@ public class BlockStreet extends JavaPlugin {
     // Repositories
     @Inject private UpdatesRepository updatesRepository;
     @Inject private CompaniesRepository companiesRepository;
+    @Inject private PlayersRepository playersRepository;
 
     @Inject
     private Messages messages;
@@ -68,7 +74,7 @@ public class BlockStreet extends JavaPlugin {
         
         configureMessages();
 
-        configureCompaniesReg();
+        checkDefaultCompanyRegistry();
 
         registerRunnables();
 
@@ -129,6 +135,7 @@ public class BlockStreet extends JavaPlugin {
 
         dependencyHandler.registerDependency(pluginDevCommandsIntegration, updatesRepository);
         dependencyHandler.registerDependency(pluginDevCommandsIntegration, companiesRepository);
+        dependencyHandler.registerDependency(pluginDevCommandsIntegration, playersRepository);
 
     }
 
@@ -137,10 +144,31 @@ public class BlockStreet extends JavaPlugin {
         	this.saveDefaultConfig();
     }
     
-    private void configureCompaniesReg() {
-		ConfigAccessor companiesReg = new ConfigAccessor(this, ConfigurationFiles.COMPANIES.getFileName());
-		if (!new File(getDataFolder(), ConfigurationFiles.COMPANIES.getFileName()).exists())
-			companiesReg.saveDefaultConfig();
+    private void checkDefaultCompanyRegistry() {
+
+        File companiesDirectory = new File(getDataFolder(), DataFilePath.COMPANIES.getDataPath());
+        if (!companiesDirectory.exists()) {
+            if (companiesDirectory.mkdir()) {
+                File defaultCompanyFile = new File(getDataFolder(), DataFilePath.COMPANIES.getFullPathById("0"));
+                try {
+                    byte[] buffer = getResource("companies/0.yml").readAllBytes();
+
+                    OutputStream outStream = Files.newOutputStream(defaultCompanyFile.toPath());
+                    outStream.write(buffer);
+
+                    outStream.close();
+
+                } catch (IOException e) {
+                    getLogger().warning("Unable to create default company file.");
+                    throw new RuntimeException(e);
+                }
+            } else {
+                getLogger().warning("Unable to create companies directory.");
+            }
+        } else {
+            getLogger().info("Companies directory already exists. Skipping default initialization.");
+        }
+
     }
     
     private void configureMessages() {

@@ -1,7 +1,10 @@
 package dev.hugog.minecraft.blockstreet.commands;
 
 import dev.hugog.minecraft.blockstreet.data.entities.CompanyEntity;
+import dev.hugog.minecraft.blockstreet.data.entities.InvestmentEntity;
+import dev.hugog.minecraft.blockstreet.data.entities.PlayerEntity;
 import dev.hugog.minecraft.blockstreet.data.repositories.implementations.CompaniesRepository;
+import dev.hugog.minecraft.blockstreet.data.repositories.implementations.PlayersRepository;
 import dev.hugog.minecraft.blockstreet.others.Messages;
 import dev.hugog.minecraft.dev_command.annotations.ArgsValidation;
 import dev.hugog.minecraft.dev_command.annotations.Command;
@@ -27,8 +30,8 @@ import java.util.Optional;
  * @since v1.0.0
  */
 @Command(alias = "buy", permission = "blockstreet.command.buy", isPlayerOnly = true)
-@Dependencies(dependencies = {Messages.class, CompaniesRepository.class, Economy.class})
-@ArgsValidation(argsTypes = {IntegerArgument.class, IntegerArgument.class}, mandatory = 2)
+@Dependencies(dependencies = {Messages.class, Economy.class, CompaniesRepository.class, PlayersRepository.class})
+@ArgsValidation(mandatoryArgs = {IntegerArgument.class, IntegerArgument.class})
 public class BuyCommand extends BukkitDevCommand {
 
 	public BuyCommand(BukkitCommandData command, CommandSender commandSender, String[] args) {
@@ -39,8 +42,9 @@ public class BuyCommand extends BukkitDevCommand {
 	public void execute() {
 
 		Messages messages = (Messages) getDependency(Messages.class);
-		CompaniesRepository companiesRepository = (CompaniesRepository) getDependency(CompaniesRepository.class);
 		Economy vaultEconomy = (Economy) getDependency(Economy.class);
+		CompaniesRepository companiesRepository = (CompaniesRepository) getDependency(CompaniesRepository.class);
+		PlayersRepository playersRepository = (PlayersRepository) getDependency(PlayersRepository.class);
 
 		if (!canSenderExecuteCommand()) {
 			getCommandSender().sendMessage(messages.getPluginPrefix() + messages.getPlayerOnlyCommand());
@@ -60,42 +64,50 @@ public class BuyCommand extends BukkitDevCommand {
 		}
 
 		// Arguments will always be valid, since we are validating them with DevCommands.
-		int stocksAmount = Integer.parseInt(getArgs()[0]);
-		int companyId = Integer.parseInt(getArgs()[1]);
+		int numberOfSharesToBuy = Integer.parseInt(getArgs()[0]);
+		long companyId = Long.parseLong(getArgs()[1]);
 
-		Optional<CompanyEntity> companyToInvestOptional = companiesRepository.getCompanyById(companyId);
+		Optional<CompanyEntity> companyToInvestOptional = companiesRepository.getById(companyId);
+		Optional<PlayerEntity> playerProfileOptional = playersRepository.getById(player.getUniqueId());
 
-		if (!companyToInvestOptional.isPresent()) {
+		if (companyToInvestOptional.isEmpty()) {
 			player.sendMessage(messages.getPluginPrefix() + messages.getInvalidCompany());
 			return;
 		}
 
+		if (playerProfileOptional.isEmpty()) {
+			player.sendMessage(messages.getPluginPrefix() + messages.getPlayerNotFound());
+			return;
+		}
+
+		PlayerEntity playerProfile = playerProfileOptional.get();
 		CompanyEntity companyToInvest = companyToInvestOptional.get();
 
 		// If the company has unlimited stocks it will always be available.
 		// Companies with unlimited stocks are marked with "-1" as available stocks.
-		if (companyToInvest.getAvailableStocks() < stocksAmount  || companyToInvest.getAvailableStocks() == -1) {
+		if (companyToInvest.getAvailableShares() < numberOfSharesToBuy  || companyToInvest.getAvailableShares() == -1) {
 			player.sendMessage(messages.getPluginPrefix() + messages.getInsufficientActions());
 			return;
 		}
 
 		double playerMoney = vaultEconomy.getBalance(player);
 
-		if (playerMoney < companyToInvest.getPricePerStock() * stocksAmount) {
+		if (playerMoney < companyToInvest.getSharePrice() * numberOfSharesToBuy) {
 			player.sendMessage(messages.getPluginPrefix() + messages.getInsufficientMoney());
 			return;
 		}
 
-		vaultEconomy.withdrawPlayer(player, companyToInvest.getPricePerStock() * stocksAmount);
-		companyToInvest.setAvailableStocks(companyToInvest.getAvailableStocks() - stocksAmount);
+		vaultEconomy.withdrawPlayer(player, companyToInvest.getSharePrice() * numberOfSharesToBuy);
+		companyToInvest.setAvailableShares(companyToInvest.getAvailableShares() - numberOfSharesToBuy);
+		playerProfile.getInvestments().add(InvestmentEntity.builder().companyId(companyToInvest.getId()).sharesAmount(numberOfSharesToBuy).build());
 
 		// TODO: Add the stocks to the investor portfolio.
-
-		companiesRepository.updateCompany(companyToInvest);
+		companiesRepository.save(companyToInvest);
+		playersRepository.save(playerProfile);
 
 		player.sendMessage(messages.getPluginPrefix() + MessageFormat.format(
 				messages.getBoughtActions().replace("'", "''"),
-				stocksAmount
+				numberOfSharesToBuy
 		));
 
 	}

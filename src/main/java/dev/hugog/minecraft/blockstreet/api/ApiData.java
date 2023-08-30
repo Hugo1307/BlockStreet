@@ -1,10 +1,9 @@
-package dev.hugog.minecraft.blockstreet.data.api;
+package dev.hugog.minecraft.blockstreet.api;
 
-import dev.hugog.minecraft.blockstreet.data.PluginData;
 import dev.hugog.minecraft.blockstreet.data.entities.DataEntity;
 import okhttp3.Response;
 
-public interface ApiData extends PluginData {
+public interface ApiData {
 
     Response executeRequest();
 

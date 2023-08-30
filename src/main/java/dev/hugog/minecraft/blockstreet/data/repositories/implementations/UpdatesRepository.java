@@ -1,33 +1,28 @@
 package dev.hugog.minecraft.blockstreet.data.repositories.implementations;
 
 import dev.hugog.minecraft.blockstreet.BlockStreet;
-import dev.hugog.minecraft.blockstreet.data.api.ApiData;
-import dev.hugog.minecraft.blockstreet.data.entities.PluginReleaseEntity;
-import dev.hugog.minecraft.blockstreet.data.repositories.RepositoryImpl;
-import dev.hugog.minecraft.blockstreet.data.sources.DataSource;
-import dev.hugog.minecraft.blockstreet.data.api.PluginReleaseAPIData;
+import dev.hugog.minecraft.blockstreet.api.ApiData;
+import dev.hugog.minecraft.blockstreet.api.entities.PluginReleaseEntity;
 import lombok.extern.log4j.Log4j2;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 
 @Log4j2
-public class UpdatesRepository extends RepositoryImpl {
+public class UpdatesRepository {
 
     private final BlockStreet plugin;
 
     public UpdatesRepository(ApiData apiData, BlockStreet plugin) {
-        super(apiData);
         this.plugin = plugin;
     }
 
     public PluginReleaseEntity getLatestRelease() {
 
-        if (!verifyDataSource()) {
-            log.warn("The data source is not an instance of PluginReleaseAPIDataSource.");
-            return null;
-        }
+        // TODO: Fix this
 
-        PluginReleaseAPIData pluginReleaseAPIDataSource = (PluginReleaseAPIData) pluginData;
-        return (PluginReleaseEntity) pluginReleaseAPIDataSource.parseData();
+//        PluginReleaseAPIData pluginReleaseAPIDataSource = (PluginReleaseAPIData) plugin.getApiData();
+//        return (PluginReleaseEntity) pluginReleaseAPIDataSource.parseData();
+
+        return null;
 
     }
 
@@ -50,11 +45,6 @@ public class UpdatesRepository extends RepositoryImpl {
 
         return currentVersion.compareTo(latestVersion) < 0;
 
-    }
-
-    @Override
-    public boolean verifyDataSource() {
-        return pluginData instanceof PluginReleaseAPIData;
     }
 
 }

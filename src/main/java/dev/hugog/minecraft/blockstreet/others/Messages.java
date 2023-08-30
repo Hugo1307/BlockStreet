@@ -31,6 +31,8 @@ public class Messages {
 	private final String availableActions;
 	private final String actionHistoric;
 	private final String details;
+
+	private final String playerNotFound;
 	private final String playerOnlyCommand;
 	private final String noPermission;
 	private final String nonExistentPage;
@@ -80,6 +82,8 @@ public class Messages {
 		this.availableActions = messagesConfig.getConfig().getString("availableActions");
 		this.actionHistoric = messagesConfig.getConfig().getString("actionHistoric");
 		this.details = messagesConfig.getConfig().getString("details");
+
+		this.playerNotFound = messagesConfig.getConfig().getString("playerNotFound");
 		this.playerOnlyCommand = messagesConfig.getConfig().getString("playerOnlyCommand");
 		this.noPermission = messagesConfig.getConfig().getString("noPermission");
 		this.nonExistentPage = messagesConfig.getConfig().getString("nonExistantPage");

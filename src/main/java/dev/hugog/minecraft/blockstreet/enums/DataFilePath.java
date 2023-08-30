@@ -5,15 +5,22 @@ import lombok.Getter;
 @Getter
 public enum DataFilePath {
 
-    COMPANIES("companies.yml"),
-    PLAYERS("players.yml"),
-    SIGNS("signs.yml");
+    COMPANIES("/companies"),
+    PLAYERS("/players"),
+    SIGNS("/signs");
 
-    private final String fileName;
+    private final String dataPath;
 
-    DataFilePath(String fileName) {
-        this.fileName = fileName;
+    DataFilePath(String dataPath) {
+        this.dataPath = dataPath;
     }
 
+    public String getFullPath(String fileName) {
+        return dataPath + "/" + fileName;
+    }
+
+    public String getFullPathById(String id) {
+        return dataPath + "/" + id + ".yml";
+    }
 
 }

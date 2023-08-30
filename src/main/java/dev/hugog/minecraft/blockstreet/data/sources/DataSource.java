@@ -1,12 +1,15 @@
 package dev.hugog.minecraft.blockstreet.data.sources;
 
-import dev.hugog.minecraft.blockstreet.data.PluginData;
 import dev.hugog.minecraft.blockstreet.data.entities.DataEntity;
 
-public interface DataSource<T extends DataEntity> extends PluginData {
+public interface DataSource<T extends DataEntity> {
 
-    T load(Class<T> dataEntityClass);
+    T load(String fileName, Class<T> dataEntityClass);
 
-    void save(T data);
+    void save(String fileName, T data);
+
+    boolean exists(String fileName);
+
+    void delete(String fileName);
 
 }

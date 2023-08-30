@@ -1,13 +1,14 @@
 package dev.hugog.minecraft.blockstreet.commands;
 
-import dev.hugog.minecraft.blockstreet.BlockStreet;
-import dev.hugog.minecraft.blockstreet.enums.ConfigurationFiles;
-import dev.hugog.minecraft.blockstreet.others.Company;
-import dev.hugog.minecraft.blockstreet.others.ConfigAccessor;
+import dev.hugog.minecraft.blockstreet.data.entities.CompanyEntity;
+import dev.hugog.minecraft.blockstreet.data.repositories.implementations.CompaniesRepository;
 import dev.hugog.minecraft.blockstreet.others.Messages;
+import dev.hugog.minecraft.dev_command.annotations.ArgsValidation;
 import dev.hugog.minecraft.dev_command.annotations.Command;
+import dev.hugog.minecraft.dev_command.annotations.Dependencies;
 import dev.hugog.minecraft.dev_command.commands.BukkitDevCommand;
 import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
+import dev.hugog.minecraft.dev_command.validators.IntegerArgument;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -16,17 +17,21 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 /**
  * Companies command
- *
+ * <p>
  * Command to check the available companies with stocks to sell.
- *
+ * <p>
  * Syntax: /invest companies
  *
  * @author Hugo1307
  * @since v1.0.0
  */
-@Command(alias = "companies", permission = "blockstreet.command.companies")
+@Command(alias = "companies", permission = "blockstreet.command.companies", isPlayerOnly = true)
+@Dependencies(dependencies = { Messages.class, CompaniesRepository.class })
+@ArgsValidation(optionalArgs = {IntegerArgument.class})
 public class CompaniesCommand extends BukkitDevCommand {
 
 	public CompaniesCommand(BukkitCommandData command, CommandSender commandSender, String[] args) {
@@ -36,88 +41,48 @@ public class CompaniesCommand extends BukkitDevCommand {
 	@Override
 	public void execute() {
 
-		Player p = (Player) getCommandSender();
-		Messages messages = new Messages();
-		ConfigAccessor companiesReg = new ConfigAccessor(BlockStreet.getInstance(), ConfigurationFiles.COMPANIES.getFileName());
+		Messages messages = (Messages) getDependency(Messages.class);
+		CompaniesRepository companiesRepository = (CompaniesRepository) getDependency(CompaniesRepository.class);
 
-		if (p.hasPermission("blockstreet.command.companies") || p.hasPermission("blockstreet.command.*")) {
-
-			int numberOfCompanies = 0;
-
-			if (companiesReg.getConfig().get("Companies") != null)
-				numberOfCompanies = companiesReg.getConfig().getConfigurationSection("Companies").getKeys(false).size();
-
-			if (numberOfCompanies > 0) {
-
-				if (getArgs().length <= 1) {
-
-					p.sendMessage(messages.getPluginHeader());
-					for (int companyIndex = 1; companyIndex <= 3 ; companyIndex++) {
-
-						Company currentCompany = new Company(companyIndex).load();
-
-						sendCompanyText(p, messages, currentCompany, companyIndex);
-
-					}
-
-					if(numberOfCompanies > 3)
-						p.sendMessage(ChatColor.GREEN + "/invest companies 2" + ChatColor.GRAY + " - " + messages.getListNextPage());
-
-					p.sendMessage(messages.getPluginFooter());
-
-				}else {
-
-					int pageNumber, firstCompanyOfPage, lastCompanyOfPage;
-
-					try {
-						pageNumber = Integer.parseInt(getArgs()[1]);
-					} catch (NumberFormatException e) {
-						p.sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
-						return;
-					}
-
-					firstCompanyOfPage = (pageNumber-1)*3+1;
-					lastCompanyOfPage = pageNumber*3;
-
-					p.sendMessage(messages.getPluginHeader());
-					for (int companyIndex = firstCompanyOfPage; companyIndex <= lastCompanyOfPage; companyIndex++) {
-
-						Company currentCompany = new Company(companyIndex).load();
-
-						sendCompanyText(p, messages, currentCompany, companyIndex);
-
-					}
-
-					if(numberOfCompanies > lastCompanyOfPage + 1)
-						p.sendMessage(ChatColor.GREEN + "/invest companies " + pageNumber  + ChatColor.GRAY + " - " + messages.getListNextPage());
-
-					p.sendMessage(messages.getPluginFooter());
-
-				}
-
-			}else {
-				p.sendMessage(messages.getPluginPrefix() + messages.getNonExistentPage());
-			}
-
-		}else {
-			p.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
+		if (!canSenderExecuteCommand()) {
+			getCommandSender().sendMessage(messages.getPluginPrefix() + messages.getPlayerOnlyCommand());
+			return;
 		}
+
+		Player player = (Player) getCommandSender();
+
+		if (!hasPermissionToExecuteCommand()) {
+			player.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
+			return;
+		}
+
+		if (!hasValidArgs()) {
+			player.sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
+			return;
+		}
+
+		List<CompanyEntity> companiesList = companiesRepository.getCompaniesByIdInterval(0, 3);
+
+		player.sendMessage(messages.getPluginHeader());
+		companiesList.forEach(company -> printCompanyDetails(player, messages, company));
+		player.sendMessage(messages.getPluginFooter());
 
 	}
 
-	private void sendCompanyText(Player p,  Messages messages, Company currentCompany, int companyIndex) {
+	@SuppressWarnings("deprecation")
+	private void printCompanyDetails(Player player, Messages messages, CompanyEntity currentCompany) {
 
 		TextComponent companyDetails = new TextComponent(ChatColor.GRAY + "[Details]");
 		companyDetails.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
 				new ComponentBuilder(ChatColor.GRAY + "Click to see company's details.").create()));
-		companyDetails.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/invest company " + companyIndex));
+		companyDetails.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/invest company " + currentCompany.getId()));
 
 		if(currentCompany.getName() != null) {
-			p.sendMessage(ChatColor.GREEN + currentCompany.getName());
-			p.sendMessage(ChatColor.GRAY + messages.getPrice() + ": " + currentCompany.getStocksPrice());
-			p.sendMessage(ChatColor.GRAY + messages.getRisk() + ": " + ChatColor.GREEN + currentCompany.getRisk());
-			p.spigot().sendMessage(companyDetails);
-			p.sendMessage("");
+			player.sendMessage(ChatColor.GREEN + currentCompany.getName());
+			player.sendMessage(ChatColor.GRAY + messages.getPrice() + ": " + currentCompany.getSharePrice());
+			player.sendMessage(ChatColor.GRAY + messages.getRisk() + ": " + ChatColor.GREEN + currentCompany.getRisk());
+			player.spigot().sendMessage(companyDetails);
+			player.sendMessage("");
 		}
 
 	}

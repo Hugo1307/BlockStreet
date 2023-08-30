@@ -1,5 +1,6 @@
-package dev.hugog.minecraft.blockstreet.data.entities;
+package dev.hugog.minecraft.blockstreet.api.entities;
 
+import dev.hugog.minecraft.blockstreet.data.entities.DataEntity;
 import lombok.Builder;
 import lombok.Data;
 

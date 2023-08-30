@@ -1,9 +1,9 @@
-package dev.hugog.minecraft.blockstreet.data.api;
+package dev.hugog.minecraft.blockstreet.api;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import dev.hugog.minecraft.blockstreet.data.entities.DataEntity;
-import dev.hugog.minecraft.blockstreet.data.entities.PluginReleaseEntity;
+import dev.hugog.minecraft.blockstreet.api.entities.PluginReleaseEntity;
 import lombok.extern.log4j.Log4j2;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
