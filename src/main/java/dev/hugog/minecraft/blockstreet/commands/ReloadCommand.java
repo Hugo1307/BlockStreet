@@ -13,15 +13,15 @@ import org.bukkit.entity.Player;
 
 /**
  * Reload Command
- *
+ * <p>
  * Command to reload the plugin.
- *
+ * <p>
  * Syntax: /invest reload
  *
  * @author Hugo1307
  * @since v1.0.0
  */
-@Command(alias = "reload", permission = "blockstreet.admin.reload")
+@Command(alias = "reload", description = "Reloads the plugin.", permission = "blockstreet.admin.reload")
 public class ReloadCommand extends BukkitDevCommand {
 
 	public ReloadCommand(BukkitCommandData commandData, CommandSender commandSender, String[] args) {

@@ -21,14 +21,14 @@ import java.text.MessageFormat;
  * <p>
  * Command which allow players to buy in-game stocks.
  * <p>
- * Syntax: /invest buy [amount] [companyID]
+ * Syntax: /invest buy [companyID] [amount]
  *
  * @author Hugo1307
  * @since v1.0.0
  */
-@Command(alias = "buy", permission = "blockstreet.command.buy", isPlayerOnly = true)
+@Command(alias = "buy", description = "Buy company shares.", permission = "blockstreet.command.buy", isPlayerOnly = true)
 @Dependencies(dependencies = {Messages.class, Economy.class, CompaniesService.class, PlayersService.class})
-@ArgsValidation(mandatoryArgs = {PositiveIntegerArgument.class, IntegerArgument.class})
+@ArgsValidation(mandatoryArgs = {IntegerArgument.class, PositiveIntegerArgument.class})
 public class BuyCommand extends BukkitDevCommand {
 
 	public BuyCommand(BukkitCommandData command, CommandSender commandSender, String[] args) {
@@ -51,8 +51,8 @@ public class BuyCommand extends BukkitDevCommand {
 		Player player = (Player) getCommandSender();
 
 		// Arguments will always be valid, since we are validating them with DevCommands.
-		int numberOfSharesToBuy = Integer.parseInt(getArgs()[0]);
-		long companyId = Long.parseLong(getArgs()[1]);
+		long companyId = Long.parseLong(getArgs()[0]);
+		int numberOfSharesToBuy = Integer.parseInt(getArgs()[1]);
 
 		if (!companiesService.companyExists(companyId)) {
 			player.sendMessage(messages.getPluginPrefix() + messages.getInvalidCompany());

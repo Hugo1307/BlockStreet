@@ -21,7 +21,7 @@ import org.bukkit.entity.Player;
  * @author Hugo1307
  * @version 1.0.0
  */
-@Command(alias = "info", isPlayerOnly = true)
+@Command(alias = "info", description = "Get more information about the plugin.", isPlayerOnly = true)
 @Dependencies(dependencies = {Messages.class, UpdatesRepository.class})
 public class InfoCommand extends BukkitDevCommand {
 

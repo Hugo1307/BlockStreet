@@ -29,7 +29,8 @@ import java.util.List;
  * @author Hugo1307
  * @since v1.0.0
  */
-@Command(alias = "companies", permission = "blockstreet.command.companies", isPlayerOnly = true)
+@Command(alias = "companies", description = "Check the companies with available shares to sell.",
+		permission = "blockstreet.command.companies", isPlayerOnly = true)
 @Dependencies(dependencies = { Messages.class, CompaniesService.class })
 @ArgsValidation(optionalArgs = {IntegerArgument.class})
 public class CompaniesCommand extends BukkitDevCommand {

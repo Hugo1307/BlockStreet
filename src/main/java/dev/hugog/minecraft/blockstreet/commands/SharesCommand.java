@@ -12,7 +12,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@Command(alias = "shares", description = "Shows your shares", permission = "blockstreet.command.shares")
+@Command(alias = "shares", description = "Check your investments and shares.", permission = "blockstreet.command.shares")
 @Dependencies(dependencies = {Messages.class, PlayersService.class, CompaniesService.class})
 public class SharesCommand extends BukkitDevCommand {
 

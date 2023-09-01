@@ -21,13 +21,13 @@ import java.text.MessageFormat;
  * <p>
  * Command which allow players to sell stocks.
  * <p>
- * Syntax: /invest sell [amount] [ID]
+ * Syntax: /invest sell [companyID] [amount]
  *
  * @author Hugo1307
  * @since v1.0.0
  */
-@Command(alias = "sell", permission = "blockstreet.command.sell", isPlayerOnly = true)
-@ArgsValidation(mandatoryArgs = {PositiveIntegerArgument.class, IntegerArgument.class})
+@Command(alias = "sell", description = "Sell company shares", permission = "blockstreet.command.sell", isPlayerOnly = true)
+@ArgsValidation(mandatoryArgs = {IntegerArgument.class, PositiveIntegerArgument.class})
 @Dependencies(dependencies = {Messages.class, PlayersService.class, CompaniesService.class, Economy.class})
 public class SellCommand extends BukkitDevCommand {
 
@@ -49,8 +49,8 @@ public class SellCommand extends BukkitDevCommand {
 
 		Player player = (Player) getCommandSender();
 
-		int sellingAmount = Integer.parseInt(getArgs()[0]);
-		long companyId = Long.parseLong(getArgs()[1]);
+		long companyId = Long.parseLong(getArgs()[0]);
+		int sellingAmount = Integer.parseInt(getArgs()[1]);
 
 		if (!companiesService.companyExists(companyId)) {
 			player.sendMessage(messages.getPluginPrefix() + messages.getInvalidCompany());

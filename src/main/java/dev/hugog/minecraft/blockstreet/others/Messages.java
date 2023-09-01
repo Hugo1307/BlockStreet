@@ -56,6 +56,23 @@ public class Messages {
 	private final String interestRateTimeLeft;
 	private final String newVersionAvailable;
 	private final String unknownCommand;
+
+	private final String buyCommandDescription;
+	private final String buyCommandUsage;
+	private final String sellCommandDescription;
+	private final String sellCommandUsage;
+	private final String companyCommandDescription;
+	private final String companyCommandUsage;
+	private final String companiesCommandDescription;
+	private final String companiesCommandUsage;
+	private final String sharesCommandDescription;
+	private final String sharesCommandUsage;
+	private final String infoCommandDescription;
+	private final String infoCommandUsage;
+	private final String reloadCommandDescription;
+	private final String reloadCommandUsage;
+	private final String helpCommandDescription;
+	private final String helpCommandUsage;
 	
 	public Messages() {
 
@@ -109,7 +126,24 @@ public class Messages {
 		this.interestRateTimeLeft = messagesConfig.getConfig().getString("interestRateTimeLeft");
 		this.newVersionAvailable = messagesConfig.getConfig().getString("newVersionAvailable");
 		this.unknownCommand = messagesConfig.getConfig().getString("unknownCommand");
-		
+
+		this.buyCommandDescription = messagesConfig.getConfig().getString("buyCommandDescription");
+		this.buyCommandUsage = messagesConfig.getConfig().getString("buyCommandUsage");
+		this.sellCommandDescription = messagesConfig.getConfig().getString("sellCommandDescription");
+		this.sellCommandUsage = messagesConfig.getConfig().getString("sellCommandUsage");
+		this.companyCommandDescription = messagesConfig.getConfig().getString("companyCommandDescription");
+		this.companyCommandUsage = messagesConfig.getConfig().getString("companyCommandUsage");
+		this.companiesCommandDescription = messagesConfig.getConfig().getString("companiesCommandDescription");
+		this.companiesCommandUsage = messagesConfig.getConfig().getString("companiesCommandUsage");
+		this.sharesCommandDescription = messagesConfig.getConfig().getString("sharesCommandDescription");
+		this.sharesCommandUsage = messagesConfig.getConfig().getString("sharesCommandUsage");
+		this.infoCommandDescription = messagesConfig.getConfig().getString("infoCommandDescription");
+		this.infoCommandUsage = messagesConfig.getConfig().getString("infoCommandUsage");
+		this.reloadCommandDescription = messagesConfig.getConfig().getString("reloadCommandDescription");
+		this.reloadCommandUsage = messagesConfig.getConfig().getString("reloadCommandUsage");
+		this.helpCommandDescription = messagesConfig.getConfig().getString("helpCommandDescription");
+		this.helpCommandUsage = messagesConfig.getConfig().getString("helpCommandUsage");
+
 	}
 
 }

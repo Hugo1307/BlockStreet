@@ -27,7 +27,7 @@ import org.bukkit.entity.Player;
  * @author Hugo1307
  * @since v1.0.0
  */
-@Command(alias = "company", permission = "blockstreet.command.company", isPlayerOnly = true)
+@Command(alias = "company", description = "Get details about a company", permission = "blockstreet.command.company", isPlayerOnly = true)
 @ArgsValidation(mandatoryArgs = {IntegerArgument.class})
 @Dependencies(dependencies = { Messages.class, CompaniesService.class })
 public class CompanyCommand extends BukkitDevCommand {
