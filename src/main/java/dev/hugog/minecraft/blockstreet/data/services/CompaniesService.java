@@ -33,7 +33,7 @@ public class CompaniesService implements Service {
 
     }
 
-    public Integer getCompanyInvestmentPrice(long companyId, int sharesAmount) {
+    public Integer getCompanyInvestmentValue(long companyId, int sharesAmount) {
 
         if (!companyExists(companyId)) {
             return null;
@@ -53,7 +53,42 @@ public class CompaniesService implements Service {
             return;
         }
 
+        // If the company has unlimited stocks, we don't allow it to have less.
+        if (companyDao.getAvailableShares() == -1) {
+            return;
+        }
+
+        // If, by removing the shares, the company would have negative shares, we don't allow it.
+        if (companyDao.getAvailableShares() - amountOfSharesToRemove < 0) {
+            return;
+        }
+
         companyDao.setAvailableShares(companyDao.getAvailableShares() - amountOfSharesToRemove);
+        companiesRepository.save(companyDao.toEntity());
+
+    }
+
+    public void addSharesToCompany(long companyId, int amountOfSharesToAdd) {
+
+        CompanyDao companyDao = (CompanyDao) companiesRepository.getById(companyId)
+                .map(companyEntity -> new CompanyDao().fromEntity(companyEntity))
+                .orElse(null);
+
+        if (companyDao == null) {
+            return;
+        }
+
+        // If the company has unlimited stocks, we don't allow it to have more.
+        if (companyDao.getAvailableShares() == -1) {
+            return;
+        }
+
+        // If, by adding the shares, the company would have more shares than it has available, we don't allow it.
+        if (companyDao.getTotalShares() < companyDao.getAvailableShares() + amountOfSharesToAdd) {
+            return;
+        }
+
+        companyDao.setAvailableShares(companyDao.getAvailableShares() + amountOfSharesToAdd);
         companiesRepository.save(companyDao.toEntity());
 
     }

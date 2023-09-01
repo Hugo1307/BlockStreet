@@ -1,6 +1,5 @@
 package dev.hugog.minecraft.blockstreet.data.repositories.implementations;
 
-import dev.hugog.minecraft.blockstreet.data.entities.InvestmentEntity;
 import dev.hugog.minecraft.blockstreet.data.entities.PlayerEntity;
 import dev.hugog.minecraft.blockstreet.data.repositories.Repository;
 import dev.hugog.minecraft.blockstreet.data.sources.DataSource;

@@ -17,32 +17,31 @@ import org.bukkit.entity.Player;
 import java.text.MessageFormat;
 
 /**
- * Buy Command
+ * Sell Command
  * <p>
- * Command which allow players to buy in-game stocks.
+ * Command which allow players to sell stocks.
  * <p>
- * Syntax: /invest buy [amount] [companyID]
+ * Syntax: /invest sell [amount] [ID]
  *
  * @author Hugo1307
  * @since v1.0.0
  */
-@Command(alias = "buy", permission = "blockstreet.command.buy", isPlayerOnly = true)
-@Dependencies(dependencies = {Messages.class, Economy.class, CompaniesService.class, PlayersService.class})
+@Command(alias = "sell", permission = "blockstreet.command.sell", isPlayerOnly = true)
 @ArgsValidation(mandatoryArgs = {PositiveIntegerArgument.class, IntegerArgument.class})
-public class BuyCommand extends BukkitDevCommand {
+@Dependencies(dependencies = {Messages.class, PlayersService.class, CompaniesService.class, Economy.class})
+public class SellCommand extends BukkitDevCommand {
 
-	public BuyCommand(BukkitCommandData command, CommandSender commandSender, String[] args) {
-		super(command, commandSender, args);
+	public SellCommand(BukkitCommandData commandData, CommandSender sender, String[] args) {
+		super(commandData, sender, args);
 	}
 
 	@Override
 	public void execute() {
 
 		Messages messages = (Messages) getDependency(Messages.class);
-		Economy vaultEconomy = (Economy) getDependency(Economy.class);
-
 		CompaniesService companiesService = (CompaniesService) getDependency(CompaniesService.class);
 		PlayersService playersService = (PlayersService) getDependency(PlayersService.class);
+		Economy economy = (Economy) getDependency(Economy.class);
 
 		if (!validateCommand()) {
 			return;
@@ -50,8 +49,7 @@ public class BuyCommand extends BukkitDevCommand {
 
 		Player player = (Player) getCommandSender();
 
-		// Arguments will always be valid, since we are validating them with DevCommands.
-		int numberOfSharesToBuy = Integer.parseInt(getArgs()[0]);
+		int sellingAmount = Integer.parseInt(getArgs()[0]);
 		long companyId = Long.parseLong(getArgs()[1]);
 
 		if (!companiesService.companyExists(companyId)) {
@@ -59,29 +57,20 @@ public class BuyCommand extends BukkitDevCommand {
 			return;
 		}
 
-		if (!companiesService.hasEnoughShares(companyId, numberOfSharesToBuy)) {
-			player.sendMessage(messages.getPluginPrefix() + messages.getInsufficientActions());
+		// If the player doesn't have at least "sellingAmount" shares in the company, then we don't allow him to sell.
+		if (!playersService.hasSharesInCompany(player.getUniqueId(), companyId, sellingAmount)) {
+			player.sendMessage(messages.getPluginPrefix() + messages.getPlayerNoActions());
 			return;
 		}
 
-		double playerMoney = vaultEconomy.getBalance(player);
-		double investmentPrice = companiesService.getCompanyInvestmentValue(companyId, numberOfSharesToBuy);
+		int sharesValue = companiesService.getCompanyInvestmentValue(companyId, sellingAmount);
 
-		if (playerMoney < investmentPrice) {
-			player.sendMessage(messages.getPluginPrefix() + messages.getInsufficientMoney());
-			return;
-		}
+		// We remove the shares from the player and give him the money.
+		economy.depositPlayer(player, sharesValue);
+		playersService.removeSharesFromPlayer(player.getUniqueId(), companyId, sellingAmount);
+		companiesService.addSharesToCompany(companyId, sellingAmount);
 
-		// Remove money
-		vaultEconomy.withdrawPlayer(player, investmentPrice);
-
-		companiesService.removeSharesFromCompany(companyId, numberOfSharesToBuy);
-		playersService.addSharesToPlayer(player.getUniqueId(), companyId, numberOfSharesToBuy);
-
-		player.sendMessage(messages.getPluginPrefix() + MessageFormat.format(
-				messages.getBoughtActions().replace("'", "''"),
-				numberOfSharesToBuy
-		));
+		player.sendMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getSoldActions(), String.valueOf(sellingAmount), String.valueOf(sharesValue)));
 
 	}
 
@@ -107,5 +96,6 @@ public class BuyCommand extends BukkitDevCommand {
 		return true;
 
 	}
+
 
 }

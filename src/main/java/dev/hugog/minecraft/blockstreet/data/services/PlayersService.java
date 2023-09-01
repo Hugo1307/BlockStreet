@@ -18,7 +18,7 @@ public class PlayersService implements Service {
         this.playersRepository = playersRepository;
     }
 
-    public void registerPlayerInvestment(UUID playerId, long companyId, int sharesAmount) {
+    public void addSharesToPlayer(UUID playerId, long companyId, int sharesAmount) {
 
         PlayerDao playerDao = getOrCreatePlayer(playerId);
         InvestmentDao recentInvestment = new InvestmentDao(companyId, sharesAmount);
@@ -37,6 +37,35 @@ public class PlayersService implements Service {
         }
 
         playersRepository.save(playerDao.toEntity());
+
+    }
+
+    public void removeSharesFromPlayer(UUID playerId, long companyId, int sharesAmount) {
+
+        PlayerDao playerDao = getOrCreatePlayer(playerId);
+
+        playerDao.getInvestments().stream()
+                .filter(playerInvestment -> playerInvestment.getCompanyId() == companyId)
+                .findFirst()
+                .ifPresent(playerInvestment -> {
+                    if (playerInvestment.getSharesAmount() <= sharesAmount) {
+                        playerDao.getInvestments().removeIf(existingInvestment -> existingInvestment.getCompanyId() == companyId);
+                    } else {
+                        playerInvestment.setSharesAmount(playerInvestment.getSharesAmount() - sharesAmount);
+                    }
+
+                });
+
+        playersRepository.save(playerDao.toEntity());
+
+    }
+
+    public boolean hasSharesInCompany(UUID playerId, long companyId, int sharesAmount) {
+
+        PlayerDao playerDao = getOrCreatePlayer(playerId);
+
+        return playerDao.getInvestments().stream()
+                .anyMatch(investment -> investment.getCompanyId() == companyId && investment.getSharesAmount() >= sharesAmount);
 
     }
 
