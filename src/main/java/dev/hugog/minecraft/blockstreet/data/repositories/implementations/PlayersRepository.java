@@ -1,13 +1,13 @@
 package dev.hugog.minecraft.blockstreet.data.repositories.implementations;
 
+import dev.hugog.minecraft.blockstreet.data.entities.InvestmentEntity;
 import dev.hugog.minecraft.blockstreet.data.entities.PlayerEntity;
 import dev.hugog.minecraft.blockstreet.data.repositories.Repository;
 import dev.hugog.minecraft.blockstreet.data.sources.DataSource;
 import dev.hugog.minecraft.blockstreet.data.sources.yml.implementations.PlayersYml;
 import dev.hugog.minecraft.blockstreet.enums.DataFilePath;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayersRepository implements Repository<UUID, PlayerEntity> {
 
@@ -22,15 +22,7 @@ public class PlayersRepository implements Repository<UUID, PlayerEntity> {
 
         if (!isDataSourceValid()) return Optional.empty();
 
-        if (!exists(playerUniqueId)) {
-
-            // If the player doesn't exist, then we create the player
-            PlayerEntity initialPlayerProfile = new PlayerEntity();
-            initialPlayerProfile.setUniqueId(playerUniqueId.toString());
-
-            return Optional.of(initialPlayerProfile);
-
-        }
+        if (!exists(playerUniqueId)) return Optional.empty();
 
         return Optional.ofNullable(dataSource.load(DataFilePath.PLAYERS.getFullPathById(playerUniqueId.toString()), PlayerEntity.class));
 
@@ -56,11 +48,11 @@ public class PlayersRepository implements Repository<UUID, PlayerEntity> {
     }
 
     @Override
-    public void delete(UUID uniqueIdAsString) {
+    public void delete(UUID uniqueId) {
 
         if (!isDataSourceValid()) return;
 
-        dataSource.delete(DataFilePath.PLAYERS.getFullPathById(uniqueIdAsString.toString()));
+        dataSource.delete(DataFilePath.PLAYERS.getFullPathById(uniqueId.toString()));
 
     }
 

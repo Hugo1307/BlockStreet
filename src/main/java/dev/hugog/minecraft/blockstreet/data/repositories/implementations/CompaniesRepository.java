@@ -8,7 +8,6 @@ import dev.hugog.minecraft.blockstreet.enums.DataFilePath;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -33,7 +32,7 @@ public class CompaniesRepository implements Repository<Long, CompanyEntity> {
     public boolean exists(Long id) {
 
         if (!isDataSourceValid()) return false;
-        return dataSource.exists(DataFilePath.COMPANIES.getFullPath(String.valueOf(id)));
+        return dataSource.exists(DataFilePath.COMPANIES.getFullPathById(String.valueOf(id)));
 
     }
 
@@ -53,18 +52,16 @@ public class CompaniesRepository implements Repository<Long, CompanyEntity> {
 
     }
 
-    public List<CompanyEntity> getCompaniesByIdInterval(int startingId, int endingId) {
+    public List<Long> getAllIds() {
 
         if (!isDataSourceValid()) return null;
 
         CompaniesYml companiesDataSourceYML = (CompaniesYml) dataSource;
-        List<String> allowedIds = companiesDataSourceYML.getAllIds(DataFilePath.COMPANIES.getDataPath()).stream()
-                .filter(id -> Integer.parseInt(id) >= startingId && Integer.parseInt(id) <= endingId)
-                .collect(Collectors.toList());
 
-        return allowedIds.stream()
-                .map(id -> companiesDataSourceYML.load(DataFilePath.COMPANIES.getFullPathById(id), CompanyEntity.class))
-                .filter(Objects::nonNull)
+        return companiesDataSourceYML.getAllIds(DataFilePath.COMPANIES.getDataPath())
+                .stream()
+                .filter(stringId -> stringId.matches("\\d+"))
+                .map(Long::parseLong)
                 .collect(Collectors.toList());
 
     }

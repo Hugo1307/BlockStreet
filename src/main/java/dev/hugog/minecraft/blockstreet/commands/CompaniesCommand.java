@@ -1,7 +1,7 @@
 package dev.hugog.minecraft.blockstreet.commands;
 
 import dev.hugog.minecraft.blockstreet.data.entities.CompanyEntity;
-import dev.hugog.minecraft.blockstreet.data.repositories.implementations.CompaniesRepository;
+import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
 import dev.hugog.minecraft.blockstreet.others.Messages;
 import dev.hugog.minecraft.dev_command.annotations.ArgsValidation;
 import dev.hugog.minecraft.dev_command.annotations.Command;
@@ -30,7 +30,7 @@ import java.util.List;
  * @since v1.0.0
  */
 @Command(alias = "companies", permission = "blockstreet.command.companies", isPlayerOnly = true)
-@Dependencies(dependencies = { Messages.class, CompaniesRepository.class })
+@Dependencies(dependencies = { Messages.class, CompaniesService.class })
 @ArgsValidation(optionalArgs = {IntegerArgument.class})
 public class CompaniesCommand extends BukkitDevCommand {
 
@@ -42,26 +42,15 @@ public class CompaniesCommand extends BukkitDevCommand {
 	public void execute() {
 
 		Messages messages = (Messages) getDependency(Messages.class);
-		CompaniesRepository companiesRepository = (CompaniesRepository) getDependency(CompaniesRepository.class);
+		CompaniesService companiesService = (CompaniesService) getDependency(CompaniesService.class);
 
-		if (!canSenderExecuteCommand()) {
-			getCommandSender().sendMessage(messages.getPluginPrefix() + messages.getPlayerOnlyCommand());
+		if (!validateCommand()) {
 			return;
 		}
 
 		Player player = (Player) getCommandSender();
 
-		if (!hasPermissionToExecuteCommand()) {
-			player.sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
-			return;
-		}
-
-		if (!hasValidArgs()) {
-			player.sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
-			return;
-		}
-
-		List<CompanyEntity> companiesList = companiesRepository.getCompaniesByIdInterval(0, 3);
+		List<CompanyEntity> companiesList = companiesService.getCompaniesByIdInterval(0, 3);
 
 		player.sendMessage(messages.getPluginHeader());
 		companiesList.forEach(company -> printCompanyDetails(player, messages, company));
@@ -85,6 +74,28 @@ public class CompaniesCommand extends BukkitDevCommand {
 			player.sendMessage("");
 		}
 
+	}
+
+	private boolean validateCommand() {
+
+		Messages messages = (Messages) getDependency(Messages.class);
+
+		if (!canSenderExecuteCommand()) {
+			getCommandSender().sendMessage(messages.getPluginPrefix() + messages.getPlayerOnlyCommand());
+			return false;
+		}
+
+		if (!hasPermissionToExecuteCommand()) {
+			getCommandSender().sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
+			return false;
+		}
+
+		if (!hasValidArgs()) {
+			getCommandSender().sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
+			return false;
+		}
+
+		return true;
 	}
 
 }

@@ -27,6 +27,10 @@ public class YmlDataSourceImpl<T extends DataEntity> implements YmlDataSource<T>
     @Override
     public T load(String fileName, Class<T> dataEntityClass) {
 
+        if (!exists(fileName)) {
+            return null;
+        }
+
         if (fileName == null) {
             log.warn("Unable to load data source for class " + dataEntityClass.getName() + ". Filename is null");
             return null;
@@ -35,7 +39,7 @@ public class YmlDataSourceImpl<T extends DataEntity> implements YmlDataSource<T>
         try {
             return mapper.readValue(new File(pluginDataFolder, fileName), dataEntityClass);
         } catch (IOException e) {
-            log.warn("Error while loading data from file: " + new File(pluginDataFolder, fileName).getAbsolutePath(), e);
+            log.warn("Error while loading data from file: " + new File(pluginDataFolder, fileName).getPath(), e);
         }
         return null;
     }

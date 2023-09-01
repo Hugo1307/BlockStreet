@@ -1,9 +1,9 @@
 package dev.hugog.minecraft.blockstreet;
 
 import com.google.inject.Injector;
-import dev.hugog.minecraft.blockstreet.data.repositories.implementations.CompaniesRepository;
-import dev.hugog.minecraft.blockstreet.data.repositories.implementations.PlayersRepository;
 import dev.hugog.minecraft.blockstreet.data.repositories.implementations.UpdatesRepository;
+import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
+import dev.hugog.minecraft.blockstreet.data.services.PlayersService;
 import dev.hugog.minecraft.blockstreet.dependencyinjection.BasicBinderModule;
 import dev.hugog.minecraft.blockstreet.enums.ConfigurationFiles;
 import dev.hugog.minecraft.blockstreet.enums.DataFilePath;
@@ -49,8 +49,8 @@ public class BlockStreet extends JavaPlugin {
 
     // Repositories
     @Inject private UpdatesRepository updatesRepository;
-    @Inject private CompaniesRepository companiesRepository;
-    @Inject private PlayersRepository playersRepository;
+    @Inject private CompaniesService companiesService;
+    @Inject private PlayersService playersService;
 
     @Inject
     private Messages messages;
@@ -74,7 +74,8 @@ public class BlockStreet extends JavaPlugin {
         
         configureMessages();
 
-        checkDefaultCompanyRegistry();
+        initializeCompaniesData();
+        initializePlayersData();
 
         registerRunnables();
 
@@ -134,8 +135,8 @@ public class BlockStreet extends JavaPlugin {
         dependencyHandler.registerDependency(pluginDevCommandsIntegration, economy);
 
         dependencyHandler.registerDependency(pluginDevCommandsIntegration, updatesRepository);
-        dependencyHandler.registerDependency(pluginDevCommandsIntegration, companiesRepository);
-        dependencyHandler.registerDependency(pluginDevCommandsIntegration, playersRepository);
+        dependencyHandler.registerDependency(pluginDevCommandsIntegration, companiesService);
+        dependencyHandler.registerDependency(pluginDevCommandsIntegration, playersService);
 
     }
 
@@ -144,7 +145,7 @@ public class BlockStreet extends JavaPlugin {
         	this.saveDefaultConfig();
     }
     
-    private void checkDefaultCompanyRegistry() {
+    private void initializeCompaniesData() {
 
         File companiesDirectory = new File(getDataFolder(), DataFilePath.COMPANIES.getDataPath());
         if (!companiesDirectory.exists()) {
@@ -170,7 +171,16 @@ public class BlockStreet extends JavaPlugin {
         }
 
     }
-    
+
+    private void initializePlayersData() {
+
+        File playersDirectory = new File(getDataFolder(), DataFilePath.PLAYERS.getDataPath());
+        if (!playersDirectory.exists()) {
+            playersDirectory.mkdir();
+        }
+
+    }
+
     private void configureMessages() {
     	this.messagesConfig = new ConfigAccessor(this, ConfigurationFiles.MESSAGES.getFileName());
 		if(!new File(getDataFolder(), ConfigurationFiles.MESSAGES.getFileName()).exists())

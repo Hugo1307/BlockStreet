@@ -1,10 +1,7 @@
 package dev.hugog.minecraft.blockstreet.commands;
 
-import dev.hugog.minecraft.blockstreet.data.entities.CompanyEntity;
-import dev.hugog.minecraft.blockstreet.data.entities.InvestmentEntity;
-import dev.hugog.minecraft.blockstreet.data.entities.PlayerEntity;
-import dev.hugog.minecraft.blockstreet.data.repositories.implementations.CompaniesRepository;
-import dev.hugog.minecraft.blockstreet.data.repositories.implementations.PlayersRepository;
+import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
+import dev.hugog.minecraft.blockstreet.data.services.PlayersService;
 import dev.hugog.minecraft.blockstreet.others.Messages;
 import dev.hugog.minecraft.dev_command.annotations.ArgsValidation;
 import dev.hugog.minecraft.dev_command.annotations.Command;
@@ -17,7 +14,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.text.MessageFormat;
-import java.util.Optional;
 
 /**
  * Buy Command
@@ -30,7 +26,7 @@ import java.util.Optional;
  * @since v1.0.0
  */
 @Command(alias = "buy", permission = "blockstreet.command.buy", isPlayerOnly = true)
-@Dependencies(dependencies = {Messages.class, Economy.class, CompaniesRepository.class, PlayersRepository.class})
+@Dependencies(dependencies = {Messages.class, Economy.class, CompaniesService.class, PlayersService.class})
 @ArgsValidation(mandatoryArgs = {IntegerArgument.class, IntegerArgument.class})
 public class BuyCommand extends BukkitDevCommand {
 
@@ -43,72 +39,71 @@ public class BuyCommand extends BukkitDevCommand {
 
 		Messages messages = (Messages) getDependency(Messages.class);
 		Economy vaultEconomy = (Economy) getDependency(Economy.class);
-		CompaniesRepository companiesRepository = (CompaniesRepository) getDependency(CompaniesRepository.class);
-		PlayersRepository playersRepository = (PlayersRepository) getDependency(PlayersRepository.class);
 
-		if (!canSenderExecuteCommand()) {
-			getCommandSender().sendMessage(messages.getPluginPrefix() + messages.getPlayerOnlyCommand());
+		CompaniesService companiesService = (CompaniesService) getDependency(CompaniesService.class);
+		PlayersService playersService = (PlayersService) getDependency(PlayersService.class);
+
+		if (!validateCommand()) {
 			return;
 		}
 
 		Player player = (Player) getCommandSender();
 
-		if (!hasPermissionToExecuteCommand()) {
-			getCommandSender().sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
-			return;
-		}
-
-		if (!hasValidArgs()) {
-			player.sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
-			return;
-		}
-
 		// Arguments will always be valid, since we are validating them with DevCommands.
 		int numberOfSharesToBuy = Integer.parseInt(getArgs()[0]);
 		long companyId = Long.parseLong(getArgs()[1]);
 
-		Optional<CompanyEntity> companyToInvestOptional = companiesRepository.getById(companyId);
-		Optional<PlayerEntity> playerProfileOptional = playersRepository.getById(player.getUniqueId());
-
-		if (companyToInvestOptional.isEmpty()) {
+		if (!companiesService.companyExists(companyId)) {
 			player.sendMessage(messages.getPluginPrefix() + messages.getInvalidCompany());
 			return;
 		}
 
-		if (playerProfileOptional.isEmpty()) {
-			player.sendMessage(messages.getPluginPrefix() + messages.getPlayerNotFound());
-			return;
-		}
-
-		PlayerEntity playerProfile = playerProfileOptional.get();
-		CompanyEntity companyToInvest = companyToInvestOptional.get();
-
-		// If the company has unlimited stocks it will always be available.
-		// Companies with unlimited stocks are marked with "-1" as available stocks.
-		if (companyToInvest.getAvailableShares() < numberOfSharesToBuy  || companyToInvest.getAvailableShares() == -1) {
+		if (!companiesService.hasEnoughShares(companyId, numberOfSharesToBuy)) {
 			player.sendMessage(messages.getPluginPrefix() + messages.getInsufficientActions());
 			return;
 		}
 
 		double playerMoney = vaultEconomy.getBalance(player);
+		double investmentPrice = companiesService.getCompanyInvestmentPrice(companyId, numberOfSharesToBuy);
 
-		if (playerMoney < companyToInvest.getSharePrice() * numberOfSharesToBuy) {
+		if (playerMoney < investmentPrice) {
 			player.sendMessage(messages.getPluginPrefix() + messages.getInsufficientMoney());
 			return;
 		}
 
-		vaultEconomy.withdrawPlayer(player, companyToInvest.getSharePrice() * numberOfSharesToBuy);
-		companyToInvest.setAvailableShares(companyToInvest.getAvailableShares() - numberOfSharesToBuy);
-		playerProfile.getInvestments().add(InvestmentEntity.builder().companyId(companyToInvest.getId()).sharesAmount(numberOfSharesToBuy).build());
+		// Remove money
+		vaultEconomy.withdrawPlayer(player, investmentPrice);
 
-		// TODO: Add the stocks to the investor portfolio.
-		companiesRepository.save(companyToInvest);
-		playersRepository.save(playerProfile);
+		companiesService.removeSharesFromCompany(companyId, numberOfSharesToBuy);
+		playersService.registerPlayerInvestment(player.getUniqueId(), companyId, numberOfSharesToBuy);
 
 		player.sendMessage(messages.getPluginPrefix() + MessageFormat.format(
 				messages.getBoughtActions().replace("'", "''"),
 				numberOfSharesToBuy
 		));
+
+	}
+
+	private boolean validateCommand() {
+
+		Messages messages = (Messages) getDependency(Messages.class);
+
+		if (!canSenderExecuteCommand()) {
+			getCommandSender().sendMessage(messages.getPluginPrefix() + messages.getPlayerOnlyCommand());
+			return false;
+		}
+
+		if (!hasPermissionToExecuteCommand()) {
+			getCommandSender().sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
+			return false;
+		}
+
+		if (!hasValidArgs()) {
+			getCommandSender().sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
+			return false;
+		}
+
+		return true;
 
 	}
 

@@ -8,7 +8,7 @@ import java.io.File;
 public class PlayersYml extends YmlDataSourceImpl<PlayerEntity> {
 
     public PlayersYml(File pluginDataFolder) {
-        super(new File(pluginDataFolder.getAbsolutePath() + "/players"));
+        super(pluginDataFolder);
     }
 
 }
