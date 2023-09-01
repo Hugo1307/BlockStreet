@@ -7,6 +7,8 @@ import dev.hugog.minecraft.blockstreet.data.repositories.implementations.Players
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 public class PlayersService implements Service {
@@ -69,7 +71,15 @@ public class PlayersService implements Service {
 
     }
 
-    public boolean playerExists(UUID playerId) {
+    public List<InvestmentDao> getInvestments(UUID playerId) {
+        return Collections.unmodifiableList(getOrCreatePlayer(playerId).getInvestments());
+    }
+
+    public boolean hasAnyInvestments(UUID playerId) {
+        return !getInvestments(playerId).isEmpty();
+    }
+
+    private boolean playerExists(UUID playerId) {
         return playersRepository.exists(playerId);
     }
 

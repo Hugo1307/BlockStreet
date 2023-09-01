@@ -18,6 +18,8 @@ risk: "Level of risk"
 availableActions: "Available Actions"
 actionHistoric: "Historic"
 details: "Details"
+shares: "Shares"
+totalSharesValue: "Total Value"
 
 playerNotFound: "Player not found."
 playerOnlyCommand: "This command is only for players."

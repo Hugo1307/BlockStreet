@@ -31,6 +31,8 @@ public class Messages {
 	private final String availableActions;
 	private final String actionHistoric;
 	private final String details;
+	private final String shares;
+	private final String totalSharesValue;
 
 	private final String playerNotFound;
 	private final String playerOnlyCommand;
@@ -82,6 +84,8 @@ public class Messages {
 		this.availableActions = messagesConfig.getConfig().getString("availableActions");
 		this.actionHistoric = messagesConfig.getConfig().getString("actionHistoric");
 		this.details = messagesConfig.getConfig().getString("details");
+		this.shares = messagesConfig.getConfig().getString("shares");
+		this.totalSharesValue = messagesConfig.getConfig().getString("totalSharesValue");
 
 		this.playerNotFound = messagesConfig.getConfig().getString("playerNotFound");
 		this.playerOnlyCommand = messagesConfig.getConfig().getString("playerOnlyCommand");
