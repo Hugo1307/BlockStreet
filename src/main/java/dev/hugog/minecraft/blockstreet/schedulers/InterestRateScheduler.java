@@ -8,10 +8,8 @@ import org.bukkit.Server;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.List;
 
-@Singleton
 public class InterestRateScheduler extends BukkitRunnable {
 
     private final Server server;

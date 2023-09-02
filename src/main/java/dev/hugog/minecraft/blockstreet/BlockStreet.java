@@ -38,7 +38,7 @@ public class BlockStreet extends JavaPlugin {
 
     @Getter private Economy economy;
     @Getter private static BlockStreet instance;
-    private BukkitTask interestRateTask, signCheckerTask;
+    private BukkitTask interestRateTask;
 
     private Integration pluginDevCommandsIntegration;
 
@@ -50,9 +50,6 @@ public class BlockStreet extends JavaPlugin {
     @Inject private AutoUpdateService autoUpdateService;
     @Inject private CompaniesService companiesService;
     @Inject private PlayersService playersService;
-
-    // Schedulers
-    @Inject private InterestRateScheduler interestRateScheduler;
 
     // Utils
     @Inject
@@ -133,6 +130,7 @@ public class BlockStreet extends JavaPlugin {
         DevCommand devCommand = DevCommand.getOrCreateInstance();
         DependencyHandler dependencyHandler = devCommand.getDependencyHandler();
 
+        dependencyHandler.registerDependency(pluginDevCommandsIntegration, this);
         dependencyHandler.registerDependency(pluginDevCommandsIntegration, messages);
         dependencyHandler.registerDependency(pluginDevCommandsIntegration, getLogger());
 
@@ -199,12 +197,13 @@ public class BlockStreet extends JavaPlugin {
 
     public void registerSchedulers() {
         int interestTime = getConfig().getInt("BlockStreet.InterestInterval"); // In minutes
-        interestRateTask = interestRateScheduler.runTaskTimerAsynchronously(this, 20L*10, 20L*60*interestTime);
+        interestRateTask = new InterestRateScheduler(getServer(), companiesService, messages)
+                .runTaskTimerAsynchronously(this, 20L*10, 20L*60*interestTime);
     }
 
     public void stopSchedulers() {
         interestRateTask.cancel();
-        signCheckerTask.cancel();
+        // signCheckerTask.cancel();
     }
 
     private void setupEconomy() {
