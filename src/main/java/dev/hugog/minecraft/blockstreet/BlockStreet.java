@@ -1,7 +1,7 @@
 package dev.hugog.minecraft.blockstreet;
 
 import com.google.inject.Injector;
-import dev.hugog.minecraft.blockstreet.data.repositories.implementations.UpdatesRepository;
+import dev.hugog.minecraft.blockstreet.api.services.AutoUpdateService;
 import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
 import dev.hugog.minecraft.blockstreet.data.services.PlayersService;
 import dev.hugog.minecraft.blockstreet.dependencyinjection.BasicBinderModule;
@@ -46,8 +46,8 @@ public class BlockStreet extends JavaPlugin {
     @Inject
     private PlayerJoinListener playerJoinListener;
 
-    // Repositories
-    @Inject private UpdatesRepository updatesRepository;
+    // Services
+    @Inject private AutoUpdateService autoUpdateService;
     @Inject private CompaniesService companiesService;
     @Inject private PlayersService playersService;
 
@@ -100,11 +100,13 @@ public class BlockStreet extends JavaPlugin {
 
     public void checkForUpdates() {
 
-        if (updatesRepository.isUpdateAvailable()) {
-            getLogger().warning("An update is available! Download it at: https://www.spigotmc.org/resources/blockstreet.75791/");
-        } else {
-            getLogger().info("You are using the latest version of BlockStreet!");
-        }
+        autoUpdateService.isUpdateAvailable().thenAcceptAsync((isUpdateAvailable) -> {
+            if (isUpdateAvailable) {
+                getLogger().warning("An update is available! Download it at: https://www.spigotmc.org/resources/blockstreet.75791/");
+            } else {
+                getLogger().info("You are using the latest version of BlockStreet!");
+            }
+        });
 
     }
 
@@ -136,7 +138,7 @@ public class BlockStreet extends JavaPlugin {
 
         dependencyHandler.registerDependency(pluginDevCommandsIntegration, economy);
 
-        dependencyHandler.registerDependency(pluginDevCommandsIntegration, updatesRepository);
+        dependencyHandler.registerDependency(pluginDevCommandsIntegration, autoUpdateService);
         dependencyHandler.registerDependency(pluginDevCommandsIntegration, companiesService);
         dependencyHandler.registerDependency(pluginDevCommandsIntegration, playersService);
 

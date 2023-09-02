@@ -1,7 +1,6 @@
 package dev.hugog.minecraft.blockstreet.commands;
 
-import dev.hugog.minecraft.blockstreet.api.entities.PluginReleaseEntity;
-import dev.hugog.minecraft.blockstreet.data.repositories.implementations.UpdatesRepository;
+import dev.hugog.minecraft.blockstreet.api.services.AutoUpdateService;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
 import dev.hugog.minecraft.dev_command.annotations.Command;
 import dev.hugog.minecraft.dev_command.annotations.Dependencies;
@@ -22,7 +21,7 @@ import org.bukkit.entity.Player;
  * @version 1.0.0
  */
 @Command(alias = "info", description = "Get more information about the plugin.", isPlayerOnly = true)
-@Dependencies(dependencies = {Messages.class, UpdatesRepository.class})
+@Dependencies(dependencies = {Messages.class, AutoUpdateService.class})
 public class InfoCommand extends BukkitDevCommand {
 
 	public InfoCommand(BukkitCommandData commandData, CommandSender commandSender, String[] args) {
@@ -34,7 +33,7 @@ public class InfoCommand extends BukkitDevCommand {
 
 		// Obtain dependencies
 		Messages messages = (Messages) getDependency(Messages.class);
-		UpdatesRepository updatesRepository = (UpdatesRepository) getDependency(UpdatesRepository.class);
+		AutoUpdateService autoUpdateService = (AutoUpdateService) getDependency(AutoUpdateService.class);
 
 		if (!canSenderExecuteCommand()) {
 			getCommandSender().sendMessage(messages.getPluginPrefix() + messages.getPlayerOnlyCommand());
@@ -43,25 +42,30 @@ public class InfoCommand extends BukkitDevCommand {
 
 		Player player = (Player) getCommandSender();
 
-		PluginReleaseEntity latestReleaseEntity = updatesRepository.getLatestRelease();
-		String currentVersion = updatesRepository.getCurrentVersion();
+		autoUpdateService.getLatestRelease().thenAcceptAsync(latestReleaseEntity -> {
 
-		player.sendMessage(messages.getPluginHeader());
-		player.sendMessage("");
-		player.sendMessage(ChatColor.GREEN + "Current Version: " + ChatColor.GRAY + currentVersion);
-		player.sendMessage(ChatColor.GREEN + "Last Version: " + ChatColor.GRAY + latestReleaseEntity.getReleaseVersion());
-		player.sendMessage("");
+			boolean isUpdateAvailable = autoUpdateService.isUpdateAvailable().join();
 
-		if (updatesRepository.isUpdateAvailable()) {
-			player.sendMessage(ChatColor.GRAY + "New version available!");
-			player.sendMessage(ChatColor.GRAY + "Download it on: https://www.spigotmc.org/resources/blockstreet.75712/");
-		}else {
-			player.sendMessage(ChatColor.GRAY + "Your plugin is up to date.");
-		}
+			String currentVersion = autoUpdateService.getCurrentVersion();
 
-		player.sendMessage("");
-		player.sendMessage(ChatColor.GRAY + "Plugin created by: " + ChatColor.GREEN + "Hugo1307");
-		player.sendMessage(messages.getPluginFooter());
+			player.sendMessage(messages.getPluginHeader());
+			player.sendMessage("");
+			player.sendMessage(ChatColor.GREEN + "Current Version: " + ChatColor.GRAY + currentVersion);
+			player.sendMessage(ChatColor.GREEN + "Last Version: " + ChatColor.GRAY + latestReleaseEntity.getReleaseVersion());
+			player.sendMessage("");
+
+			if (isUpdateAvailable) {
+				player.sendMessage(ChatColor.GRAY + "New version available!");
+				player.sendMessage(ChatColor.GRAY + "Download it on: https://www.spigotmc.org/resources/blockstreet.75712/");
+			}else {
+				player.sendMessage(ChatColor.GRAY + "Your plugin is up to date.");
+			}
+
+			player.sendMessage("");
+			player.sendMessage(ChatColor.GRAY + "Plugin created by: " + ChatColor.GREEN + "Hugo1307");
+			player.sendMessage(messages.getPluginFooter());
+
+		});
 
 	}
 

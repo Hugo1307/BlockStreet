@@ -1,6 +1,5 @@
 package dev.hugog.minecraft.blockstreet.api.entities;
 
-import dev.hugog.minecraft.blockstreet.data.entities.DataEntity;
 import lombok.Builder;
 import lombok.Data;
 
@@ -8,7 +7,7 @@ import java.util.Date;
 
 @Data
 @Builder
-public class PluginReleaseEntity implements DataEntity {
+public class PluginReleaseEntity implements ApiEntity {
 
     private String authorName;
     private String authorUrl;

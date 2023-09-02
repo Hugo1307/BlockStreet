@@ -1,11 +1,10 @@
-package dev.hugog.minecraft.blockstreet.api;
+package dev.hugog.minecraft.blockstreet.api.endpoints.implementation;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import dev.hugog.minecraft.blockstreet.data.entities.DataEntity;
+import dev.hugog.minecraft.blockstreet.api.endpoints.APIEndpointImpl;
 import dev.hugog.minecraft.blockstreet.api.entities.PluginReleaseEntity;
 import lombok.extern.log4j.Log4j2;
-import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 import java.io.IOException;
@@ -14,25 +13,23 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Log4j2
-public class PluginReleaseAPIData extends APIDataImpl {
+public class PluginReleaseAPIEndpoint extends APIEndpointImpl<PluginReleaseEntity> {
 
-    public PluginReleaseAPIData() {
+    public PluginReleaseAPIEndpoint() {
         super("https://api.github.com/repos/Hugo1307/BlockStreet/releases/latest");
     }
 
     @Override
-    public DataEntity parseData() {
+    public PluginReleaseEntity parseData() throws IOException {
 
-        Response apiResponse = executeRequest();
-
-        if (apiResponse == null) {
-            log.warn("Error while executing request to API endpoint: " + this.apiEndpoint + " - Response is null");
+        if (response == null) {
+            log.warn("Error while executing request to API endpoint: " + this.endpointUrl + " - Response is null");
             return null;
         }
 
-        ResponseBody responseBody = apiResponse.body();
+        ResponseBody responseBody = response.peekBody(Long.MAX_VALUE);
 
-        if (apiResponse.isSuccessful() && responseBody != null) {
+        if (response.isSuccessful()) {
 
             try {
 
@@ -71,17 +68,17 @@ public class PluginReleaseAPIData extends APIDataImpl {
                         .downloadUrl(downloadURL)
                         .build();
 
-            } catch (IOException e) {
+            } catch (IOException | ParseException e) {
                 log.error("Error while parsing API response body", e);
-            } catch (ParseException e) {
-                log.error("Error while parsing API Date response body", e);
+            } finally {
+                responseBody.close();
             }
 
         } else {
-            log.warn("Error while executing request to API endpoint: " + this.apiEndpoint + " - Response code: " + apiResponse.code());
+            log.warn("Error while executing request to API endpoint: " + this.endpointUrl + " - Response code: " + response.code());
         }
 
-        apiResponse.close();
+        response.close();
 
         return null;
 
