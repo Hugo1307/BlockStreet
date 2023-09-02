@@ -1,4 +1,4 @@
-package dev.hugog.minecraft.blockstreet.others;
+package dev.hugog.minecraft.blockstreet.utils;
 
 import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.enums.ConfigurationFiles;

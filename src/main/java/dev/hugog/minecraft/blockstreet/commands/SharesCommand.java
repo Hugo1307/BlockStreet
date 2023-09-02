@@ -3,7 +3,7 @@ package dev.hugog.minecraft.blockstreet.commands;
 import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
 import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
 import dev.hugog.minecraft.blockstreet.data.services.PlayersService;
-import dev.hugog.minecraft.blockstreet.others.Messages;
+import dev.hugog.minecraft.blockstreet.utils.Messages;
 import dev.hugog.minecraft.dev_command.annotations.Command;
 import dev.hugog.minecraft.dev_command.annotations.Dependencies;
 import dev.hugog.minecraft.dev_command.commands.BukkitDevCommand;
@@ -11,6 +11,8 @@ import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.text.DecimalFormat;
 
 @Command(alias = "shares", description = "Check your investments and shares.", permission = "blockstreet.command.shares")
 @Dependencies(dependencies = {Messages.class, PlayersService.class, CompaniesService.class})
@@ -42,10 +44,14 @@ public class SharesCommand extends BukkitDevCommand {
 
                     CompanyDao investedCompany = companiesService.getCompanyDaoById(investment.getCompanyId());
 
+                    if (investedCompany == null) return;
+
+                    DecimalFormat df = new DecimalFormat("#.###");
+
                     player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + investedCompany.getName());
                     player.sendMessage("");
                     player.sendMessage(ChatColor.GRAY + messages.getShares() + ": " + ChatColor.GREEN + investment.getSharesAmount());
-                    player.sendMessage(ChatColor.GRAY + messages.getTotalSharesValue() + ": " + ChatColor.GREEN + companiesService.getCompanyInvestmentValue(investment.getCompanyId(), investment.getSharesAmount()));
+                    player.sendMessage(ChatColor.GRAY + messages.getTotalSharesValue() + ": " + ChatColor.GREEN + df.format(companiesService.getCompanyInvestmentValue(investment.getCompanyId(), investment.getSharesAmount())));
                     player.sendMessage("");
 
                 });

@@ -1,7 +1,6 @@
 package dev.hugog.minecraft.blockstreet.data.services;
 
 import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
-import dev.hugog.minecraft.blockstreet.data.entities.CompanyEntity;
 import dev.hugog.minecraft.blockstreet.data.repositories.Repository;
 import dev.hugog.minecraft.blockstreet.data.repositories.implementations.CompaniesRepository;
 
@@ -19,6 +18,21 @@ public class CompaniesService implements Service {
         this.companiesRepository = companiesRepository;
     }
 
+    public List<CompanyDao> getAllCompanies() {
+        return companiesRepository.getAllIds().stream()
+                .map(companiesRepository::getById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(companyEntity -> (CompanyDao) new CompanyDao().fromEntity(companyEntity))
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    public CompanyDao getCompanyDaoById(long companyId) {
+        return (CompanyDao) companiesRepository.getById(companyId)
+                .map(companyEntity -> new CompanyDao().fromEntity(companyEntity))
+                .orElse(null);
+    }
+
     public boolean hasEnoughShares(long companyId, int sharesAmount) {
 
         if (!companyExists(companyId)) {
@@ -33,13 +47,13 @@ public class CompaniesService implements Service {
 
     }
 
-    public Integer getCompanyInvestmentValue(long companyId, int sharesAmount) {
+    public Double getCompanyInvestmentValue(long companyId, int sharesAmount) {
 
         if (!companyExists(companyId)) {
             return null;
         }
 
-        return companiesRepository.getById(companyId).map(company -> company.getSharePrice() * sharesAmount).orElse(null);
+        return companiesRepository.getById(companyId).map(company -> company.getCurrentSharePrice() * sharesAmount).orElse(null);
 
     }
 
@@ -93,7 +107,7 @@ public class CompaniesService implements Service {
 
     }
 
-    public List<CompanyEntity> getCompaniesByIdInterval(int startingId, int endingId) {
+    public List<CompanyDao> getCompaniesByIdInterval(int startingId, int endingId) {
 
         List<Long> allowedIds = companiesRepository.getAllIds().stream()
                 .filter(id -> id >= startingId && id <= endingId)
@@ -103,18 +117,43 @@ public class CompaniesService implements Service {
                 .map(companiesRepository::getById)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .collect(Collectors.toList());
+                .map(companyEntity -> (CompanyDao) new CompanyDao().fromEntity(companyEntity))
+                .collect(Collectors.toUnmodifiableList());
 
-    }
-
-    public CompanyDao getCompanyDaoById(long companyId) {
-        return (CompanyDao) companiesRepository.getById(companyId)
-                .map(companyEntity -> new CompanyDao().fromEntity(companyEntity))
-                .orElse(null);
     }
 
     public boolean companyExists(long companyId) {
         return companiesRepository.exists(companyId) && companiesRepository.getById(companyId).isPresent();
+    }
+
+    public void updateCompanySharesValue(long companyId, double newSharesValue) {
+
+        CompanyDao companyDao = (CompanyDao) companiesRepository.getById(companyId)
+                .map(companyEntity -> new CompanyDao().fromEntity(companyEntity))
+                .orElse(null);
+
+        if (companyDao == null) {
+            return;
+        }
+
+        companyDao.setCurrentSharePrice(newSharesValue);
+        companiesRepository.save(companyDao.toEntity());
+
+    }
+
+    public void updateCompanyHistoric(long companyId, double newHistoricEntry) {
+
+        CompanyDao companyDao = (CompanyDao) companiesRepository.getById(companyId)
+                .map(companyEntity -> new CompanyDao().fromEntity(companyEntity))
+                .orElse(null);
+
+        if (companyDao == null) {
+            return;
+        }
+
+        companyDao.getHistoric().add(0, newHistoricEntry);
+        companiesRepository.save(companyDao.toEntity());
+
     }
 
     @Override

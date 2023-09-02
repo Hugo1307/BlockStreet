@@ -1,9 +1,4 @@
 BlockStreet:
-  Timer: 30
-  Leverage: 5
-  Warnings:
-    Enabled: true
-    First: 5
-    Second: 1
+  InterestInterval: 10
   Updates:
     Remainder: true

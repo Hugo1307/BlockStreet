@@ -9,10 +9,9 @@ import dev.hugog.minecraft.blockstreet.enums.ConfigurationFiles;
 import dev.hugog.minecraft.blockstreet.enums.DataFilePath;
 import dev.hugog.minecraft.blockstreet.listeners.PlayerJoinListener;
 import dev.hugog.minecraft.blockstreet.listeners.SignHandler;
-import dev.hugog.minecraft.blockstreet.others.ConfigAccessor;
-import dev.hugog.minecraft.blockstreet.others.Messages;
-import dev.hugog.minecraft.blockstreet.runnables.InterestRateRunnable;
-import dev.hugog.minecraft.blockstreet.runnables.SignCheckerRunnable;
+import dev.hugog.minecraft.blockstreet.utils.ConfigAccessor;
+import dev.hugog.minecraft.blockstreet.utils.Messages;
+import dev.hugog.minecraft.blockstreet.schedulers.InterestRateScheduler;
 import dev.hugog.minecraft.dev_command.DevCommand;
 import dev.hugog.minecraft.dev_command.commands.executors.DevCommandExecutor;
 import dev.hugog.minecraft.dev_command.commands.handler.CommandHandler;
@@ -20,7 +19,6 @@ import dev.hugog.minecraft.dev_command.dependencies.DependencyHandler;
 import dev.hugog.minecraft.dev_command.integration.Integration;
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -31,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class BlockStreet extends JavaPlugin {
@@ -52,9 +51,12 @@ public class BlockStreet extends JavaPlugin {
     @Inject private CompaniesService companiesService;
     @Inject private PlayersService playersService;
 
+    // Schedulers
+    @Inject private InterestRateScheduler interestRateScheduler;
+
+    // Utils
     @Inject
     private Messages messages;
-
 
     @Override
     public void onEnable() {
@@ -77,7 +79,7 @@ public class BlockStreet extends JavaPlugin {
         initializeCompaniesData();
         initializePlayersData();
 
-        registerRunnables();
+        registerSchedulers();
 
         checkForUpdates();
            	
@@ -152,7 +154,7 @@ public class BlockStreet extends JavaPlugin {
             if (companiesDirectory.mkdir()) {
                 File defaultCompanyFile = new File(getDataFolder(), DataFilePath.COMPANIES.getFullPathById("0"));
                 try {
-                    byte[] buffer = getResource("companies/0.yml").readAllBytes();
+                    byte[] buffer = Objects.requireNonNull(getResource("companies/0.yml")).readAllBytes();
 
                     OutputStream outStream = Files.newOutputStream(defaultCompanyFile.toPath());
                     outStream.write(buffer);
@@ -172,6 +174,7 @@ public class BlockStreet extends JavaPlugin {
 
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void initializePlayersData() {
 
         File playersDirectory = new File(getDataFolder(), DataFilePath.PLAYERS.getDataPath());
@@ -192,27 +195,27 @@ public class BlockStreet extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new SignHandler(), this);
     }
 
-    public void registerRunnables() {
-        int interestTime = BlockStreet.getInstance().getConfig().getInt("BlockStreet.Timer");
-        interestRateTask = new InterestRateRunnable().runTaskTimerAsynchronously(this, 20L*10, 20L*60);
-        signCheckerTask = new SignCheckerRunnable().runTaskTimer(this, 20L*10, 20L*60*interestTime);
+    public void registerSchedulers() {
+        int interestTime = getConfig().getInt("BlockStreet.InterestInterval"); // In minutes
+        interestRateTask = interestRateScheduler.runTaskTimerAsynchronously(this, 20L*10, 20L*60*interestTime);
     }
 
-    public void stopRunnables() {
+    public void stopSchedulers() {
         interestRateTask.cancel();
         signCheckerTask.cancel();
     }
 
-    private boolean setupEconomy()
-    {
+    private void setupEconomy() {
+
         RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(Economy.class);
+
         if (economyProvider != null) {
             economy = economyProvider.getProvider();
-        }else {
-            Bukkit.getLogger().log(Level.SEVERE, "[BlockStreet] Vault not found. Disabling plugin.");
+        } else {
+            getLogger().log(Level.SEVERE, "[BlockStreet] Vault not found. Disabling plugin.");
             getServer().getPluginManager().disablePlugin(this);
         }
-        return economy != null;
+
     }
 
 }

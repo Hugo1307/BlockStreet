@@ -11,6 +11,7 @@ import dev.hugog.minecraft.blockstreet.api.PluginReleaseAPIData;
 import dev.hugog.minecraft.blockstreet.data.sources.yml.implementations.CompaniesYml;
 import dev.hugog.minecraft.blockstreet.data.sources.yml.implementations.PlayersYml;
 import dev.hugog.minecraft.blockstreet.listeners.PlayerJoinListener;
+import org.bukkit.Server;
 
 public class BasicBinderModule extends AbstractModule {
 
@@ -28,6 +29,8 @@ public class BasicBinderModule extends AbstractModule {
     protected void configure() {
 
         this.bind(BlockStreet.class).toInstance(plugin);
+
+        this.bind(Server.class).toInstance(plugin.getServer());
 
         // TODO: Change bindings depending on the data source being used
         this.bind(UpdatesRepository.class).toInstance(new UpdatesRepository(new PluginReleaseAPIData(), plugin));

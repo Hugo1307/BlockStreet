@@ -3,7 +3,7 @@ package dev.hugog.minecraft.blockstreet.commands;
 import dev.hugog.minecraft.blockstreet.commands.validators.PositiveIntegerArgument;
 import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
 import dev.hugog.minecraft.blockstreet.data.services.PlayersService;
-import dev.hugog.minecraft.blockstreet.others.Messages;
+import dev.hugog.minecraft.blockstreet.utils.Messages;
 import dev.hugog.minecraft.dev_command.annotations.ArgsValidation;
 import dev.hugog.minecraft.dev_command.annotations.Command;
 import dev.hugog.minecraft.dev_command.annotations.Dependencies;

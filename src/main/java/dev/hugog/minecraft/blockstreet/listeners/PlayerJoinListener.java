@@ -3,7 +3,7 @@ package dev.hugog.minecraft.blockstreet.listeners;
 import com.google.inject.Inject;
 import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.data.repositories.implementations.UpdatesRepository;
-import dev.hugog.minecraft.blockstreet.others.Messages;
+import dev.hugog.minecraft.blockstreet.utils.Messages;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

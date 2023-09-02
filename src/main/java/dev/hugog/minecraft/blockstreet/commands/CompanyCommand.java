@@ -2,7 +2,7 @@ package dev.hugog.minecraft.blockstreet.commands;
 
 import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
 import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
-import dev.hugog.minecraft.blockstreet.others.Messages;
+import dev.hugog.minecraft.blockstreet.utils.Messages;
 import dev.hugog.minecraft.dev_command.annotations.ArgsValidation;
 import dev.hugog.minecraft.dev_command.annotations.Command;
 import dev.hugog.minecraft.dev_command.annotations.Dependencies;
@@ -16,6 +16,11 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.util.List;
 
 /**
  * Company Command
@@ -85,17 +90,21 @@ public class CompanyCommand extends BukkitDevCommand {
 
 	private void printCompanyDetails(CompanyDao currentCompany, Player player, Messages messages) {
 
+
 		TextComponent buyStocks = new TextComponent(ChatColor.GRAY + "[Buy Stocks]");
 		buyStocks.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
 				new ComponentBuilder(ChatColor.GRAY + "Click to see company's details.").create()));
-		buyStocks.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/invest buy 1 " + currentCompany.getId()));
+		buyStocks.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/invest buy " + currentCompany.getId() + " 1"));
+
+		BigDecimal companySharePriceDecimal = BigDecimal.valueOf(currentCompany.getCurrentSharePrice());
+		companySharePriceDecimal = companySharePriceDecimal.setScale(3, RoundingMode.HALF_UP);
 
 		player.sendMessage(messages.getPluginHeader());
 		player.sendMessage("");
 		player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + currentCompany.getName());
 		player.sendMessage("");
 		player.sendMessage(ChatColor.GRAY + "Id: " + ChatColor.GREEN + currentCompany.getId());
-		player.sendMessage(ChatColor.GRAY + messages.getPrice() + ": " + ChatColor.GREEN + currentCompany.getSharePrice());
+		player.sendMessage(ChatColor.GRAY + messages.getPrice() + ": " + ChatColor.GREEN + companySharePriceDecimal.doubleValue());
 		player.sendMessage(ChatColor.GRAY + messages.getRisk() + ": " + ChatColor.GREEN + currentCompany.getRisk());
 
 		if (currentCompany.getAvailableShares() < 0)
@@ -106,9 +115,17 @@ public class CompanyCommand extends BukkitDevCommand {
 		player.sendMessage(ChatColor.GRAY + messages.getActionHistoric() + ": ");
 		player.sendMessage("");
 
-		for (String element : currentCompany.getHistoric()){
-			if (element.contains("+")) player.sendMessage(ChatColor.GREEN + "  " + element);
-			else if (element.contains("-")) player.sendMessage(ChatColor.RED + "  " + element);
+		List<Double> quotesToPresent = currentCompany.getHistoric().subList(0, Math.min(7, currentCompany.getHistoric().size()));
+		for (double element : quotesToPresent){
+
+			DecimalFormat df = new DecimalFormat("###.###%");
+
+			if (element > 0) {
+				player.sendMessage(ChatColor.GREEN + "  +" + df.format(element));
+			} else {
+				player.sendMessage(ChatColor.RED + "  " + df.format(element));
+			}
+
 		}
 
 		player.sendMessage("");

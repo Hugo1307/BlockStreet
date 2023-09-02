@@ -3,7 +3,7 @@ package dev.hugog.minecraft.blockstreet.commands;
 import dev.hugog.minecraft.blockstreet.commands.validators.PositiveIntegerArgument;
 import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
 import dev.hugog.minecraft.blockstreet.data.services.PlayersService;
-import dev.hugog.minecraft.blockstreet.others.Messages;
+import dev.hugog.minecraft.blockstreet.utils.Messages;
 import dev.hugog.minecraft.dev_command.annotations.ArgsValidation;
 import dev.hugog.minecraft.dev_command.annotations.Command;
 import dev.hugog.minecraft.dev_command.annotations.Dependencies;
@@ -63,7 +63,7 @@ public class SellCommand extends BukkitDevCommand {
 			return;
 		}
 
-		int sharesValue = companiesService.getCompanyInvestmentValue(companyId, sellingAmount);
+		double sharesValue = companiesService.getCompanyInvestmentValue(companyId, sellingAmount);
 
 		// We remove the shares from the player and give him the money.
 		economy.depositPlayer(player, sharesValue);

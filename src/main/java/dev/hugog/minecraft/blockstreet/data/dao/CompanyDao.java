@@ -14,14 +14,12 @@ public class CompanyDao implements Dao<CompanyEntity> {
     private int id;
     private String name;
     private String description;
-    private int sharePrice;
+    private double initialSharePrice;
+    @Setter private double currentSharePrice;
     private int risk;
     private int totalShares;
-
-    @Setter
-    private int availableShares;
-
-    private List<String> historic;
+    @Setter private int availableShares;
+    private List<Double> historic;
 
     @Override
     public CompanyEntity toEntity() {
@@ -31,7 +29,8 @@ public class CompanyDao implements Dao<CompanyEntity> {
         entity.setId(id);
         entity.setName(name);
         entity.setDescription(description);
-        entity.setSharePrice(sharePrice);
+        entity.setInitialSharePrice(initialSharePrice);
+        entity.setCurrentSharePrice(currentSharePrice);
         entity.setRisk(risk);
         entity.setTotalShares(totalShares);
         entity.setAvailableShares(availableShares);
@@ -48,7 +47,8 @@ public class CompanyDao implements Dao<CompanyEntity> {
                 entity.getId(),
                 entity.getName(),
                 entity.getDescription(),
-                entity.getSharePrice(),
+                entity.getInitialSharePrice(),
+                entity.getCurrentSharePrice(),
                 entity.getRisk(),
                 entity.getTotalShares(),
                 entity.getAvailableShares(),

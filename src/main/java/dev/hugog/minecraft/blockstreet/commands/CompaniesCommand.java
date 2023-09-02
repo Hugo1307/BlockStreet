@@ -1,8 +1,8 @@
 package dev.hugog.minecraft.blockstreet.commands;
 
-import dev.hugog.minecraft.blockstreet.data.entities.CompanyEntity;
+import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
 import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
-import dev.hugog.minecraft.blockstreet.others.Messages;
+import dev.hugog.minecraft.blockstreet.utils.Messages;
 import dev.hugog.minecraft.dev_command.annotations.ArgsValidation;
 import dev.hugog.minecraft.dev_command.annotations.Command;
 import dev.hugog.minecraft.dev_command.annotations.Dependencies;
@@ -17,6 +17,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -51,7 +52,7 @@ public class CompaniesCommand extends BukkitDevCommand {
 
 		Player player = (Player) getCommandSender();
 
-		List<CompanyEntity> companiesList = companiesService.getCompaniesByIdInterval(0, 3);
+		List<CompanyDao> companiesList = companiesService.getCompaniesByIdInterval(0, 3);
 
 		player.sendMessage(messages.getPluginHeader());
 		companiesList.forEach(company -> printCompanyDetails(player, messages, company));
@@ -60,16 +61,19 @@ public class CompaniesCommand extends BukkitDevCommand {
 	}
 
 	@SuppressWarnings("deprecation")
-	private void printCompanyDetails(Player player, Messages messages, CompanyEntity currentCompany) {
+	private void printCompanyDetails(Player player, Messages messages, CompanyDao currentCompany) {
 
 		TextComponent companyDetails = new TextComponent(ChatColor.GRAY + "[Details]");
 		companyDetails.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
 				new ComponentBuilder(ChatColor.GRAY + "Click to see company's details.").create()));
 		companyDetails.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/invest company " + currentCompany.getId()));
 
+		DecimalFormat companyValueDf = new DecimalFormat("#.###");
+
 		if(currentCompany.getName() != null) {
-			player.sendMessage(ChatColor.GREEN + currentCompany.getName());
-			player.sendMessage(ChatColor.GRAY + messages.getPrice() + ": " + currentCompany.getSharePrice());
+			player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + currentCompany.getName());
+			player.sendMessage("");
+			player.sendMessage(ChatColor.GRAY + messages.getPrice() + ": " + ChatColor.GREEN + companyValueDf.format(currentCompany.getCurrentSharePrice()));
 			player.sendMessage(ChatColor.GRAY + messages.getRisk() + ": " + ChatColor.GREEN + currentCompany.getRisk());
 			player.spigot().sendMessage(companyDetails);
 			player.sendMessage("");

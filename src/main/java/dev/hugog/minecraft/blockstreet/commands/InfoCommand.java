@@ -2,7 +2,7 @@ package dev.hugog.minecraft.blockstreet.commands;
 
 import dev.hugog.minecraft.blockstreet.api.entities.PluginReleaseEntity;
 import dev.hugog.minecraft.blockstreet.data.repositories.implementations.UpdatesRepository;
-import dev.hugog.minecraft.blockstreet.others.Messages;
+import dev.hugog.minecraft.blockstreet.utils.Messages;
 import dev.hugog.minecraft.dev_command.annotations.Command;
 import dev.hugog.minecraft.dev_command.annotations.Dependencies;
 import dev.hugog.minecraft.dev_command.commands.BukkitDevCommand;
