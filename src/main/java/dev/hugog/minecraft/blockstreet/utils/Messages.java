@@ -73,6 +73,10 @@ public class Messages {
 	private final String reloadCommandUsage;
 	private final String helpCommandDescription;
 	private final String helpCommandUsage;
+	private final String createCompanyCommandDescription;
+	private final String createCompanyCommandUsage;
+	private final String deleteCompanyCommandDescription;
+	private final String deleteCompanyCommandUsage;
 	
 	public Messages() {
 
@@ -143,6 +147,10 @@ public class Messages {
 		this.reloadCommandUsage = messagesConfig.getConfig().getString("reloadCommandUsage");
 		this.helpCommandDescription = messagesConfig.getConfig().getString("helpCommandDescription");
 		this.helpCommandUsage = messagesConfig.getConfig().getString("helpCommandUsage");
+		this.createCompanyCommandDescription = messagesConfig.getConfig().getString("createCompanyCommandDescription");
+		this.createCompanyCommandUsage = messagesConfig.getConfig().getString("createCompanyCommandUsage");
+		this.deleteCompanyCommandDescription = messagesConfig.getConfig().getString("deleteCompanyCommandDescription");
+		this.deleteCompanyCommandUsage = messagesConfig.getConfig().getString("deleteCompanyCommandUsage");
 
 	}
 

@@ -61,7 +61,14 @@ public class HelpCommand extends BukkitDevCommand {
         getCommandSender().sendMessage(ChatColor.GRAY + "    ╰ " + messages.getHelpCommandDescription());
         getCommandSender().sendMessage("");
 
+        getCommandSender().sendMessage(ChatColor.GREEN + "  • " + messages.getCreateCompanyCommandUsage());
+        getCommandSender().sendMessage(ChatColor.GRAY + "    ╰ " + messages.getCreateCompanyCommandDescription());
         getCommandSender().sendMessage("");
+
+        getCommandSender().sendMessage(ChatColor.GREEN + "  • " + messages.getDeleteCompanyCommandUsage());
+        getCommandSender().sendMessage(ChatColor.GRAY + "    ╰ " + messages.getDeleteCompanyCommandDescription());
+        getCommandSender().sendMessage("");
+
         getCommandSender().sendMessage(messages.getPluginFooter());
 
     }

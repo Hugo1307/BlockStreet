@@ -4,6 +4,7 @@ import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
 import dev.hugog.minecraft.blockstreet.data.dao.QuoteDao;
 import dev.hugog.minecraft.blockstreet.data.repositories.Repository;
 import dev.hugog.minecraft.blockstreet.data.repositories.implementations.CompaniesRepository;
+import dev.hugog.minecraft.blockstreet.utils.SizedStack;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -32,6 +33,31 @@ public class CompaniesService implements Service {
         return (CompanyDao) companiesRepository.getById(companyId)
                 .map(companyEntity -> new CompanyDao().fromEntity(companyEntity))
                 .orElse(null);
+    }
+
+    public CompanyDao createCompany(String companyName, int companyRisk, int companyShares, double companySharePrice) {
+
+        Long companyId = companiesRepository.getNextId();
+
+        CompanyDao newCompany = CompanyDao.builder()
+                .id(companyId.intValue())
+                .name(companyName)
+                .risk(companyRisk)
+                .totalShares(companyShares)
+                .availableShares(companyShares)
+                .initialSharePrice(companySharePrice)
+                .currentSharePrice(companySharePrice)
+                .historic(new SizedStack<>(500))
+                .build();
+
+        companiesRepository.save(newCompany.toEntity());
+
+        return newCompany;
+
+    }
+
+    public void deleteCompany(long companyId) {
+        companiesRepository.delete(companyId);
     }
 
     public boolean hasEnoughShares(long companyId, int sharesAmount) {

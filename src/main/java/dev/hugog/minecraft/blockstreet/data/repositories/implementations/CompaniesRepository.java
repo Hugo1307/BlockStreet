@@ -3,6 +3,7 @@ package dev.hugog.minecraft.blockstreet.data.repositories.implementations;
 import dev.hugog.minecraft.blockstreet.data.entities.CompanyEntity;
 import dev.hugog.minecraft.blockstreet.data.repositories.Repository;
 import dev.hugog.minecraft.blockstreet.data.sources.DataSource;
+import dev.hugog.minecraft.blockstreet.data.sources.yml.YmlDataSourceImpl;
 import dev.hugog.minecraft.blockstreet.data.sources.yml.implementations.CompaniesYml;
 import dev.hugog.minecraft.blockstreet.enums.DataFilePath;
 import lombok.extern.log4j.Log4j2;
@@ -63,6 +64,18 @@ public class CompaniesRepository implements Repository<Long, CompanyEntity> {
                 .filter(stringId -> stringId.matches("\\d+"))
                 .map(Long::parseLong)
                 .collect(Collectors.toList());
+
+    }
+
+    public Long getNextId() {
+
+        if (!isDataSourceValid()) return null;
+
+        if (dataSource instanceof YmlDataSourceImpl) {
+            return ((YmlDataSourceImpl<?>) dataSource).getNextId(DataFilePath.COMPANIES.getDataPath());
+        }
+
+        return null;
 
     }
 
