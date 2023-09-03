@@ -6,9 +6,4 @@ currentSharePrice: 1000
 risk: 3
 totalShares: 100
 availableShares: 99
-historic:
-  - 1.201
-  - -0.889
-  - 0.467
-  - 0.961
-  - -1.173
+historic: []

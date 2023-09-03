@@ -1,14 +1,17 @@
 package dev.hugog.minecraft.blockstreet.data.dao;
 
 import dev.hugog.minecraft.blockstreet.data.entities.CompanyEntity;
+import dev.hugog.minecraft.blockstreet.utils.SizedStack;
 import lombok.*;
 
-import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class CompanyDao implements Dao<CompanyEntity> {
 
     private int id;
@@ -19,7 +22,7 @@ public class CompanyDao implements Dao<CompanyEntity> {
     private int risk;
     private int totalShares;
     @Setter private int availableShares;
-    private List<Double> historic;
+    private SizedStack<QuoteDao> historic;
 
     @Override
     public CompanyEntity toEntity() {
@@ -34,7 +37,7 @@ public class CompanyDao implements Dao<CompanyEntity> {
         entity.setRisk(risk);
         entity.setTotalShares(totalShares);
         entity.setAvailableShares(availableShares);
-        entity.setHistoric(historic);
+        entity.setHistoric(historic.stream().map(Dao::toEntity).collect(Collectors.toList()));
 
         return entity;
 
@@ -52,7 +55,11 @@ public class CompanyDao implements Dao<CompanyEntity> {
                 entity.getRisk(),
                 entity.getTotalShares(),
                 entity.getAvailableShares(),
-                entity.getHistoric()
+                new SizedStack<QuoteDao>(500).fromList(
+                        entity.getHistoric().stream()
+                                .map(quote -> (QuoteDao) new QuoteDao().fromEntity(quote))
+                                .collect(Collectors.toList())
+                )
         );
 
     }

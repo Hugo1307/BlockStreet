@@ -1,10 +1,7 @@
 package dev.hugog.minecraft.blockstreet.data.dao;
 
 import dev.hugog.minecraft.blockstreet.data.entities.PlayerEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,6 +10,8 @@ import java.util.stream.Collectors;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class PlayerDao implements Dao<PlayerEntity> {
 
     private String uniqueId;

@@ -15,6 +15,6 @@ public class CompanyEntity implements DataEntity {
     private int risk;
     private int totalShares;
     private int availableShares;
-    private List<Double> historic;
+    private List<QuoteEntity> historic;
 
 }

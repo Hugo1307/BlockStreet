@@ -1,6 +1,7 @@
 package dev.hugog.minecraft.blockstreet.commands;
 
 import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
+import dev.hugog.minecraft.blockstreet.data.dao.QuoteDao;
 import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
 import dev.hugog.minecraft.dev_command.annotations.ArgsValidation;
@@ -115,15 +116,15 @@ public class CompanyCommand extends BukkitDevCommand {
 		player.sendMessage(ChatColor.GRAY + messages.getActionHistoric() + ": ");
 		player.sendMessage("");
 
-		List<Double> quotesToPresent = currentCompany.getHistoric().subList(0, Math.min(7, currentCompany.getHistoric().size()));
-		for (double element : quotesToPresent){
+		List<QuoteDao> quotesToPresent = currentCompany.getHistoric().toList().subList(0, Math.min(5, currentCompany.getHistoric().size()));
+		for (QuoteDao quote : quotesToPresent){
 
 			DecimalFormat df = new DecimalFormat("###.###%");
 
-			if (element > 0) {
-				player.sendMessage(ChatColor.GREEN + "  +" + df.format(element));
+			if (quote.getVariation() > 0) {
+				player.sendMessage(ChatColor.GREEN + "  +" + df.format(quote.getVariation()));
 			} else {
-				player.sendMessage(ChatColor.RED + "  " + df.format(element));
+				player.sendMessage(ChatColor.RED + "  " + df.format(quote.getVariation()));
 			}
 
 		}

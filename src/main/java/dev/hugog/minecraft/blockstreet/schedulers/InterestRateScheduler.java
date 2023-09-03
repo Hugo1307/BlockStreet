@@ -1,6 +1,7 @@
 package dev.hugog.minecraft.blockstreet.schedulers;
 
 import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
+import dev.hugog.minecraft.blockstreet.data.dao.QuoteDao;
 import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
 import dev.hugog.minecraft.blockstreet.utils.random.StocksRandomizer;
@@ -34,7 +35,9 @@ public class InterestRateScheduler extends BukkitRunnable {
             double newSharesQuote = stocksRandomizer.getRandomQuote(company.getCurrentSharePrice());
             double newSharePrice = stocksRandomizer.getRandomStockValue(company.getCurrentSharePrice(), newSharesQuote);
 
-            companiesService.updateCompanyHistoric(company.getId(), newSharesQuote);
+            QuoteDao quoteDao = new QuoteDao(newSharesQuote, newSharePrice, System.currentTimeMillis());
+
+            companiesService.updateCompanyHistoric(company.getId(), quoteDao);
             companiesService.updateCompanySharesValue(company.getId(), newSharePrice);
 
         }

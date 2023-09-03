@@ -1,6 +1,7 @@
 package dev.hugog.minecraft.blockstreet.data.services;
 
 import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
+import dev.hugog.minecraft.blockstreet.data.dao.QuoteDao;
 import dev.hugog.minecraft.blockstreet.data.repositories.Repository;
 import dev.hugog.minecraft.blockstreet.data.repositories.implementations.CompaniesRepository;
 
@@ -141,7 +142,7 @@ public class CompaniesService implements Service {
 
     }
 
-    public void updateCompanyHistoric(long companyId, double newHistoricEntry) {
+    public void updateCompanyHistoric(long companyId, QuoteDao newQuote) {
 
         CompanyDao companyDao = (CompanyDao) companiesRepository.getById(companyId)
                 .map(companyEntity -> new CompanyDao().fromEntity(companyEntity))
@@ -151,7 +152,7 @@ public class CompaniesService implements Service {
             return;
         }
 
-        companyDao.getHistoric().add(0, newHistoricEntry);
+        companyDao.getHistoric().push(newQuote);
         companiesRepository.save(companyDao.toEntity());
 
     }

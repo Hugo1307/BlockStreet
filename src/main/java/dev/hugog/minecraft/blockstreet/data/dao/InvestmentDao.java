@@ -7,6 +7,8 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class InvestmentDao implements Dao<InvestmentEntity> {
 
     private long companyId;
