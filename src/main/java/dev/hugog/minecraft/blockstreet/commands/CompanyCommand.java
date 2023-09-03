@@ -18,8 +18,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -97,15 +95,12 @@ public class CompanyCommand extends BukkitDevCommand {
 				new ComponentBuilder(ChatColor.GRAY + "Click to see company's details.").create()));
 		buyStocks.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/invest buy " + currentCompany.getId() + " 1"));
 
-		BigDecimal companySharePriceDecimal = BigDecimal.valueOf(currentCompany.getCurrentSharePrice());
-		companySharePriceDecimal = companySharePriceDecimal.setScale(3, RoundingMode.HALF_UP);
-
 		player.sendMessage(messages.getPluginHeader());
 		player.sendMessage("");
 		player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + currentCompany.getName());
 		player.sendMessage("");
 		player.sendMessage(ChatColor.GRAY + "Id: " + ChatColor.GREEN + currentCompany.getId());
-		player.sendMessage(ChatColor.GRAY + messages.getPrice() + ": " + ChatColor.GREEN + companySharePriceDecimal.doubleValue());
+		player.sendMessage(ChatColor.GRAY + messages.getPrice() + ": " + ChatColor.GREEN + currentCompany.getFormattedCurrentSharePrice());
 		player.sendMessage(ChatColor.GRAY + messages.getRisk() + ": " + ChatColor.GREEN + currentCompany.getRisk());
 
 		if (currentCompany.getAvailableShares() < 0)

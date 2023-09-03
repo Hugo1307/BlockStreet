@@ -6,8 +6,10 @@ import com.google.inject.Injector;
 import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.data.repositories.implementations.CompaniesRepository;
 import dev.hugog.minecraft.blockstreet.data.repositories.implementations.PlayersRepository;
+import dev.hugog.minecraft.blockstreet.data.repositories.implementations.SignsRepository;
 import dev.hugog.minecraft.blockstreet.data.sources.yml.implementations.CompaniesYml;
 import dev.hugog.minecraft.blockstreet.data.sources.yml.implementations.PlayersYml;
+import dev.hugog.minecraft.blockstreet.data.sources.yml.implementations.SignsYml;
 import dev.hugog.minecraft.blockstreet.listeners.PlayerJoinListener;
 import org.bukkit.Server;
 
@@ -33,6 +35,7 @@ public class BasicBinderModule extends AbstractModule {
         // TODO: Change bindings depending on the data source being used
         this.bind(CompaniesRepository.class).toInstance(new CompaniesRepository(new CompaniesYml(plugin.getDataFolder())));
         this.bind(PlayersRepository.class).toInstance(new PlayersRepository(new PlayersYml(plugin.getDataFolder())));
+        this.bind(SignsRepository.class).toInstance(new SignsRepository(new SignsYml(plugin.getDataFolder())));
 
         this.bind(PlayerJoinListener.class);
 

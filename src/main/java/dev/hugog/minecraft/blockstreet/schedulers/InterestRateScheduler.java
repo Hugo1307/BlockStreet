@@ -1,11 +1,12 @@
 package dev.hugog.minecraft.blockstreet.schedulers;
 
+import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
 import dev.hugog.minecraft.blockstreet.data.dao.QuoteDao;
 import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
+import dev.hugog.minecraft.blockstreet.data.services.SignsService;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
 import dev.hugog.minecraft.blockstreet.utils.random.StocksRandomizer;
-import org.bukkit.Server;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.inject.Inject;
@@ -13,14 +14,16 @@ import java.util.List;
 
 public class InterestRateScheduler extends BukkitRunnable {
 
-    private final Server server;
+    private final BlockStreet plugin;
     private final CompaniesService companiesService;
+    private final SignsService signsService;
     private final Messages messages;
 
     @Inject
-    public InterestRateScheduler(Server server, CompaniesService companiesService, Messages messages) {
-        this.server = server;
+    public InterestRateScheduler(BlockStreet plugin, CompaniesService companiesService, SignsService signsService, Messages messages) {
+        this.plugin = plugin;
         this.companiesService = companiesService;
+        this.signsService = signsService;
         this.messages = messages;
     }
 
@@ -40,9 +43,14 @@ public class InterestRateScheduler extends BukkitRunnable {
             companiesService.updateCompanyHistoric(company.getId(), quoteDao);
             companiesService.updateCompanySharesValue(company.getId(), newSharePrice);
 
+            plugin.getServer().getScheduler().runTask(plugin, () -> {
+                signsService.updateBukkitSignsByCompany(company.getId());
+            });
+
+
         }
 
-        server.broadcastMessage(messages.getPluginPrefix() + messages.getUpdatedInterestRate());
+        plugin.getServer().broadcastMessage(messages.getPluginPrefix() + messages.getUpdatedInterestRate());
 
     }
 

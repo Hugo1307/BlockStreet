@@ -8,5 +8,6 @@ import java.util.List;
 public interface YmlDataSource<T extends DataEntity> extends DataSource<T> {
 
     List<String> getAllIds(String directoryName);
+    Long getNextId(String directoryName);
 
 }

@@ -44,7 +44,7 @@ public class YmlDataSourceImpl<T extends DataEntity> implements YmlDataSource<T>
         return null;
     }
 
-    @Override 
+    @Override
     public void save(String fileName, T data) {
 
         if (fileName == null) {
@@ -83,6 +83,32 @@ public class YmlDataSourceImpl<T extends DataEntity> implements YmlDataSource<T>
                 .map(File::getName)
                 .map(fileName -> fileName.substring(0, fileName.lastIndexOf('.')))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Long getNextId(String directoryName) {
+
+        List<String> existentIds = getAllIds(directoryName);
+
+        if (existentIds.isEmpty())
+            return 1L;
+
+        boolean allIdsAreParseable = existentIds.stream()
+                .filter(stringId -> stringId.matches("\\d+"))
+                .count() == existentIds.size();
+
+        if (!allIdsAreParseable) {
+            log.warn("Unable to get next id for directory " + directoryName + ". Not all ids are Integer parseable.");
+            return null;
+        }
+
+        List<Long> parsedIds = existentIds.stream()
+                .map(Long::parseLong)
+                .sorted()
+                .collect(Collectors.toList());
+
+        return parsedIds.get(parsedIds.size() - 1) + 1;
+
     }
 
 }

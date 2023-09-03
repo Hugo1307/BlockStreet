@@ -4,11 +4,12 @@ import com.google.inject.Injector;
 import dev.hugog.minecraft.blockstreet.api.services.AutoUpdateService;
 import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
 import dev.hugog.minecraft.blockstreet.data.services.PlayersService;
+import dev.hugog.minecraft.blockstreet.data.services.SignsService;
 import dev.hugog.minecraft.blockstreet.dependencyinjection.BasicBinderModule;
 import dev.hugog.minecraft.blockstreet.enums.ConfigurationFiles;
 import dev.hugog.minecraft.blockstreet.enums.DataFilePath;
 import dev.hugog.minecraft.blockstreet.listeners.PlayerJoinListener;
-import dev.hugog.minecraft.blockstreet.listeners.SignHandler;
+import dev.hugog.minecraft.blockstreet.listeners.SignsListener;
 import dev.hugog.minecraft.blockstreet.utils.ConfigAccessor;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
 import dev.hugog.minecraft.blockstreet.schedulers.InterestRateScheduler;
@@ -45,11 +46,14 @@ public class BlockStreet extends JavaPlugin {
     // Listeners
     @Inject
     private PlayerJoinListener playerJoinListener;
+    @Inject
+    private SignsListener signsListener;
 
     // Services
     @Inject private AutoUpdateService autoUpdateService;
     @Inject private CompaniesService companiesService;
     @Inject private PlayersService playersService;
+    @Inject private SignsService signsService;
 
     // Utils
     @Inject
@@ -75,6 +79,7 @@ public class BlockStreet extends JavaPlugin {
 
         initializeCompaniesData();
         initializePlayersData();
+        initializeSignsData();
 
         registerSchedulers();
 
@@ -174,15 +179,28 @@ public class BlockStreet extends JavaPlugin {
 
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void initializePlayersData() {
 
         File playersDirectory = new File(getDataFolder(), DataFilePath.PLAYERS.getDataPath());
         if (!playersDirectory.exists()) {
-            playersDirectory.mkdir();
+            if (!playersDirectory.mkdir()) {
+                getLogger().warning("Unable to create players directory.");
+            }
         }
 
     }
+
+    private void initializeSignsData() {
+
+        File signsDirectory = new File(getDataFolder(), DataFilePath.SIGNS.getDataPath());
+        if (!signsDirectory.exists()) {
+            if (!signsDirectory.mkdir()) {
+                getLogger().warning("Unable to create signs directory.");
+            }
+        }
+
+    }
+
 
     private void configureMessages() {
     	this.messagesConfig = new ConfigAccessor(this, ConfigurationFiles.MESSAGES.getFileName());
@@ -192,12 +210,12 @@ public class BlockStreet extends JavaPlugin {
 
     private void registerEvents() {
         getServer().getPluginManager().registerEvents(playerJoinListener, this);
-        getServer().getPluginManager().registerEvents(new SignHandler(), this);
+        getServer().getPluginManager().registerEvents(signsListener, this);
     }
 
     public void registerSchedulers() {
         int interestTime = getConfig().getInt("BlockStreet.InterestInterval"); // In minutes
-        interestRateTask = new InterestRateScheduler(getServer(), companiesService, messages)
+        interestRateTask = new InterestRateScheduler(this, companiesService, signsService, messages)
                 .runTaskTimerAsynchronously(this, 20L*10, 20L*60*interestTime);
     }
 

@@ -17,7 +17,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -68,12 +67,10 @@ public class CompaniesCommand extends BukkitDevCommand {
 				new ComponentBuilder(ChatColor.GRAY + "Click to see company's details.").create()));
 		companyDetails.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/invest company " + currentCompany.getId()));
 
-		DecimalFormat companyValueDf = new DecimalFormat("#.###");
-
 		if(currentCompany.getName() != null) {
 			player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + currentCompany.getName());
 			player.sendMessage("");
-			player.sendMessage(ChatColor.GRAY + messages.getPrice() + ": " + ChatColor.GREEN + companyValueDf.format(currentCompany.getCurrentSharePrice()));
+			player.sendMessage(ChatColor.GRAY + messages.getPrice() + ": " + ChatColor.GREEN + currentCompany.getFormattedCurrentSharePrice());
 			player.sendMessage(ChatColor.GRAY + messages.getRisk() + ": " + ChatColor.GREEN + currentCompany.getRisk());
 			player.spigot().sendMessage(companyDetails);
 			player.sendMessage("");
