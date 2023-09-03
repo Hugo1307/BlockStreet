@@ -65,8 +65,8 @@ public class Messages {
 	private final String companyCommandUsage;
 	private final String companiesCommandDescription;
 	private final String companiesCommandUsage;
-	private final String sharesCommandDescription;
-	private final String sharesCommandUsage;
+	private final String portfolioCommandDescription;
+	private final String portfolioCommandUsage;
 	private final String infoCommandDescription;
 	private final String infoCommandUsage;
 	private final String reloadCommandDescription;
@@ -135,8 +135,8 @@ public class Messages {
 		this.companyCommandUsage = messagesConfig.getConfig().getString("companyCommandUsage");
 		this.companiesCommandDescription = messagesConfig.getConfig().getString("companiesCommandDescription");
 		this.companiesCommandUsage = messagesConfig.getConfig().getString("companiesCommandUsage");
-		this.sharesCommandDescription = messagesConfig.getConfig().getString("sharesCommandDescription");
-		this.sharesCommandUsage = messagesConfig.getConfig().getString("sharesCommandUsage");
+		this.portfolioCommandDescription = messagesConfig.getConfig().getString("portfolioCommandDescription");
+		this.portfolioCommandUsage = messagesConfig.getConfig().getString("portfolioCommandUsage");
 		this.infoCommandDescription = messagesConfig.getConfig().getString("infoCommandDescription");
 		this.infoCommandUsage = messagesConfig.getConfig().getString("infoCommandUsage");
 		this.reloadCommandDescription = messagesConfig.getConfig().getString("reloadCommandDescription");

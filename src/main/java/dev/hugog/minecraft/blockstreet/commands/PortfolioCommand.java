@@ -14,11 +14,11 @@ import org.bukkit.entity.Player;
 
 import java.text.DecimalFormat;
 
-@Command(alias = "shares", description = "Check your investments and shares.", permission = "blockstreet.command.shares")
+@Command(alias = "portfolio", description = "Check your investments and shares.", permission = "blockstreet.command.portfolio", isPlayerOnly = true)
 @Dependencies(dependencies = {Messages.class, PlayersService.class, CompaniesService.class})
-public class SharesCommand extends BukkitDevCommand {
+public class PortfolioCommand extends BukkitDevCommand {
 
-    public SharesCommand(BukkitCommandData commandData, CommandSender commandSender, String[] args) {
+    public PortfolioCommand(BukkitCommandData commandData, CommandSender commandSender, String[] args) {
         super(commandData, commandSender, args);
     }
 
@@ -46,7 +46,7 @@ public class SharesCommand extends BukkitDevCommand {
 
                     if (investedCompany == null) return;
 
-                    DecimalFormat df = new DecimalFormat("#.###");
+                    DecimalFormat df = new DecimalFormat("#.##");
 
                     player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + investedCompany.getName());
                     player.sendMessage("");
