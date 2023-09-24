@@ -2,12 +2,14 @@ package dev.hugog.minecraft.blockstreet.enums;
 
 import lombok.Getter;
 
+import java.io.File;
+
 @Getter
 public enum DataFilePath {
 
-    COMPANIES("/companies"),
-    PLAYERS("/players"),
-    SIGNS("/signs");
+    COMPANIES(File.separator + "companies"),
+    PLAYERS(File.separator + "players"),
+    SIGNS(File.separator + "signs");
 
     private final String dataPath;
 
@@ -16,11 +18,11 @@ public enum DataFilePath {
     }
 
     public String getFullPath(String fileName) {
-        return dataPath + "/" + fileName;
+        return dataPath + File.separator + fileName;
     }
 
     public String getFullPathById(String id) {
-        return dataPath + "/" + id + ".yml";
+        return dataPath + File.separator + id + ".yml";
     }
 
 }

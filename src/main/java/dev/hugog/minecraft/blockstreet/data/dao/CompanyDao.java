@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @ToString
 public class CompanyDao implements Dao<CompanyEntity> {
 
-    private int id;
+    @Setter private int id;
     private String name;
     private String description;
     private double initialSharePrice;

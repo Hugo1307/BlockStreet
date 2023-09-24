@@ -10,9 +10,10 @@ import dev.hugog.minecraft.blockstreet.enums.ConfigurationFiles;
 import dev.hugog.minecraft.blockstreet.enums.DataFilePath;
 import dev.hugog.minecraft.blockstreet.listeners.PlayerJoinListener;
 import dev.hugog.minecraft.blockstreet.listeners.SignsListener;
+import dev.hugog.minecraft.blockstreet.migration.MigrationHandler;
+import dev.hugog.minecraft.blockstreet.schedulers.InterestRateScheduler;
 import dev.hugog.minecraft.blockstreet.utils.ConfigAccessor;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
-import dev.hugog.minecraft.blockstreet.schedulers.InterestRateScheduler;
 import dev.hugog.minecraft.dev_command.DevCommand;
 import dev.hugog.minecraft.dev_command.commands.executors.DevCommandExecutor;
 import dev.hugog.minecraft.dev_command.commands.handler.CommandHandler;
@@ -56,8 +57,8 @@ public class BlockStreet extends JavaPlugin {
     @Inject private SignsService signsService;
 
     // Utils
-    @Inject
-    private Messages messages;
+    @Inject private Messages messages;
+    @Inject private MigrationHandler migrationHandler;
 
     @Override
     public void onEnable() {
@@ -84,14 +85,17 @@ public class BlockStreet extends JavaPlugin {
         registerSchedulers();
 
         checkForUpdates();
-           	
-        System.out.println("[BlockStreet] Plugin successfully enabled!");
+
+        // Check if the plugin needs to migrate data and do it if necessary
+        migrationHandler.checkMigrations();
+
+        getLogger().info("Plugin successfully enabled!");
         
     }
 
     @Override
     public void onDisable() {
-        System.out.println("[BlockStreet] Plugin successfully disabled!");
+        getLogger().info("Plugin successfully disabled!");
     }
 
     private void initDependencyInjectionModules() {
@@ -159,7 +163,7 @@ public class BlockStreet extends JavaPlugin {
             if (companiesDirectory.mkdir()) {
                 File defaultCompanyFile = new File(getDataFolder(), DataFilePath.COMPANIES.getFullPathById("0"));
                 try {
-                    byte[] buffer = Objects.requireNonNull(getResource("companies/0.yml")).readAllBytes();
+                    byte[] buffer = Objects.requireNonNull(getResource("companies" + File.separator + "0.yml")).readAllBytes();
 
                     OutputStream outStream = Files.newOutputStream(defaultCompanyFile.toPath());
                     outStream.write(buffer);
@@ -221,7 +225,6 @@ public class BlockStreet extends JavaPlugin {
 
     public void stopSchedulers() {
         interestRateTask.cancel();
-        // signCheckerTask.cancel();
     }
 
     private void setupEconomy() {
@@ -231,7 +234,7 @@ public class BlockStreet extends JavaPlugin {
         if (economyProvider != null) {
             economy = economyProvider.getProvider();
         } else {
-            getLogger().log(Level.SEVERE, "[BlockStreet] Vault not found. Disabling plugin.");
+            getLogger().log(Level.SEVERE, "Vault not found. Disabling plugin.");
             getServer().getPluginManager().disablePlugin(this);
         }
 

@@ -56,6 +56,17 @@ public class CompaniesService implements Service {
 
     }
 
+    public CompanyDao createCompany(CompanyDao companyToCreate) {
+
+        Long companyId = companiesRepository.getNextId();
+
+        companyToCreate.setId(companyId.intValue());
+        companiesRepository.save(companyToCreate.toEntity());
+
+        return companyToCreate;
+
+    }
+
     public void deleteCompany(long companyId) {
         companiesRepository.delete(companyId);
     }

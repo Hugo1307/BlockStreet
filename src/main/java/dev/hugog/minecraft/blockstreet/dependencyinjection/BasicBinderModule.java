@@ -3,6 +3,7 @@ package dev.hugog.minecraft.blockstreet.dependencyinjection;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.name.Names;
 import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.data.repositories.implementations.CompaniesRepository;
 import dev.hugog.minecraft.blockstreet.data.repositories.implementations.PlayersRepository;
@@ -12,6 +13,11 @@ import dev.hugog.minecraft.blockstreet.data.sources.yml.implementations.PlayersY
 import dev.hugog.minecraft.blockstreet.data.sources.yml.implementations.SignsYml;
 import dev.hugog.minecraft.blockstreet.listeners.PlayerJoinListener;
 import org.bukkit.Server;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.PluginDescriptionFile;
+
+import java.io.File;
+import java.util.logging.Logger;
 
 public class BasicBinderModule extends AbstractModule {
 
@@ -31,6 +37,11 @@ public class BasicBinderModule extends AbstractModule {
         this.bind(BlockStreet.class).toInstance(plugin);
 
         this.bind(Server.class).toInstance(plugin.getServer());
+        this.bind(PluginDescriptionFile.class).toInstance(plugin.getDescription());
+
+        this.bind(Logger.class).annotatedWith(Names.named("bukkitLogger")).toInstance(plugin.getLogger());
+        this.bind(File.class).annotatedWith(Names.named("pluginDataDirectory")).toInstance(plugin.getDataFolder());
+        this.bind(FileConfiguration.class).annotatedWith(Names.named("pluginConfig")).toInstance(plugin.getConfig());
 
         // TODO: Change bindings depending on the data source being used
         this.bind(CompaniesRepository.class).toInstance(new CompaniesRepository(new CompaniesYml(plugin.getDataFolder())));
