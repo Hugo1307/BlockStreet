@@ -14,6 +14,7 @@ import dev.hugog.minecraft.blockstreet.data.sources.yml.implementations.SignsYml
 import dev.hugog.minecraft.blockstreet.listeners.PlayerJoinListener;
 import org.bukkit.Server;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
 
 import java.io.File;
@@ -41,7 +42,7 @@ public class BasicBinderModule extends AbstractModule {
 
         this.bind(Logger.class).annotatedWith(Names.named("bukkitLogger")).toInstance(plugin.getLogger());
         this.bind(File.class).annotatedWith(Names.named("pluginDataDirectory")).toInstance(plugin.getDataFolder());
-        this.bind(FileConfiguration.class).annotatedWith(Names.named("pluginConfig")).toInstance(plugin.getConfig());
+        this.bind(FileConfiguration.class).annotatedWith(Names.named("pluginConfig")).toInstance(YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "config.yml")));
 
         // TODO: Change bindings depending on the data source being used
         this.bind(CompaniesRepository.class).toInstance(new CompaniesRepository(new CompaniesYml(plugin.getDataFolder())));

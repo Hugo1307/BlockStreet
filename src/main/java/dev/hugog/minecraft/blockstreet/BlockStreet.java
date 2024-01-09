@@ -152,8 +152,12 @@ public class BlockStreet extends JavaPlugin {
     }
 
     private void configureConfig(){
-        if(!new File(getDataFolder(), ConfigurationFiles.CONFIG.getFileName()).exists())
+        if (!new File(getDataFolder(), ConfigurationFiles.CONFIG.getFileName()).exists())
         	this.saveDefaultConfig();
+        else {
+            this.getConfig().options().copyDefaults(true);
+            this.saveConfig();
+        }
     }
     
     private void initializeCompaniesData() {
@@ -210,6 +214,10 @@ public class BlockStreet extends JavaPlugin {
     	this.messagesConfig = new ConfigAccessor(this, ConfigurationFiles.MESSAGES.getFileName());
 		if(!new File(getDataFolder(), ConfigurationFiles.MESSAGES.getFileName()).exists())
 			messagesConfig.saveDefaultConfig();
+        else {
+            messagesConfig.getConfig().options().copyDefaults(true);
+            messagesConfig.saveConfig();
+        }
     }
 
     private void registerEvents() {

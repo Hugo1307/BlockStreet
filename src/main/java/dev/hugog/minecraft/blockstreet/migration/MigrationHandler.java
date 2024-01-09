@@ -3,6 +3,7 @@ package dev.hugog.minecraft.blockstreet.migration;
 import com.google.inject.name.Named;
 import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
 import dev.hugog.minecraft.blockstreet.data.services.PlayersService;
+import dev.hugog.minecraft.blockstreet.data.services.SignsService;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -20,11 +21,12 @@ public class MigrationHandler {
     public Logger pluginLogger;
     public CompaniesService companiesService;
     public PlayersService playersService;
+    public SignsService signsService;
 
     @Inject
     public MigrationHandler(@Named("pluginConfig") FileConfiguration pluginConfiguration, PluginDescriptionFile pluginDescriptionFile,
                             @Named("pluginDataDirectory") File pluginDataDirectory, @Named("bukkitLogger") Logger pluginLogger,
-                            CompaniesService companiesService, PlayersService playersService) {
+                            CompaniesService companiesService, PlayersService playersService, SignsService signsService) {
 
         this.pluginConfiguration = pluginConfiguration;
         this.pluginDescriptionFile = pluginDescriptionFile;
@@ -33,6 +35,7 @@ public class MigrationHandler {
         this.pluginLogger = pluginLogger;
         this.companiesService = companiesService;
         this.playersService = playersService;
+        this.signsService = signsService;
 
     }
 
@@ -70,6 +73,10 @@ public class MigrationHandler {
             Migrator playersMigrator = new dev.hugog.minecraft.blockstreet.migration.v110.PlayersMigrator(pluginDataDirectory, playersService);
             playersMigrator.migrate();
             playersMigrator.archiveOldData();
+
+            Migrator signsMigrator = new dev.hugog.minecraft.blockstreet.migration.v110.SignsMigrator(pluginDataDirectory, signsService);
+            signsMigrator.migrate();
+            signsMigrator.archiveOldData();
 
             pluginLogger.info("The plugin migrated data from version " + pluginOldVersion + " to " + pluginCurrentVersion + ".");
 
