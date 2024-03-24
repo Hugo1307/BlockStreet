@@ -7,7 +7,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 public class SignsMigrator implements Migrator {
@@ -26,9 +26,13 @@ public class SignsMigrator implements Migrator {
         File signsFile = getSignsFile();
         FileConfiguration signsConfiguration = YamlConfiguration.loadConfiguration(signsFile);
 
-        Set<String> signsIds = Objects.requireNonNull(
-                signsConfiguration.getConfigurationSection("Signs")
-        ).getKeys(false);
+        if (!signsFile.exists()) {
+            return;
+        }
+
+        Set<String> signsIds = Optional.ofNullable(signsConfiguration.getConfigurationSection("Signs"))
+                .map(configurationSection -> configurationSection.getKeys(false))
+                .orElse(Set.of());
 
         signsIds.forEach(signId -> {
 

@@ -8,6 +8,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -28,7 +29,13 @@ public class PlayersMigrator implements Migrator {
         File playersFile = getPlayersFile();
         FileConfiguration playersConfiguration = YamlConfiguration.loadConfiguration(playersFile);
 
-        Set<String> playersNames = playersConfiguration.getConfigurationSection("Players").getKeys(false);
+        if (!playersFile.exists()) {
+            return;
+        }
+
+        Set<String> playersNames = Optional.ofNullable(playersConfiguration.getConfigurationSection("Players"))
+                .map(configurationSection -> configurationSection.getKeys(false))
+                .orElse(Set.of());
 
         playersNames.forEach(playerName -> {
 
