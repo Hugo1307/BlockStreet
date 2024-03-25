@@ -58,8 +58,10 @@ public class StocksRandomizer {
         ThreadLocalRandom r = ThreadLocalRandom.current();
         double randomPercentage = r.nextDouble(0d, 1d);
 
+        // There is some probability that the stock value will change drastically (10% - 30%)
+        // This probability will increase with the risk of the company
         if (randomPercentage < 0.01 * (this.risk * 5)) {
-            return r.nextDouble(0.1, 0.5);
+            return r.nextDouble(0.1, 0.3);
         }
 
         return 0;
