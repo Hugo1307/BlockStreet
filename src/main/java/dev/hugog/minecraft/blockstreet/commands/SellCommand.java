@@ -70,7 +70,7 @@ public class SellCommand extends BukkitDevCommand {
 		playersService.removeSharesFromPlayer(player.getUniqueId(), companyId, sellingAmount);
 		companiesService.addSharesToCompany(companyId, sellingAmount);
 
-		player.sendMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getSoldActions(), String.valueOf(sellingAmount), String.valueOf(sharesValue)));
+		player.sendMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getSoldActions(), String.valueOf(sellingAmount), String.format("%.2f", sharesValue)));
 
 	}
 
