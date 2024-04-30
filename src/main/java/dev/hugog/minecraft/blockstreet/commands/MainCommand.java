@@ -45,10 +45,6 @@ public class MainCommand extends BukkitDevCommand {
         getCommandSender().sendMessage("");
         getCommandSender().sendMessage(ChatColor.GRAY + "You can also use " + ChatColor.GREEN + "/invest info" + ChatColor.GRAY + " to see the plugin's information.");
         getCommandSender().sendMessage("");
-        getCommandSender().sendMessage(ChatColor.GRAY + "We recommend the usage of BlockStreet's Web Interface to manage your investments.");
-        getCommandSender().sendMessage("");
-        getCommandSender().spigot().sendMessage(webPanelText);
-        getCommandSender().sendMessage("");
         getCommandSender().sendMessage(messages.getPluginFooter());
 
 

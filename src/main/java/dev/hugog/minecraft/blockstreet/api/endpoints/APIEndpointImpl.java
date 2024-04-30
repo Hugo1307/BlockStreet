@@ -11,7 +11,6 @@ public abstract class APIEndpointImpl<T> implements ApiEndpoint<T> {
     protected OkHttpClient httpClient;
     protected String endpointUrl;
     protected Response response;
-    protected String baseBackendUrl = "https://blockstreet.hugog.dev/api/v1";
 
     public APIEndpointImpl(String endpointUrl) {
         this.httpClient = new OkHttpClient();

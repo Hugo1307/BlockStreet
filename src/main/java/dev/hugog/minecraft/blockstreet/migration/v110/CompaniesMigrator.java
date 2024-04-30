@@ -8,6 +8,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.util.Optional;
 import java.util.Set;
 
 public class CompaniesMigrator implements Migrator {
@@ -26,7 +27,13 @@ public class CompaniesMigrator implements Migrator {
         File companiesFile = getCompaniesFile();
         FileConfiguration companiesConfiguration = YamlConfiguration.loadConfiguration(companiesFile);
 
-        Set<String> companiesIds = companiesConfiguration.getConfigurationSection("Companies").getKeys(false);
+        if (!companiesFile.exists()) {
+            return;
+        }
+
+        Set<String> companiesIds = Optional.ofNullable(companiesConfiguration.getConfigurationSection("Companies"))
+                .map(configurationSection -> configurationSection.getKeys(false))
+                .orElse(Set.of());
 
         // Delete the example company to avoid duplicates
         companiesService.deleteCompany(0);
