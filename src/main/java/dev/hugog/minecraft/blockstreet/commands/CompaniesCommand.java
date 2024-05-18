@@ -50,8 +50,7 @@ public class CompaniesCommand extends BukkitDevCommand {
 		}
 
 		Player player = (Player) getCommandSender();
-
-		List<CompanyDao> companiesList = companiesService.getCompaniesByIdInterval(0, 3);
+		List<CompanyDao> companiesList = companiesService.getAllCompanies();
 
 		player.sendMessage(messages.getPluginHeader());
 		companiesList.forEach(company -> printCompanyDetails(player, messages, company));
