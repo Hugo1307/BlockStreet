@@ -8,6 +8,17 @@ import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
+import java.util.List;
+
+/**
+ * Help Command
+ *
+ * <p>Command to provide information about the available commands.
+ * <p>Syntax: /invest help
+ *
+ * @author Hugo1307
+ * @since v1.0.0
+ */
 @Command(alias = "help", description = "Provides commands information.", permission = "blockstreet.command.help")
 @Dependencies(dependencies = {Messages.class})
 public class HelpCommand extends BukkitDevCommand {
@@ -19,7 +30,7 @@ public class HelpCommand extends BukkitDevCommand {
     @Override
     public void execute() {
 
-        Messages messages = (Messages) getDependency(Messages.class);
+        Messages messages = getDependency(Messages.class);
 
         if (!hasPermissionToExecuteCommand()) {
             getCommandSender().sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
@@ -71,6 +82,11 @@ public class HelpCommand extends BukkitDevCommand {
 
         getCommandSender().sendMessage(messages.getPluginFooter());
 
+    }
+
+    @Override
+    public List<String> onTabComplete(String[] strings) {
+        return List.of();
     }
 
 }

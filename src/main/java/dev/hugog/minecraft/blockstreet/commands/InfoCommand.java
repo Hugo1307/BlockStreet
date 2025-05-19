@@ -10,6 +10,8 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 /**
  * Info Command
  * <p>
@@ -24,49 +26,54 @@ import org.bukkit.entity.Player;
 @Dependencies(dependencies = {Messages.class, AutoUpdateService.class})
 public class InfoCommand extends BukkitDevCommand {
 
-	public InfoCommand(BukkitCommandData commandData, CommandSender commandSender, String[] args) {
-		super(commandData, commandSender, args);
-	}
+    public InfoCommand(BukkitCommandData commandData, CommandSender commandSender, String[] args) {
+        super(commandData, commandSender, args);
+    }
 
-	@Override
-	public void execute() {
+    @Override
+    public void execute() {
 
-		// Obtain dependencies
-		Messages messages = (Messages) getDependency(Messages.class);
-		AutoUpdateService autoUpdateService = (AutoUpdateService) getDependency(AutoUpdateService.class);
+        // Obtain dependencies
+        Messages messages = (Messages) getDependency(Messages.class);
+        AutoUpdateService autoUpdateService = (AutoUpdateService) getDependency(AutoUpdateService.class);
 
-		if (!canSenderExecuteCommand()) {
-			getCommandSender().sendMessage(messages.getPluginPrefix() + messages.getPlayerOnlyCommand());
-			return;
-		}
+        if (!canSenderExecuteCommand()) {
+            getCommandSender().sendMessage(messages.getPluginPrefix() + messages.getPlayerOnlyCommand());
+            return;
+        }
 
-		Player player = (Player) getCommandSender();
+        Player player = (Player) getCommandSender();
 
-		autoUpdateService.getLatestRelease().thenAcceptAsync(latestReleaseEntity -> {
+        autoUpdateService.getLatestRelease().thenAcceptAsync(latestReleaseEntity -> {
 
-			boolean isUpdateAvailable = autoUpdateService.isUpdateAvailable().join();
+            boolean isUpdateAvailable = autoUpdateService.isUpdateAvailable().join();
 
-			String currentVersion = autoUpdateService.getCurrentVersion();
+            String currentVersion = autoUpdateService.getCurrentVersion();
 
-			player.sendMessage(messages.getPluginHeader());
-			player.sendMessage("");
-			player.sendMessage(ChatColor.GREEN + "Current Version: " + ChatColor.GRAY + currentVersion);
-			player.sendMessage(ChatColor.GREEN + "Last Version: " + ChatColor.GRAY + latestReleaseEntity.getReleaseVersion());
-			player.sendMessage("");
+            player.sendMessage(messages.getPluginHeader());
+            player.sendMessage("");
+            player.sendMessage(ChatColor.GREEN + "Current Version: " + ChatColor.GRAY + currentVersion);
+            player.sendMessage(ChatColor.GREEN + "Last Version: " + ChatColor.GRAY + latestReleaseEntity.getReleaseVersion());
+            player.sendMessage("");
 
-			if (isUpdateAvailable) {
-				player.sendMessage(ChatColor.GRAY + "New version available!");
-				player.sendMessage(ChatColor.GRAY + "Download it on: https://www.spigotmc.org/resources/blockstreet.75712/");
-			}else {
-				player.sendMessage(ChatColor.GRAY + "Your plugin is up to date.");
-			}
+            if (isUpdateAvailable) {
+                player.sendMessage(ChatColor.GRAY + "New version available!");
+                player.sendMessage(ChatColor.GRAY + "Download it on: https://www.spigotmc.org/resources/blockstreet.75712/");
+            } else {
+                player.sendMessage(ChatColor.GRAY + "Your plugin is up to date.");
+            }
 
-			player.sendMessage("");
-			player.sendMessage(ChatColor.GRAY + "Plugin created by: " + ChatColor.GREEN + "Hugo1307");
-			player.sendMessage(messages.getPluginFooter());
+            player.sendMessage("");
+            player.sendMessage(ChatColor.GRAY + "Plugin created by: " + ChatColor.GREEN + "Hugo1307");
+            player.sendMessage(messages.getPluginFooter());
 
-		});
+        });
 
-	}
+    }
+
+    @Override
+    public List<String> onTabComplete(String[] strings) {
+        return List.of();
+    }
 
 }

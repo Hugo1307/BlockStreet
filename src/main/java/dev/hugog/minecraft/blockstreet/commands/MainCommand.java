@@ -5,12 +5,10 @@ import dev.hugog.minecraft.dev_command.annotations.Command;
 import dev.hugog.minecraft.dev_command.annotations.Dependencies;
 import dev.hugog.minecraft.dev_command.commands.BukkitDevCommand;
 import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+
+import java.util.List;
 
 @Command(alias = "", description = "Plugin's root command.", permission = "blockstreet.command.main")
 @Dependencies(dependencies = {Messages.class})
@@ -30,11 +28,6 @@ public class MainCommand extends BukkitDevCommand {
             return;
         }
 
-        TextComponent webPanelText = new TextComponent(ChatColor.BLUE + "[Web Interface]");
-        webPanelText.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                new ComponentBuilder(ChatColor.GRAY + "Click here to open the Web Interface.").create()));
-        webPanelText.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://blockstreet.com/"));
-
         getCommandSender().sendMessage(messages.getPluginHeader());
         getCommandSender().sendMessage("");
         getCommandSender().sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "BlockStreet");
@@ -48,6 +41,11 @@ public class MainCommand extends BukkitDevCommand {
         getCommandSender().sendMessage(messages.getPluginFooter());
 
 
+    }
+
+    @Override
+    public List<String> onTabComplete(String[] strings) {
+        return List.of();
     }
 
 }

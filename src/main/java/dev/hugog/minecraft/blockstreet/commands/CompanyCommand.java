@@ -4,12 +4,17 @@ import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
 import dev.hugog.minecraft.blockstreet.data.dao.QuoteDao;
 import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
-import dev.hugog.minecraft.dev_command.annotations.ArgsValidation;
+import dev.hugog.minecraft.dev_command.annotations.Argument;
+import dev.hugog.minecraft.dev_command.annotations.Arguments;
+import dev.hugog.minecraft.dev_command.annotations.AutoValidation;
 import dev.hugog.minecraft.dev_command.annotations.Command;
 import dev.hugog.minecraft.dev_command.annotations.Dependencies;
+import dev.hugog.minecraft.dev_command.arguments.parsers.IntegerArgumentParser;
 import dev.hugog.minecraft.dev_command.commands.BukkitDevCommand;
 import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
-import dev.hugog.minecraft.dev_command.validators.IntegerArgument;
+import java.text.DecimalFormat;
+import java.util.List;
+import java.util.stream.Collectors;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -17,9 +22,6 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.text.DecimalFormat;
-import java.util.List;
 
 /**
  * Company Command
@@ -31,8 +33,11 @@ import java.util.List;
  * @author Hugo1307
  * @since v1.0.0
  */
+@AutoValidation
 @Command(alias = "company", description = "Get details about a company", permission = "blockstreet.command.company", isPlayerOnly = true)
-@ArgsValidation(mandatoryArgs = {IntegerArgument.class})
+@Arguments(
+		@Argument(name = "companyId", description = "The ID of the company to get details from.", position = 0, parser = IntegerArgumentParser.class)
+)
 @Dependencies(dependencies = { Messages.class, CompaniesService.class })
 public class CompanyCommand extends BukkitDevCommand {
 
@@ -43,13 +48,8 @@ public class CompanyCommand extends BukkitDevCommand {
 	@Override
 	public void execute() {
 
-		Messages messages = (Messages) getDependency(Messages.class);
-		CompaniesService companiesService = (CompaniesService) getDependency(CompaniesService.class);
-
-		if (!validateCommand()) {
-			return;
-		}
-
+		Messages messages = getDependency(Messages.class);
+		CompaniesService companiesService = getDependency(CompaniesService.class);
 		Player player = (Player) getCommandSender();
 
 		long companyId = Long.parseLong(getArgs()[0]);
@@ -64,27 +64,16 @@ public class CompanyCommand extends BukkitDevCommand {
 
 	}
 
-	private boolean validateCommand() {
-
-		Messages messages = (Messages) getDependency(Messages.class);
-
-		if (!canSenderExecuteCommand()) {
-			getCommandSender().sendMessage(messages.getPluginPrefix() + messages.getPlayerOnlyCommand());
-			return false;
+	@Override
+	public List<String> onTabComplete(String[] args) {
+		if (args.length == 1) {
+			CompaniesService companiesService = getDependency(CompaniesService.class);
+			return companiesService.getAllCompanies().stream()
+					.map(CompanyDao::getId)
+					.map(String::valueOf)
+					.collect(Collectors.toList());
 		}
-
-		if (!hasPermissionToExecuteCommand()) {
-			getCommandSender().sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
-			return false;
-		}
-
-		if (!hasValidArgs()) {
-			getCommandSender().sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
-			return false;
-		}
-
-		return true;
-
+		return List.of();
 	}
 
 	private void printCompanyDetails(CompanyDao currentCompany, Player player, Messages messages) {
