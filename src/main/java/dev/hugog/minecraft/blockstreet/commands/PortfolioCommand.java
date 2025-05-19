@@ -9,6 +9,10 @@ import dev.hugog.minecraft.dev_command.annotations.Command;
 import dev.hugog.minecraft.dev_command.annotations.Dependencies;
 import dev.hugog.minecraft.dev_command.commands.BukkitDevCommand;
 import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -55,12 +59,18 @@ public class PortfolioCommand extends BukkitDevCommand {
 
                     if (investedCompany == null) return;
 
+                    TextComponent clickableCompanyDetails = new TextComponent(ChatColor.GREEN + "[Details]");
+                    clickableCompanyDetails.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                            new ComponentBuilder(ChatColor.GRAY + "Click to see company's details.").create()));
+                    clickableCompanyDetails.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/invest company " + investedCompany.getId()));
+
                     DecimalFormat df = new DecimalFormat("#.##");
 
                     player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + investedCompany.getName());
                     player.sendMessage("");
                     player.sendMessage(ChatColor.GRAY + messages.getShares() + ": " + ChatColor.GREEN + investment.getSharesAmount());
                     player.sendMessage(ChatColor.GRAY + messages.getTotalSharesValue() + ": " + ChatColor.GREEN + df.format(companiesService.getCompanyInvestmentValue(investment.getCompanyId(), investment.getSharesAmount())));
+                    player.spigot().sendMessage(clickableCompanyDetails);
                     player.sendMessage("");
 
                 });
