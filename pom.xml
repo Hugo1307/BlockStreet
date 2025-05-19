@@ -74,7 +74,7 @@
     <dependency>
       <groupId>dev.hugog.minecraft</groupId>
       <artifactId>dev-command</artifactId>
-      <version>0.0.2-SNAPSHOT</version>
+      <version>0.0.7</version>
     </dependency>
 
     <dependency>

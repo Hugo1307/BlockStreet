@@ -1,19 +1,18 @@
 package dev.hugog.minecraft.blockstreet.commands;
 
-import dev.hugog.minecraft.blockstreet.commands.validators.CompanyRiskArgument;
+import dev.hugog.minecraft.blockstreet.commands.validators.CompanyRiskArgumentParser;
+import dev.hugog.minecraft.blockstreet.commands.validators.PositiveIntegerArgumentParser;
 import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
-import dev.hugog.minecraft.dev_command.annotations.ArgsValidation;
-import dev.hugog.minecraft.dev_command.annotations.Command;
-import dev.hugog.minecraft.dev_command.annotations.Dependencies;
+import dev.hugog.minecraft.dev_command.annotations.*;
+import dev.hugog.minecraft.dev_command.arguments.parsers.DoubleArgumentParser;
+import dev.hugog.minecraft.dev_command.arguments.parsers.StringArgumentParser;
 import dev.hugog.minecraft.dev_command.commands.BukkitDevCommand;
 import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
-import dev.hugog.minecraft.dev_command.validators.DoubleArgument;
-import dev.hugog.minecraft.dev_command.validators.IntegerArgument;
-import dev.hugog.minecraft.dev_command.validators.StringArgument;
 import org.bukkit.command.CommandSender;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 /**
  * Create Company Command
@@ -25,9 +24,15 @@ import java.text.MessageFormat;
  * @author Hugo1307
  * @since v1.0.0
  */
+@AutoValidation
 @Command(alias = "create", description = "Create a new company.", permission = "blockstreet.command.create")
 @Dependencies(dependencies = {Messages.class, CompaniesService.class})
-@ArgsValidation(mandatoryArgs = {StringArgument.class, CompanyRiskArgument.class, IntegerArgument.class, DoubleArgument.class})
+@Arguments({
+        @Argument(name = "name", description = "The name of the company to create.", position = 0, parser = StringArgumentParser.class),
+        @Argument(name = "risk", description = "The risk of the company to create.", position = 1, parser = CompanyRiskArgumentParser.class),
+        @Argument(name = "shares", description = "The amount of shares to create for the company.", position = 2, parser = PositiveIntegerArgumentParser.class),
+        @Argument(name = "price", description = "The price of each share.", position = 3, parser = DoubleArgumentParser.class)
+})
 public class CreateCommand extends BukkitDevCommand {
 
     public CreateCommand(BukkitCommandData commandData, CommandSender commandSender, String[] args) {
@@ -37,12 +42,8 @@ public class CreateCommand extends BukkitDevCommand {
     @Override
     public void execute() {
 
-        Messages messages = (Messages) getDependency(Messages.class);
-        CompaniesService companiesService = (CompaniesService) getDependency(CompaniesService.class);
-
-        if (!validateCommand()) {
-            return;
-        }
+        Messages messages = getDependency(Messages.class);
+        CompaniesService companiesService = getDependency(CompaniesService.class);
 
         String companyName = getArgs()[0];
         int companyRisk = Integer.parseInt(getArgs()[1]);
@@ -55,22 +56,9 @@ public class CreateCommand extends BukkitDevCommand {
 
     }
 
-    private boolean validateCommand() {
-
-        Messages messages = (Messages) getDependency(Messages.class);
-
-        if (!hasPermissionToExecuteCommand()) {
-            getCommandSender().sendMessage(messages.getPluginPrefix() + messages.getNoPermission());
-            return false;
-        }
-
-        if (!hasValidArgs()) {
-            getCommandSender().sendMessage(messages.getPluginPrefix() + messages.getWrongArguments());
-            return false;
-        }
-
-        return true;
-
+    @Override
+    public List<String> onTabComplete(String[] strings) {
+        return List.of();
     }
 
 }

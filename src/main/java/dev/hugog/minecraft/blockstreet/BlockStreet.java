@@ -12,6 +12,7 @@ import dev.hugog.minecraft.blockstreet.listeners.PlayerJoinListener;
 import dev.hugog.minecraft.blockstreet.listeners.SignsListener;
 import dev.hugog.minecraft.blockstreet.migration.MigrationHandler;
 import dev.hugog.minecraft.blockstreet.schedulers.InterestRateScheduler;
+import dev.hugog.minecraft.blockstreet.utils.BlockStreetValidationConfiguration;
 import dev.hugog.minecraft.blockstreet.utils.ConfigAccessor;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
 import dev.hugog.minecraft.dev_command.DevCommand;
@@ -41,8 +42,6 @@ public class BlockStreet extends JavaPlugin {
     @Getter private Economy economy;
     @Getter private static BlockStreet instance;
     private BukkitTask interestRateTask;
-
-    private Integration pluginDevCommandsIntegration;
 
     // Listeners
     @Inject
@@ -119,17 +118,18 @@ public class BlockStreet extends JavaPlugin {
     private void initializeDevCommands() {
 
         PluginCommand mainPluginCommand = getCommand("invest");
-        pluginDevCommandsIntegration = Integration.createFromPlugin(this);
+        Integration pluginDevCommandsIntegration = Integration.createFromPlugin(this);
 
         if (mainPluginCommand != null) {
+            DevCommandExecutor commandExecutor = new DevCommandExecutor("invest", pluginDevCommandsIntegration);
+            mainPluginCommand.setExecutor(commandExecutor);
+            mainPluginCommand.setTabCompleter(commandExecutor);
 
             DevCommand devCommand = DevCommand.getOrCreateInstance();
             CommandHandler commandHandler = devCommand.getCommandHandler();
-            DevCommandExecutor devCommandExecutor = new DevCommandExecutor("invest", pluginDevCommandsIntegration);
 
-            mainPluginCommand.setExecutor(devCommandExecutor);
             commandHandler.initCommandsAutoConfiguration(pluginDevCommandsIntegration);
-
+            commandHandler.useAutoValidationConfiguration(new BlockStreetValidationConfiguration(messages));
         }
 
     }
@@ -138,6 +138,7 @@ public class BlockStreet extends JavaPlugin {
 
         DevCommand devCommand = DevCommand.getOrCreateInstance();
         DependencyHandler dependencyHandler = devCommand.getDependencyHandler();
+        Integration pluginDevCommandsIntegration = Integration.createFromPlugin(this);
 
         dependencyHandler.registerDependency(pluginDevCommandsIntegration, this);
         dependencyHandler.registerDependency(pluginDevCommandsIntegration, messages);
