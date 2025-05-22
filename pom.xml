@@ -8,7 +8,7 @@
 
   <groupId>dev.hugog.minecraft</groupId>
   <artifactId>blockstreet</artifactId>
-  <version>2.1.0</version>
+  <version>2.1.1</version>
 
   <properties>
     <maven.compiler.source>11</maven.compiler.source>
@@ -82,7 +82,7 @@
     <dependency>
       <groupId>dev.hugog.minecraft</groupId>
       <artifactId>dev-command</artifactId>
-      <version>0.0.7</version>
+      <version>0.0.8</version>
     </dependency>
 
     <dependency>
