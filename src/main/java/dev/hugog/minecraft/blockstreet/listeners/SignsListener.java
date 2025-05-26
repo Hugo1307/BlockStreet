@@ -66,12 +66,8 @@ public class SignsListener implements Listener {
                 if (company.getName().equalsIgnoreCase(lines.get(1))) {
 
                     Sign sign = (Sign) event.getBlock().getState();
-
                     SignDao signDao = signsService.createSign(company.getId(), sign.getLocation());
-
-                    plugin.getServer().getScheduler().runTaskLater(BlockStreet.getInstance(), () -> {
-                        signsService.updateBukkitSignsById(signDao.getId());
-                    }, 20L);
+                    plugin.getServer().getScheduler().runTaskLater(plugin, () -> signsService.updateBukkitSignsById(signDao.getId()), 20L);
 
                 }
 

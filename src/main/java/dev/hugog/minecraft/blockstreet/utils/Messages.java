@@ -1,5 +1,6 @@
 package dev.hugog.minecraft.blockstreet.utils;
 
+import com.google.inject.Inject;
 import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.enums.ConfigurationFiles;
 import lombok.Getter;
@@ -97,9 +98,10 @@ public class Messages {
 	private final String uiCheckPortfolioButtonTitle;
 	private final String uiCheckPortfolioButtonDescription;
 
-	public Messages() {
+	@Inject
+	public Messages(BlockStreet plugin) {
 
-		final ConfigAccessor messagesConfig = new ConfigAccessor(BlockStreet.getInstance(), ConfigurationFiles.MESSAGES.getFileName());
+		final ConfigAccessor messagesConfig = new ConfigAccessor(plugin, ConfigurationFiles.MESSAGES.getFileName());
 
 		this.pluginPrefix = ChatColor.BOLD + "" + ChatColor.GREEN + "BlockStreet" + ChatColor.GOLD + ChatColor.BOLD + " > " + ChatColor.RESET  + ChatColor.RESET + ChatColor.GRAY;
 		this.pluginHeader = ChatColor.GRAY + "-=-=-=-=-=-=-=-=-=-= [" + ChatColor.GREEN  + "BlockStreet" + ChatColor.GRAY + "] =-=-=-=-=-=-=-=-=-=-";
