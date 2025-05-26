@@ -12,6 +12,7 @@ import dev.hugog.minecraft.blockstreet.listeners.PlayerJoinListener;
 import dev.hugog.minecraft.blockstreet.listeners.SignsListener;
 import dev.hugog.minecraft.blockstreet.migration.MigrationHandler;
 import dev.hugog.minecraft.blockstreet.schedulers.InterestRateScheduler;
+import dev.hugog.minecraft.blockstreet.ui.GuiManager;
 import dev.hugog.minecraft.blockstreet.utils.BlockStreetValidationConfiguration;
 import dev.hugog.minecraft.blockstreet.utils.ConfigAccessor;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
@@ -20,6 +21,13 @@ import dev.hugog.minecraft.dev_command.commands.executors.DevCommandExecutor;
 import dev.hugog.minecraft.dev_command.commands.handler.CommandHandler;
 import dev.hugog.minecraft.dev_command.dependencies.DependencyHandler;
 import dev.hugog.minecraft.dev_command.integration.Integration;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.util.Objects;
+import java.util.logging.Level;
+import javax.inject.Inject;
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.command.PluginCommand;
@@ -27,20 +35,10 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
-import javax.inject.Inject;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.util.Objects;
-import java.util.logging.Level;
-
 public class BlockStreet extends JavaPlugin {
 
-    public ConfigAccessor messagesConfig;
-
-    @Getter private Economy economy;
-    @Getter private static BlockStreet instance;
+    @Getter
+    private Economy economy;
     private BukkitTask interestRateTask;
 
     // Listeners
@@ -50,19 +48,27 @@ public class BlockStreet extends JavaPlugin {
     private SignsListener signsListener;
 
     // Services
-    @Inject private AutoUpdateService autoUpdateService;
-    @Inject private CompaniesService companiesService;
-    @Inject private PlayersService playersService;
-    @Inject private SignsService signsService;
+    @Inject
+    private AutoUpdateService autoUpdateService;
+    @Inject
+    private CompaniesService companiesService;
+    @Inject
+    private PlayersService playersService;
+    @Inject
+    private SignsService signsService;
+
+    // UI
+    @Inject
+    private GuiManager guiManager;
 
     // Utils
-    @Inject private Messages messages;
-    @Inject private MigrationHandler migrationHandler;
+    @Inject
+    private Messages messages;
+    @Inject
+    private MigrationHandler migrationHandler;
 
     @Override
     public void onEnable() {
-
-    	instance = this;
 
         initDependencyInjectionModules();
 
@@ -74,7 +80,7 @@ public class BlockStreet extends JavaPlugin {
         registerEvents();
 
         configureConfig();
-        
+
         configureMessages();
 
         initializeCompaniesData();
@@ -89,7 +95,7 @@ public class BlockStreet extends JavaPlugin {
         migrationHandler.checkMigrations();
 
         getLogger().info("Plugin successfully enabled!");
-        
+
     }
 
     @Override
@@ -150,6 +156,8 @@ public class BlockStreet extends JavaPlugin {
         dependencyHandler.registerDependency(pluginDevCommandsIntegration, companiesService);
         dependencyHandler.registerDependency(pluginDevCommandsIntegration, playersService);
 
+        dependencyHandler.registerDependency(pluginDevCommandsIntegration, guiManager);
+
     }
 
     private void configureConfig(){
@@ -160,15 +168,14 @@ public class BlockStreet extends JavaPlugin {
             this.saveConfig();
         }
     }
-    
-    private void initializeCompaniesData() {
 
+    private void initializeCompaniesData() {
         File companiesDirectory = new File(getDataFolder(), DataFilePath.COMPANIES.getDataPath());
         if (!companiesDirectory.exists()) {
             if (companiesDirectory.mkdir()) {
                 File defaultCompanyFile = new File(getDataFolder(), DataFilePath.COMPANIES.getFullPathById("0"));
                 try {
-                    byte[] buffer = Objects.requireNonNull(getResource("companies" + File.separator + "0.yml")).readAllBytes();
+                    byte[] buffer = Objects.requireNonNull(getResource("companies/0.yml")).readAllBytes();
 
                     OutputStream outStream = Files.newOutputStream(defaultCompanyFile.toPath());
                     outStream.write(buffer);
@@ -185,34 +192,29 @@ public class BlockStreet extends JavaPlugin {
         } else {
             getLogger().info("Companies directory already exists. Skipping default initialization.");
         }
-
     }
 
     private void initializePlayersData() {
-
         File playersDirectory = new File(getDataFolder(), DataFilePath.PLAYERS.getDataPath());
         if (!playersDirectory.exists()) {
             if (!playersDirectory.mkdir()) {
                 getLogger().warning("Unable to create players directory.");
             }
         }
-
     }
 
     private void initializeSignsData() {
-
         File signsDirectory = new File(getDataFolder(), DataFilePath.SIGNS.getDataPath());
         if (!signsDirectory.exists()) {
             if (!signsDirectory.mkdir()) {
                 getLogger().warning("Unable to create signs directory.");
             }
         }
-
     }
 
 
     private void configureMessages() {
-    	this.messagesConfig = new ConfigAccessor(this, ConfigurationFiles.MESSAGES.getFileName());
+    	ConfigAccessor messagesConfig = new ConfigAccessor(this, ConfigurationFiles.MESSAGES.getFileName());
 		if(!new File(getDataFolder(), ConfigurationFiles.MESSAGES.getFileName()).exists())
 			messagesConfig.saveDefaultConfig();
         else {
