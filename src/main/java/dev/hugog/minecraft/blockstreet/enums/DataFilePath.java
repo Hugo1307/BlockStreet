@@ -7,9 +7,9 @@ import java.io.File;
 @Getter
 public enum DataFilePath {
 
-    COMPANIES(File.separator + "companies"),
-    PLAYERS(File.separator + "players"),
-    SIGNS(File.separator + "signs");
+    COMPANIES("companies"),
+    PLAYERS("players"),
+    SIGNS("signs");
 
     private final String dataPath;
 
@@ -17,12 +17,8 @@ public enum DataFilePath {
         this.dataPath = dataPath;
     }
 
-    public String getFullPath(String fileName) {
-        return dataPath + File.separator + fileName;
-    }
-
     public String getFullPathById(String id) {
-        return dataPath + File.separator + id + ".yml";
+        return new File(dataPath, id + ".yml").getPath();
     }
 
 }
