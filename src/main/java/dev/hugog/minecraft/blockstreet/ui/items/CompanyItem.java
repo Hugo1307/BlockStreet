@@ -37,7 +37,7 @@ public class CompanyItem extends AbstractItem {
     public ItemProvider getItemProvider() {
         double marketCap = company.getCurrentSharePrice() * company.getTotalShares();
         double totalVariation = (company.getCurrentSharePrice() -  company.getInitialSharePrice()) /  company.getInitialSharePrice() * 100;
-        double lastVariation = company.getHistoric().peek().getVariation() * 100;
+        double lastVariation = !company.getHistoric().isEmpty() ? company.getHistoric().peek().getVariation() * 100 : 0;
 
         return new ItemBuilder(Material.EMERALD)
                 .setDisplayName(ChatColor.GOLD + company.getName() + MessageFormat.format(messages.getUiCompanyItemLastVariation(), VisualizationUtils.formatCompanyVariation(lastVariation)))
