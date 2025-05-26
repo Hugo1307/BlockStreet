@@ -87,7 +87,7 @@
     <dependency>
       <groupId>dev.hugog.minecraft</groupId>
       <artifactId>dev-command</artifactId>
-      <version>0.0.9</version>
+      <version>0.0.10</version>
     </dependency>
 
     <dependency>
