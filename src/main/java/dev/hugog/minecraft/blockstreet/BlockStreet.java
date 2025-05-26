@@ -173,7 +173,7 @@ public class BlockStreet extends JavaPlugin {
             if (companiesDirectory.mkdir()) {
                 File defaultCompanyFile = new File(getDataFolder(), DataFilePath.COMPANIES.getFullPathById("0"));
                 try {
-                    byte[] buffer = Objects.requireNonNull(getResource("companies" + File.separator + "0.yml")).readAllBytes();
+                    byte[] buffer = Objects.requireNonNull(getResource("companies/0.yml")).readAllBytes();
 
                     OutputStream outStream = Files.newOutputStream(defaultCompanyFile.toPath());
                     outStream.write(buffer);
