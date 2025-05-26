@@ -37,8 +37,12 @@ import org.bukkit.scheduler.BukkitTask;
 
 public class BlockStreet extends JavaPlugin {
 
+    public ConfigAccessor messagesConfig;
+
     @Getter
     private Economy economy;
+    @Getter
+    private static BlockStreet instance;
     private BukkitTask interestRateTask;
 
     // Listeners
@@ -69,6 +73,8 @@ public class BlockStreet extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
+        instance = this;
 
         initDependencyInjectionModules();
 
@@ -170,12 +176,13 @@ public class BlockStreet extends JavaPlugin {
     }
 
     private void initializeCompaniesData() {
+
         File companiesDirectory = new File(getDataFolder(), DataFilePath.COMPANIES.getDataPath());
         if (!companiesDirectory.exists()) {
             if (companiesDirectory.mkdir()) {
                 File defaultCompanyFile = new File(getDataFolder(), DataFilePath.COMPANIES.getFullPathById("0"));
                 try {
-                    byte[] buffer = Objects.requireNonNull(getResource("companies/0.yml")).readAllBytes();
+                    byte[] buffer = Objects.requireNonNull(getResource("companies" + File.separator + "0.yml")).readAllBytes();
 
                     OutputStream outStream = Files.newOutputStream(defaultCompanyFile.toPath());
                     outStream.write(buffer);
@@ -192,29 +199,34 @@ public class BlockStreet extends JavaPlugin {
         } else {
             getLogger().info("Companies directory already exists. Skipping default initialization.");
         }
+
     }
 
     private void initializePlayersData() {
+
         File playersDirectory = new File(getDataFolder(), DataFilePath.PLAYERS.getDataPath());
         if (!playersDirectory.exists()) {
             if (!playersDirectory.mkdir()) {
                 getLogger().warning("Unable to create players directory.");
             }
         }
+
     }
 
     private void initializeSignsData() {
+
         File signsDirectory = new File(getDataFolder(), DataFilePath.SIGNS.getDataPath());
         if (!signsDirectory.exists()) {
             if (!signsDirectory.mkdir()) {
                 getLogger().warning("Unable to create signs directory.");
             }
         }
+
     }
 
 
     private void configureMessages() {
-    	ConfigAccessor messagesConfig = new ConfigAccessor(this, ConfigurationFiles.MESSAGES.getFileName());
+    	this.messagesConfig = new ConfigAccessor(this, ConfigurationFiles.MESSAGES.getFileName());
 		if(!new File(getDataFolder(), ConfigurationFiles.MESSAGES.getFileName()).exists())
 			messagesConfig.saveDefaultConfig();
         else {
