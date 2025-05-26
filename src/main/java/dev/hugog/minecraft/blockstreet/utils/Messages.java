@@ -77,7 +77,26 @@ public class Messages {
 	private final String createCompanyCommandUsage;
 	private final String deleteCompanyCommandDescription;
 	private final String deleteCompanyCommandUsage;
-	
+
+	private final String uiPreviousPage;
+	private final String uiNextPage;
+	private final String uiNavigateBack;
+	private final String uiPortfolioTitle;
+	private final String uiInvestmentItemShares;
+	private final String uiInvestmentItemCurrentValue;
+	private final String uiInvestmentItemSellOne;
+	private final String uiInvestmentItemSellAll;
+	private final String uiCompaniesTitle;
+	private final String uiCompanyItemSharePrice;
+	private final String uiCompanyItemRisk;
+	private final String uiCompanyItemMarketCap;
+	private final String uiCompanyItemAllTimeVariation;
+	private final String uiCompanyItemLastVariation;
+	private final String uiCompanyItemBuyOneShare;
+	private final String uiCompanyItemBuyTenShares;
+	private final String uiCheckPortfolioButtonTitle;
+	private final String uiCheckPortfolioButtonDescription;
+
 	public Messages() {
 
 		final ConfigAccessor messagesConfig = new ConfigAccessor(BlockStreet.getInstance(), ConfigurationFiles.MESSAGES.getFileName());
@@ -151,6 +170,25 @@ public class Messages {
 		this.createCompanyCommandUsage = messagesConfig.getConfig().getString("createCompanyCommandUsage");
 		this.deleteCompanyCommandDescription = messagesConfig.getConfig().getString("deleteCompanyCommandDescription");
 		this.deleteCompanyCommandUsage = messagesConfig.getConfig().getString("deleteCompanyCommandUsage");
+
+		this.uiPreviousPage = messagesConfig.getConfig().getString("uiPreviousPage");
+		this.uiNextPage = messagesConfig.getConfig().getString("uiNextPage");
+		this.uiNavigateBack = messagesConfig.getConfig().getString("uiNavigateBack");
+		this.uiPortfolioTitle = messagesConfig.getConfig().getString("uiPortfolioTitle");
+		this.uiInvestmentItemShares = messagesConfig.getConfig().getString("uiInvestmentItemShares");
+		this.uiInvestmentItemCurrentValue = messagesConfig.getConfig().getString("uiInvestmentItemCurrentValue");
+		this.uiInvestmentItemSellOne = messagesConfig.getConfig().getString("uiInvestmentItemSellOne");
+		this.uiInvestmentItemSellAll = messagesConfig.getConfig().getString("uiInvestmentItemSellAll");
+		this.uiCompaniesTitle = messagesConfig.getConfig().getString("uiCompaniesTitle");
+		this.uiCompanyItemSharePrice = messagesConfig.getConfig().getString("uiCompanyItemSharePrice");
+		this.uiCompanyItemRisk = messagesConfig.getConfig().getString("uiCompanyItemRisk");
+		this.uiCompanyItemMarketCap = messagesConfig.getConfig().getString("uiCompanyItemMarketCap");
+		this.uiCompanyItemAllTimeVariation = messagesConfig.getConfig().getString("uiCompanyItemAllTimeVariation");
+		this.uiCompanyItemLastVariation = messagesConfig.getConfig().getString("uiCompanyItemLastVariation");
+		this.uiCompanyItemBuyOneShare = messagesConfig.getConfig().getString("uiCompanyItemBuyOneShare");
+		this.uiCompanyItemBuyTenShares = messagesConfig.getConfig().getString("uiCompanyItemBuyTenShares");
+		this.uiCheckPortfolioButtonTitle = messagesConfig.getConfig().getString("uiCheckPortfolioButtonTitle");
+		this.uiCheckPortfolioButtonDescription = messagesConfig.getConfig().getString("uiCheckPortfolioButtonDescription");
 
 	}
 
