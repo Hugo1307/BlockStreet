@@ -2,12 +2,14 @@ package dev.hugog.minecraft.blockstreet.ui;
 
 import dev.hugog.minecraft.blockstreet.utils.Messages;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.bukkit.entity.Player;
 import xyz.xenondevs.invui.gui.Gui;
 import xyz.xenondevs.invui.window.Window;
 
 @Getter
+@RequiredArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public abstract class AbstractPluginGui {
 
     protected final String title;
@@ -19,14 +21,6 @@ public abstract class AbstractPluginGui {
     @Setter
     protected Runnable onCloseCallback;
     protected Window window;
-
-    public AbstractPluginGui(String title, String permission, Player player, GuiManager guiManager, Messages messages) {
-        this.title = title;
-        this.permission = permission;
-        this.player = player;
-        this.guiManager = guiManager;
-        this.messages = messages;
-    }
 
     /**
      * Opens the GUI for the player

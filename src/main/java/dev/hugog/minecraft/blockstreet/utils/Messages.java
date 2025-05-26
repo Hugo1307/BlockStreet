@@ -90,6 +90,7 @@ public class Messages {
 	private final String uiCompanyItemSharePrice;
 	private final String uiCompanyItemRisk;
 	private final String uiCompanyItemMarketCap;
+	private final String uiCompanyItemAllTimeVariation;
 	private final String uiCompanyItemLastVariation;
 	private final String uiCompanyItemBuyOneShare;
 	private final String uiCompanyItemBuyTenShares;
@@ -182,6 +183,7 @@ public class Messages {
 		this.uiCompanyItemSharePrice = messagesConfig.getConfig().getString("uiCompanyItemSharePrice");
 		this.uiCompanyItemRisk = messagesConfig.getConfig().getString("uiCompanyItemRisk");
 		this.uiCompanyItemMarketCap = messagesConfig.getConfig().getString("uiCompanyItemMarketCap");
+		this.uiCompanyItemAllTimeVariation = messagesConfig.getConfig().getString("uiCompanyItemAllTimeVariation");
 		this.uiCompanyItemLastVariation = messagesConfig.getConfig().getString("uiCompanyItemLastVariation");
 		this.uiCompanyItemBuyOneShare = messagesConfig.getConfig().getString("uiCompanyItemBuyOneShare");
 		this.uiCompanyItemBuyTenShares = messagesConfig.getConfig().getString("uiCompanyItemBuyTenShares");

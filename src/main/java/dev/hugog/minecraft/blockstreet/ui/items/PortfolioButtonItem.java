@@ -16,18 +16,18 @@ import xyz.xenondevs.invui.item.impl.AbstractItem;
 @RequiredArgsConstructor
 public class PortfolioButtonItem extends AbstractItem {
 
-  private final GuiManager guiManager;
-  private final Messages messages;
+    private final GuiManager guiManager;
+    private final Messages messages;
 
-  @Override
-  public ItemProvider getItemProvider() {
-    return new ItemBuilder(Material.GREEN_STAINED_GLASS_PANE)
-        .setDisplayName(messages.getUiCheckPortfolioButtonTitle())
-        .addLoreLines(messages.getUiCheckPortfolioButtonDescription());
-  }
+    @Override
+    public ItemProvider getItemProvider() {
+        return new ItemBuilder(Material.DIAMOND)
+                .setDisplayName(messages.getUiCheckPortfolioButtonTitle())
+                .addLoreLines(messages.getUiCheckPortfolioButtonDescription());
+    }
 
-  @Override
-  public void handleClick(@NotNull ClickType clickType, @NotNull Player player, @NotNull InventoryClickEvent inventoryClickEvent) {
-    guiManager.navigate(player, PluginGuiType.PORTFOLIO_GUI);
-  }
+    @Override
+    public void handleClick(@NotNull ClickType clickType, @NotNull Player player, @NotNull InventoryClickEvent inventoryClickEvent) {
+        guiManager.navigate(player, PluginGuiType.PORTFOLIO_GUI);
+    }
 }

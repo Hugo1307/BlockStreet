@@ -74,7 +74,7 @@ public class BlockStreet extends JavaPlugin {
     @Override
     public void onEnable() {
 
-    	  instance = this;
+        instance = this;
 
         initDependencyInjectionModules();
 
