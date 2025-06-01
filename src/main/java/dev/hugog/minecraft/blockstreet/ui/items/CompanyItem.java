@@ -51,7 +51,8 @@ public class CompanyItem extends AbstractItem {
                         MessageFormat.format(messages.getUiCompanyItemAllTimeVariation(), VisualizationUtils.formatCompanyVariation(totalVariation)),
                         "",
                         messages.getUiCompanyItemBuyOneShare(),
-                        messages.getUiCompanyItemBuyTenShares()
+                        messages.getUiCompanyItemBuyTenShares(),
+                        messages.getUiCompanyItemBuyHundredShares()
                 );
     }
 
@@ -62,6 +63,8 @@ public class CompanyItem extends AbstractItem {
             sharesToBuy = 1; // Right click to buy one share
         } else if (clickType == ClickType.SHIFT_RIGHT) {
             sharesToBuy = 10; // Shift + Right click to buy ten shares
+        } else if (clickType == ClickType.SHIFT_LEFT) {
+            sharesToBuy = 100; // Shift + Left click to buy one hundred shares
         }
 
         if (sharesToBuy <= 0) {

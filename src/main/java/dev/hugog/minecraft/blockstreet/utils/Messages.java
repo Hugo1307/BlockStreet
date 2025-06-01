@@ -95,6 +95,7 @@ public class Messages {
 	private final String uiCompanyItemLastVariation;
 	private final String uiCompanyItemBuyOneShare;
 	private final String uiCompanyItemBuyTenShares;
+	private final String uiCompanyItemBuyHundredShares;
 	private final String uiCheckPortfolioButtonTitle;
 	private final String uiCheckPortfolioButtonDescription;
 
@@ -189,6 +190,7 @@ public class Messages {
 		this.uiCompanyItemLastVariation = messagesConfig.getConfig().getString("uiCompanyItemLastVariation");
 		this.uiCompanyItemBuyOneShare = messagesConfig.getConfig().getString("uiCompanyItemBuyOneShare");
 		this.uiCompanyItemBuyTenShares = messagesConfig.getConfig().getString("uiCompanyItemBuyTenShares");
+		this.uiCompanyItemBuyHundredShares = messagesConfig.getConfig().getString("uiCompanyItemBuyHundredShares");
 		this.uiCheckPortfolioButtonTitle = messagesConfig.getConfig().getString("uiCheckPortfolioButtonTitle");
 		this.uiCheckPortfolioButtonDescription = messagesConfig.getConfig().getString("uiCheckPortfolioButtonDescription");
 
