@@ -2,6 +2,7 @@ package dev.hugog.minecraft.blockstreet.commands;
 
 import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
 import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
+import dev.hugog.minecraft.blockstreet.utils.FormattingUtils;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
 import dev.hugog.minecraft.dev_command.annotations.AutoValidation;
 import dev.hugog.minecraft.dev_command.annotations.Command;
@@ -67,7 +68,7 @@ public class CompaniesCommand extends BukkitDevCommand {
 		if(currentCompany.getName() != null) {
 			player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + currentCompany.getName());
 			player.sendMessage("");
-			player.sendMessage(ChatColor.GRAY + messages.getPrice() + ": " + ChatColor.GREEN + currentCompany.getFormattedCurrentSharePrice());
+			player.sendMessage(ChatColor.GRAY + messages.getPrice() + ": " + ChatColor.GREEN + FormattingUtils.formatDouble(currentCompany.getCurrentSharePrice()));
 			player.sendMessage(ChatColor.GRAY + messages.getRisk() + ": " + ChatColor.GREEN + currentCompany.getRisk());
 			player.spigot().sendMessage(companyDetails);
 			player.sendMessage("");

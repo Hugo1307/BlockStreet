@@ -95,8 +95,13 @@ public class Messages {
 	private final String uiCompanyItemLastVariation;
 	private final String uiCompanyItemBuyOneShare;
 	private final String uiCompanyItemBuyTenShares;
+	private final String uiCompanyItemBuyHundredShares;
 	private final String uiCheckPortfolioButtonTitle;
 	private final String uiCheckPortfolioButtonDescription;
+	private final String uiPortfolioSummaryItemTitle;
+	private final String uiPortfolioSummaryItemCompanies;
+	private final String uiPortfolioSummaryItemShares;
+	private final String uiPortfolioSummaryItemTotalValue;
 
 	@Inject
 	public Messages(BlockStreet plugin) {
@@ -189,8 +194,13 @@ public class Messages {
 		this.uiCompanyItemLastVariation = messagesConfig.getConfig().getString("uiCompanyItemLastVariation");
 		this.uiCompanyItemBuyOneShare = messagesConfig.getConfig().getString("uiCompanyItemBuyOneShare");
 		this.uiCompanyItemBuyTenShares = messagesConfig.getConfig().getString("uiCompanyItemBuyTenShares");
+		this.uiCompanyItemBuyHundredShares = messagesConfig.getConfig().getString("uiCompanyItemBuyHundredShares");
 		this.uiCheckPortfolioButtonTitle = messagesConfig.getConfig().getString("uiCheckPortfolioButtonTitle");
 		this.uiCheckPortfolioButtonDescription = messagesConfig.getConfig().getString("uiCheckPortfolioButtonDescription");
+		this.uiPortfolioSummaryItemTitle = messagesConfig.getConfig().getString("uiPortfolioSummaryItemTitle");
+		this.uiPortfolioSummaryItemCompanies = messagesConfig.getConfig().getString("uiPortfolioSummaryItemCompanies");
+		this.uiPortfolioSummaryItemShares = messagesConfig.getConfig().getString("uiPortfolioSummaryItemShares");
+		this.uiPortfolioSummaryItemTotalValue = messagesConfig.getConfig().getString("uiPortfolioSummaryItemTotalValue");
 
 	}
 

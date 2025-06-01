@@ -4,6 +4,7 @@ import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.commands.SellCommand;
 import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
 import dev.hugog.minecraft.blockstreet.data.dao.InvestmentDao;
+import dev.hugog.minecraft.blockstreet.utils.FormattingUtils;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
 import dev.hugog.minecraft.blockstreet.utils.VisualizationUtils;
 import dev.hugog.minecraft.dev_command.DevCommand;
@@ -47,7 +48,7 @@ public class InvestmentItem extends AbstractItem {
                 .addLoreLines(
                         "",
                         MessageFormat.format(messages.getUiInvestmentItemShares(), investment.getSharesAmount()),
-                        MessageFormat.format(messages.getUiInvestmentItemCurrentValue(), currentValue),
+                        MessageFormat.format(messages.getUiInvestmentItemCurrentValue(), FormattingUtils.formatDouble(currentValue)),
                         "",
                         messages.getUiInvestmentItemSellOne(),
                         messages.getUiInvestmentItemSellAll()

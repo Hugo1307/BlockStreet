@@ -1,11 +1,9 @@
 package dev.hugog.minecraft.blockstreet.ui.guis;
 
+import dev.hugog.minecraft.blockstreet.data.dao.InvestmentDao;
 import dev.hugog.minecraft.blockstreet.ui.AbstractPluginGui;
 import dev.hugog.minecraft.blockstreet.ui.GuiManager;
-import dev.hugog.minecraft.blockstreet.ui.items.InvestmentItem;
-import dev.hugog.minecraft.blockstreet.ui.items.NavigateBackItem;
-import dev.hugog.minecraft.blockstreet.ui.items.NextPageItem;
-import dev.hugog.minecraft.blockstreet.ui.items.PreviousPageItem;
+import dev.hugog.minecraft.blockstreet.ui.items.*;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -27,15 +25,15 @@ public class PortfolioGui extends AbstractPluginGui {
 
     @Override
     public Gui build() {
-        List<Item> investmentsItems = guiManager.getPlayersService().getInvestments(player.getUniqueId())
-                .stream()
+        List<InvestmentDao> playerInvestments = guiManager.getPlayersService().getInvestments(player.getUniqueId());
+        List<Item> investmentsItems = playerInvestments.stream()
                 .map(investment -> new InvestmentItem(guiManager.getPlugin(), messages, investment,
                         guiManager.getCompaniesService().getCompanyDaoById(investment.getCompanyId())))
                 .collect(Collectors.toList());
 
         return PagedGui.items()
                 .setStructure(
-                        "# # # # # # # # #",
+                        "# # # # o # # # #",
                         "# x x x x x x x #",
                         "# x x x x x x x #",
                         "# x x x x x x x #",
@@ -46,6 +44,7 @@ public class PortfolioGui extends AbstractPluginGui {
                 .addIngredient('<', new PreviousPageItem(messages))
                 .addIngredient('-', new NavigateBackItem(guiManager, messages))
                 .addIngredient('>', new NextPageItem(messages))
+                .addIngredient('o', new PortfolioSummaryItem(guiManager.getCompaniesService(), playerInvestments, messages))
                 .setContent(investmentsItems)
                 .build();
     }
