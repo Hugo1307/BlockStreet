@@ -126,7 +126,7 @@ public class SignsService implements Service {
     }
 
     private void updateSign(Sign sign, CompanyDao company) {
-        double lastVariation = !company.getHistoric().isEmpty() ? company.getHistoric().peek().getVariation() * 100 : 0.0;
+        double lastVariation = !company.getHistoric().isEmpty() ? company.getHistoric().peek().getVariation() : 0.0;
         sign.setLine(0, ChatColor.BOLD + "" + ChatColor.GREEN + "BlockStreet");
         sign.setLine(1, ChatColor.YELLOW + company.getName());
         sign.setLine(2, ChatColor.GREEN + "Value: " + ChatColor.GRAY + FormattingUtils.formatDouble(company.getCurrentSharePrice()));
