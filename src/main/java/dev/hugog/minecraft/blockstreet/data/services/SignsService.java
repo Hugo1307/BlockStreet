@@ -6,6 +6,8 @@ import dev.hugog.minecraft.blockstreet.data.dao.SignDao;
 import dev.hugog.minecraft.blockstreet.data.entities.SignEntity;
 import dev.hugog.minecraft.blockstreet.data.repositories.Repository;
 import dev.hugog.minecraft.blockstreet.data.repositories.implementations.SignsRepository;
+import dev.hugog.minecraft.blockstreet.utils.FormattingUtils;
+import dev.hugog.minecraft.blockstreet.utils.VisualizationUtils;
 import lombok.extern.log4j.Log4j2;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -124,10 +126,12 @@ public class SignsService implements Service {
     }
 
     private void updateSign(Sign sign, CompanyDao company) {
+        double lastVariation = !company.getHistoric().isEmpty() ? company.getHistoric().peek().getVariation() : 0.0;
         sign.setLine(0, ChatColor.BOLD + "" + ChatColor.GREEN + "BlockStreet");
         sign.setLine(1, ChatColor.YELLOW + company.getName());
-        sign.setLine(2, ChatColor.GREEN + "Stocks: " + ChatColor.GRAY + company.getFormattedCurrentSharePrice() + "$");
-        sign.setLine(3, ChatColor.GRAY + "Click for details");
+        sign.setLine(2, ChatColor.GREEN + "Value: " + ChatColor.GRAY + FormattingUtils.formatDouble(company.getCurrentSharePrice()));
+        sign.setLine(3, VisualizationUtils.formatCompanyVariation(lastVariation));
+        sign.setEditable(false);
         sign.update();
     }
 

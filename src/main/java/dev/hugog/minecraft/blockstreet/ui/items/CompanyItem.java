@@ -3,6 +3,7 @@ package dev.hugog.minecraft.blockstreet.ui.items;
 import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.commands.BuyCommand;
 import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
+import dev.hugog.minecraft.blockstreet.utils.FormattingUtils;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
 import dev.hugog.minecraft.blockstreet.utils.VisualizationUtils;
 import dev.hugog.minecraft.dev_command.DevCommand;
@@ -45,8 +46,8 @@ public class CompanyItem extends AbstractItem {
                 .addLoreLines(
                         "",
                         MessageFormat.format(messages.getUiCompanyItemRisk(), company.getRisk()),
-                        MessageFormat.format(messages.getUiCompanyItemSharePrice(), company.getCurrentSharePrice()),
-                        MessageFormat.format(messages.getUiCompanyItemMarketCap(), marketCap),
+                        MessageFormat.format(messages.getUiCompanyItemSharePrice(), FormattingUtils.formatDouble(company.getCurrentSharePrice())),
+                        MessageFormat.format(messages.getUiCompanyItemMarketCap(), FormattingUtils.formatDouble(marketCap)),
                         MessageFormat.format(messages.getUiCompanyItemAllTimeVariation(), VisualizationUtils.formatCompanyVariation(totalVariation)),
                         "",
                         messages.getUiCompanyItemBuyOneShare(),

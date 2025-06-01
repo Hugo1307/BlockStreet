@@ -24,10 +24,6 @@ public class CompanyDao implements Dao<CompanyEntity> {
     @Setter private int availableShares;
     private SizedStack<QuoteDao> historic;
 
-    public String getFormattedCurrentSharePrice() {
-        return String.format("%.2f", currentSharePrice);
-    }
-
     @Override
     public CompanyEntity toEntity() {
 
