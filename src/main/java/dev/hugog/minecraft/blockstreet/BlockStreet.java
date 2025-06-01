@@ -110,7 +110,6 @@ public class BlockStreet extends JavaPlugin {
     }
 
     public void checkForUpdates() {
-
         autoUpdateService.isUpdateAvailable().thenAcceptAsync((isUpdateAvailable) -> {
             if (isUpdateAvailable) {
                 getLogger().warning("An update is available! Download it at: https://www.spigotmc.org/resources/blockstreet.75791/");
@@ -118,7 +117,6 @@ public class BlockStreet extends JavaPlugin {
                 getLogger().info("You are using the latest version of BlockStreet!");
             }
         });
-
     }
 
     private void initializeDevCommands() {
