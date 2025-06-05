@@ -55,6 +55,7 @@ public class Messages {
 	private final String interestRate;
 	private final String updatedInterestRate;
 	private final String interestRateTimeLeft;
+	private final String companyStocksCrashed;
 	private final String newVersionAvailable;
 	private final String unknownCommand;
 
@@ -154,6 +155,7 @@ public class Messages {
 		this.updatedInterestRate = messagesConfig.getConfig().getString("updatedInterestRate");
 		this.playerAnyActions = messagesConfig.getConfig().getString("playerAnyActions");
 		this.interestRateTimeLeft = messagesConfig.getConfig().getString("interestRateTimeLeft");
+		this.companyStocksCrashed = messagesConfig.getConfig().getString("companyStocksCrashed");
 		this.newVersionAvailable = messagesConfig.getConfig().getString("newVersionAvailable");
 		this.unknownCommand = messagesConfig.getConfig().getString("unknownCommand");
 

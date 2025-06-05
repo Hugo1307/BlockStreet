@@ -3,7 +3,6 @@ BlockStreet:
   InterestInterval: 10
   Updates:
     Remainder: true
-StockCrash:
-  Enabled: true
-  DangerZonePercentage: 0.3
-  CrashChance: 0.1
+  StockCrash:
+    DangerZonePercentage: 0.25
+    CrashChance: 0.1

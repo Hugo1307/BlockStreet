@@ -45,6 +45,7 @@ invalidCmd: "Invalid Command! Try again."
 interestRate: "Commercial stocks will be updated within {0} minutes."
 updatedInterestRate: "All commercial stocks have been updated."
 interestRateTimeLeft: "{0} minutes left to commercial stocks update."
+companyStocksCrashed: "The stocks of {0} have crashed! The company is now bankrupt..."
 
 newVersionAvailable: "Good news! New version of BlockStreet available."
 

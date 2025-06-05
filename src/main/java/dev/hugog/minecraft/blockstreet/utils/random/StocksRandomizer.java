@@ -2,27 +2,37 @@ package dev.hugog.minecraft.blockstreet.utils.random;
 
 import lombok.Getter;
 
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Getter
 public class StocksRandomizer {
 
     private final int risk;
+    private final double initialStockValue;
     private final double minLimit;
     private final double maxLimit;
+    private final double stockDangerZonePercentage;  // Percentage of the stock value that is considered a danger zone
+    private final double stockCrashChance; // Percentage chance of a stock crashing if it enters the danger zone
 
-    public StocksRandomizer(int risk, double initialStockValue) {
+    public StocksRandomizer(int risk, double initialStockValue, double stockDangerZonePercentage, double stockCrashChance) {
         this.risk = risk;
+        this.initialStockValue = initialStockValue;
         this.minLimit = initialStockValue * (0.6 / risk);
         this.maxLimit = initialStockValue * (3 * risk);
+        this.stockDangerZonePercentage = stockDangerZonePercentage;
+        this.stockCrashChance = stockCrashChance;
     }
 
     public double getRandomStockValue(double currentStockValue, double quote) {
 
         double newStockValue = currentStockValue;
         newStockValue += newStockValue * quote;
-        return newStockValue ;
+
+        if (shouldCrash(newStockValue)) {
+            newStockValue = 0;
+        }
+
+        return newStockValue;
 
     }
 
@@ -32,24 +42,24 @@ public class StocksRandomizer {
         double randomQuotePercentage = getRandomQuoteAsPercentage();
         double generatedNoise = generateNoise();
 
-        double positiveQuote = randomQuotePercentage + generatedNoise;
-        double stockChange = currentStockValue * positiveQuote;
+        double quote = randomQuotePercentage + generatedNoise;
+        double stockChange = currentStockValue * quote;
 
         // If the random signal is positive and the stock value + the stock change is greater than the max limit
         // we need to transform the positive quote into a negative quote to not exceed the max limit
         if (randomSignal && currentStockValue + stockChange > this.maxLimit) {
             // Transform positive quote into negative quote
-            positiveQuote = -positiveQuote;
+            quote = -quote;
 
-        // If the random signal is negative and the stock value - the stock change is above the min limit
-        // we can transform the positive quote into a negative quote and not exceed the min limit
+            // If the random signal is negative and the stock value - the stock change is above the min limit
+            // we can transform the positive quote into a negative quote and not exceed the min limit
         } else if (!randomSignal && currentStockValue - stockChange > this.minLimit) {
-            positiveQuote = -positiveQuote;
+            quote = -quote;
         } else {
-            positiveQuote = Math.abs(positiveQuote);
+            quote = Math.abs(quote);
         }
 
-        return positiveQuote;
+        return quote;
 
     }
 
@@ -76,8 +86,19 @@ public class StocksRandomizer {
     // True = positive signal
     // False = negative signal
     private boolean getRandomSignal() {
-        Random r = new Random();
+        ThreadLocalRandom r = ThreadLocalRandom.current();
         return r.nextBoolean();
+    }
+
+    /**
+     * Checks if the stock value is in the danger zone and if it should crash.
+     *
+     * @param stockValue the current stock value
+     * @return true if the stock should crash, false otherwise
+     */
+    private boolean shouldCrash(double stockValue) {
+        double dangerZoneThreshold = this.initialStockValue * this.stockDangerZonePercentage;
+        return stockValue < dangerZoneThreshold && ThreadLocalRandom.current().nextDouble() < this.stockCrashChance;
     }
 
 }
