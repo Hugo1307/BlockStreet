@@ -7,20 +7,24 @@ import java.util.concurrent.ThreadLocalRandom;
 @Getter
 public class StocksRandomizer {
 
+    /**
+     * Defines the chance of a stock crashing if it enters the danger zone.
+     * This is an array where the index corresponds to the risk level - 1, i.e., if risk is 1, the chance is at index 0.
+     */
+    private static final double[] STOCK_CRASH_CHANCE_PER_RISK = {0.0005, 0.001, 0.0015, 0.0025, 0.004};
+
     private final int risk;
     private final double initialStockValue;
     private final double minLimit;
     private final double maxLimit;
     private final double stockDangerZonePercentage;  // Percentage of the stock value that is considered a danger zone
-    private final double stockCrashChance; // Percentage chance of a stock crashing if it enters the danger zone
 
-    public StocksRandomizer(int risk, double initialStockValue, double stockDangerZonePercentage, double stockCrashChance) {
+    public StocksRandomizer(int risk, double initialStockValue, double stockDangerZonePercentage) {
         this.risk = risk;
         this.initialStockValue = initialStockValue;
         this.minLimit = initialStockValue * (0.6 / risk);
         this.maxLimit = initialStockValue * (3 * risk);
         this.stockDangerZonePercentage = stockDangerZonePercentage;
-        this.stockCrashChance = stockCrashChance;
     }
 
     public double getRandomStockValue(double currentStockValue, double quote) {
@@ -97,8 +101,8 @@ public class StocksRandomizer {
      * @return true if the stock should crash, false otherwise
      */
     private boolean shouldCrash(double stockValue) {
-        double dangerZoneThreshold = this.initialStockValue * this.stockDangerZonePercentage;
-        return stockValue < dangerZoneThreshold && ThreadLocalRandom.current().nextDouble() < this.stockCrashChance;
+        double dangerZoneThreshold = this.minLimit + (this.initialStockValue - this.minLimit) * this.stockDangerZonePercentage;
+        return stockValue < dangerZoneThreshold && ThreadLocalRandom.current().nextDouble() < STOCK_CRASH_CHANCE_PER_RISK[this.risk - 1];
     }
 
 }

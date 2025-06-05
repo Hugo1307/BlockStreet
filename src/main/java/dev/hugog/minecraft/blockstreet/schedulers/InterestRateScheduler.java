@@ -43,9 +43,8 @@ public class InterestRateScheduler extends BukkitRunnable {
             }
 
             double dangerZonePercentage = plugin.getConfig().getDouble("BlockStreet.StockCrash.DangerZonePercentage", 0.0);
-            double crashChance = plugin.getConfig().getDouble("BlockStreet.StockCrash.CrashChance", 0.0);
 
-            StocksRandomizer stocksRandomizer = new StocksRandomizer(company.getRisk(), company.getInitialSharePrice(), dangerZonePercentage, crashChance);
+            StocksRandomizer stocksRandomizer = new StocksRandomizer(company.getRisk(), company.getInitialSharePrice(), dangerZonePercentage);
             double newSharesQuote = stocksRandomizer.getRandomQuote(company.getCurrentSharePrice());
             double newSharePrice = stocksRandomizer.getRandomStockValue(company.getCurrentSharePrice(), newSharesQuote);
 

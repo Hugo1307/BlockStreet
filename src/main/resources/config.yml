@@ -4,5 +4,4 @@ BlockStreet:
   Updates:
     Remainder: true
   StockCrash:
-    DangerZonePercentage: 0.25
-    CrashChance: 0.1
+    DangerZonePercentage: 0.015
