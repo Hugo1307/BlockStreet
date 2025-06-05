@@ -42,11 +42,14 @@ public class InterestRateScheduler extends BukkitRunnable {
                 continue;
             }
 
-            double dangerZonePercentage = plugin.getConfig().getDouble("BlockStreet.StockCrash.DangerZonePercentage", 0.0);
-
-            StocksRandomizer stocksRandomizer = new StocksRandomizer(company.getRisk(), company.getInitialSharePrice(), dangerZonePercentage);
+            StocksRandomizer stocksRandomizer = new StocksRandomizer(company.getRisk(), company.getInitialSharePrice());
             double newSharesQuote = stocksRandomizer.getRandomQuote(company.getCurrentSharePrice());
             double newSharePrice = stocksRandomizer.getRandomStockValue(company.getCurrentSharePrice(), newSharesQuote);
+
+            // Check if the company stocks should crash
+            if (shouldCrash(company.getRisk(), stocksRandomizer, newSharePrice)) {
+                newSharePrice = 0;
+            }
 
             // Update the company's share price with the new randomized value
             companiesService.updateCompanySharesValue(company.getId(), newSharePrice);
@@ -65,6 +68,20 @@ public class InterestRateScheduler extends BukkitRunnable {
 
         }
 
+    }
+
+    /**
+     * Checks if the company stocks should crash based on the risk, the new share price and a random chance.
+     *
+     * @param companyRisk      the risk of the company
+     * @param stocksRandomizer the stocks randomizer used to generate the new share price
+     * @param newSharePrice    the new share price of the company
+     * @return true if the stocks should crash, false otherwise
+     */
+    private boolean shouldCrash(int companyRisk, StocksRandomizer stocksRandomizer, double newSharePrice) {
+        double dangerZonePercentage = plugin.getConfig().getDouble("BlockStreet.StockCrash.Aggressiveness", 0.0);
+        boolean shouldCrash = Math.random() < 0.3 * (Math.pow(1 + 0.35 * dangerZonePercentage, companyRisk)) - 0.35;
+        return shouldCrash && stocksRandomizer.canCrash(newSharePrice);
     }
 
 }

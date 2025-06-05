@@ -7,35 +7,22 @@ import java.util.concurrent.ThreadLocalRandom;
 @Getter
 public class StocksRandomizer {
 
-    /**
-     * Defines the chance of a stock crashing if it enters the danger zone.
-     * This is an array where the index corresponds to the risk level - 1, i.e., if risk is 1, the chance is at index 0.
-     */
-    private static final double[] STOCK_CRASH_CHANCE_PER_RISK = {0.0005, 0.001, 0.0015, 0.0025, 0.004};
-
     private final int risk;
     private final double initialStockValue;
     private final double minLimit;
     private final double maxLimit;
-    private final double stockDangerZonePercentage;  // Percentage of the stock value that is considered a danger zone
 
-    public StocksRandomizer(int risk, double initialStockValue, double stockDangerZonePercentage) {
+    public StocksRandomizer(int risk, double initialStockValue) {
         this.risk = risk;
         this.initialStockValue = initialStockValue;
         this.minLimit = initialStockValue * (0.6 / risk);
         this.maxLimit = initialStockValue * (3 * risk);
-        this.stockDangerZonePercentage = stockDangerZonePercentage;
     }
 
     public double getRandomStockValue(double currentStockValue, double quote) {
 
         double newStockValue = currentStockValue;
         newStockValue += newStockValue * quote;
-
-        if (shouldCrash(newStockValue)) {
-            newStockValue = 0;
-        }
-
         return newStockValue;
 
     }
@@ -95,14 +82,14 @@ public class StocksRandomizer {
     }
 
     /**
-     * Checks if the stock value is in the danger zone and if it should crash.
+     * Checks if the stock value is in the danger zone and if it can crash.
      *
      * @param stockValue the current stock value
      * @return true if the stock should crash, false otherwise
      */
-    private boolean shouldCrash(double stockValue) {
-        double dangerZoneThreshold = this.minLimit + (this.initialStockValue - this.minLimit) * this.stockDangerZonePercentage;
-        return stockValue < dangerZoneThreshold && ThreadLocalRandom.current().nextDouble() < STOCK_CRASH_CHANCE_PER_RISK[this.risk - 1];
+    public boolean canCrash(double stockValue) {
+        double dangerZoneThreshold = this.minLimit + (this.initialStockValue - this.minLimit) * 0.01;
+        return stockValue < dangerZoneThreshold;
     }
 
 }

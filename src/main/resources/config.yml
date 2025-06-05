@@ -4,4 +4,4 @@ BlockStreet:
   Updates:
     Remainder: true
   StockCrash:
-    DangerZonePercentage: 0.015
+    Aggressiveness: 0.7        # Value between 0 and 1. A higher value means more frequent crashes.
