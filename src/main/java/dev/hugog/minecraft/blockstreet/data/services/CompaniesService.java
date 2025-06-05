@@ -9,6 +9,7 @@ import dev.hugog.minecraft.blockstreet.utils.SizedStack;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 public class CompaniesService implements Service {
@@ -192,6 +193,37 @@ public class CompaniesService implements Service {
         companyDao.getHistoric().push(newQuote);
         companiesRepository.save(companyDao.toEntity());
 
+    }
+
+    public void processPotentialStockCrash(long companyId, boolean crashEnabled, double dangerZonePercentage, double crashChance) {
+
+        if (!crashEnabled) {
+            return;
+        }
+
+        CompanyDao companyDao = getCompanyDaoById(companyId);
+
+        if (companyDao == null || companyDao.isBankrupt()) {
+            return; // Company doesn't exist or is already bankrupt
+        }
+
+        double initialPrice = companyDao.getInitialSharePrice();
+        double currentPrice = companyDao.getCurrentSharePrice();
+
+        // Define the danger threshold
+        double dangerThreshold = initialPrice * dangerZonePercentage;
+
+        if (currentPrice > 0 && currentPrice < dangerThreshold) {
+            // Stock is in the danger zone
+            Random random = new Random();
+            if (random.nextDouble() < crashChance) {
+                // Stock crashes!
+                this.updateCompanySharesValue(companyId, 0.0);
+                // Optional: Log the crash
+                // Logger.getLogger(CompaniesService.class.getName()).info("Stock " + companyDao.getName() + " (ID: " + companyId + ") has crashed!");
+                // Optional: Broadcast message (this is harder from a service, might be better done in the scheduler)
+            }
+        }
     }
 
     @Override

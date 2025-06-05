@@ -64,4 +64,8 @@ public class CompanyDao implements Dao<CompanyEntity> {
 
     }
 
+    public boolean isBankrupt() {
+        return this.getCurrentSharePrice() == 0.0;
+    }
+
 }
