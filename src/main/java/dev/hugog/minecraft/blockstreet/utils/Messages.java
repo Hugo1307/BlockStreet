@@ -34,6 +34,9 @@ public class Messages {
 	private final String details;
 	private final String shares;
 	private final String totalSharesValue;
+	private final String companyStatus;
+	private final String companyStatusBankrupt;
+	private final String companyStatusTrading;
 
 	private final String playerNotFound;
 	private final String playerOnlyCommand;
@@ -51,10 +54,12 @@ public class Messages {
 	private final String soldActions;
 	private final String createdCompany;
 	private final String deletedCompany;
+	private final String cannotBuyBankruptCompany;
 	private final String invalidCmd;
 	private final String interestRate;
 	private final String updatedInterestRate;
 	private final String interestRateTimeLeft;
+	private final String companyStocksCrashed;
 	private final String newVersionAvailable;
 	private final String unknownCommand;
 
@@ -88,6 +93,7 @@ public class Messages {
 	private final String uiInvestmentItemSellOne;
 	private final String uiInvestmentItemSellAll;
 	private final String uiCompaniesTitle;
+	private final String uiCompanyItemStatus;
 	private final String uiCompanyItemSharePrice;
 	private final String uiCompanyItemRisk;
 	private final String uiCompanyItemMarketCap;
@@ -133,6 +139,9 @@ public class Messages {
 		this.details = messagesConfig.getConfig().getString("details");
 		this.shares = messagesConfig.getConfig().getString("shares");
 		this.totalSharesValue = messagesConfig.getConfig().getString("totalSharesValue");
+		this.companyStatus = messagesConfig.getConfig().getString("companyStatus");
+		this.companyStatusTrading = messagesConfig.getConfig().getString("companyStatusTrading");
+		this.companyStatusBankrupt = messagesConfig.getConfig().getString("companyStatusBankrupt");
 
 		this.playerNotFound = messagesConfig.getConfig().getString("playerNotFound");
 		this.playerOnlyCommand = messagesConfig.getConfig().getString("playerOnlyCommand");
@@ -149,11 +158,13 @@ public class Messages {
 		this.soldActions = messagesConfig.getConfig().getString("soldActions");
 		this.createdCompany = messagesConfig.getConfig().getString("createdCompany");
 		this.deletedCompany = messagesConfig.getConfig().getString("deletedCompany");
+		this.cannotBuyBankruptCompany = messagesConfig.getConfig().getString("cannotBuyBankruptCompany");
 		this.invalidCmd = messagesConfig.getConfig().getString("invalidCmd");
 		this.interestRate = messagesConfig.getConfig().getString("interestRate");
 		this.updatedInterestRate = messagesConfig.getConfig().getString("updatedInterestRate");
 		this.playerAnyActions = messagesConfig.getConfig().getString("playerAnyActions");
 		this.interestRateTimeLeft = messagesConfig.getConfig().getString("interestRateTimeLeft");
+		this.companyStocksCrashed = messagesConfig.getConfig().getString("companyStocksCrashed");
 		this.newVersionAvailable = messagesConfig.getConfig().getString("newVersionAvailable");
 		this.unknownCommand = messagesConfig.getConfig().getString("unknownCommand");
 
@@ -187,6 +198,7 @@ public class Messages {
 		this.uiInvestmentItemSellOne = messagesConfig.getConfig().getString("uiInvestmentItemSellOne");
 		this.uiInvestmentItemSellAll = messagesConfig.getConfig().getString("uiInvestmentItemSellAll");
 		this.uiCompaniesTitle = messagesConfig.getConfig().getString("uiCompaniesTitle");
+		this.uiCompanyItemStatus = messagesConfig.getConfig().getString("uiCompanyItemStatus");
 		this.uiCompanyItemSharePrice = messagesConfig.getConfig().getString("uiCompanyItemSharePrice");
 		this.uiCompanyItemRisk = messagesConfig.getConfig().getString("uiCompanyItemRisk");
 		this.uiCompanyItemMarketCap = messagesConfig.getConfig().getString("uiCompanyItemMarketCap");

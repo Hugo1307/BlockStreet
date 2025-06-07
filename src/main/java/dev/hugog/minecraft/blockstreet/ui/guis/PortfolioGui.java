@@ -25,10 +25,12 @@ public class PortfolioGui extends AbstractPluginGui {
 
     @Override
     public Gui build() {
-        List<InvestmentDao> playerInvestments = guiManager.getPlayersService().getInvestments(player.getUniqueId());
+        List<InvestmentDao> playerInvestments = guiManager.getPlayersService().getInvestments(player.getUniqueId()).stream()
+                .filter(investment -> guiManager.getCompaniesService().companyExists(investment.getCompanyId()))
+                .collect(Collectors.toList());
         List<Item> investmentsItems = playerInvestments.stream()
                 .map(investment -> new InvestmentItem(guiManager.getPlugin(), messages, investment,
-                        guiManager.getCompaniesService().getCompanyDaoById(investment.getCompanyId())))
+                        guiManager.getCompaniesService().getCompanyById(investment.getCompanyId())))
                 .collect(Collectors.toList());
 
         return PagedGui.items()

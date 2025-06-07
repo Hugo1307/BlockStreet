@@ -7,6 +7,7 @@ import dev.hugog.minecraft.blockstreet.data.entities.SignEntity;
 import dev.hugog.minecraft.blockstreet.data.repositories.Repository;
 import dev.hugog.minecraft.blockstreet.data.repositories.implementations.SignsRepository;
 import dev.hugog.minecraft.blockstreet.utils.FormattingUtils;
+import dev.hugog.minecraft.blockstreet.utils.Messages;
 import dev.hugog.minecraft.blockstreet.utils.VisualizationUtils;
 import lombok.extern.log4j.Log4j2;
 import org.bukkit.ChatColor;
@@ -24,11 +25,13 @@ public class SignsService implements Service {
 
     public final SignsRepository repository;
     public final CompaniesService companiesService;
+    private final Messages messages;
 
     @Inject
-    public SignsService(SignsRepository repository, CompaniesService companiesService) {
+    public SignsService(SignsRepository repository, CompaniesService companiesService, Messages messages) {
         this.repository = repository;
         this.companiesService = companiesService;
+        this.messages = messages;
     }
 
     public List<SignDao> getAllSigns() {
@@ -100,7 +103,7 @@ public class SignsService implements Service {
 
         if (companiesService.companyExists(signEntity.getCompanyId())) {
 
-            CompanyDao companyInSign = companiesService.getCompanyDaoById(signEntity.getCompanyId());
+            CompanyDao companyInSign = companiesService.getCompanyById(signEntity.getCompanyId());
             updateSign(bukkitSign, companyInSign);
 
         }
@@ -116,7 +119,7 @@ public class SignsService implements Service {
 
                     if (companiesService.companyExists(companyId)) {
 
-                        CompanyDao companyInSign = companiesService.getCompanyDaoById(companyId);
+                        CompanyDao companyInSign = companiesService.getCompanyById(companyId);
                         updateSign(bukkitSign, companyInSign);
 
                     }
@@ -130,7 +133,11 @@ public class SignsService implements Service {
         sign.setLine(0, ChatColor.BOLD + "" + ChatColor.GREEN + "BlockStreet");
         sign.setLine(1, ChatColor.YELLOW + company.getName());
         sign.setLine(2, ChatColor.GREEN + "Value: " + ChatColor.GRAY + FormattingUtils.formatDouble(company.getCurrentSharePrice()));
-        sign.setLine(3, VisualizationUtils.formatCompanyVariation(lastVariation));
+        if (company.isBankrupt()) {
+            sign.setLine(3, messages.getCompanyStatusBankrupt());
+        } else {
+            sign.setLine(3, VisualizationUtils.formatCompanyVariation(lastVariation));
+        }
         sign.setEditable(false);
         sign.update();
     }
