@@ -80,7 +80,7 @@ public class InterestRateScheduler extends BukkitRunnable {
      */
     private boolean shouldCrash(int companyRisk, StocksRandomizer stocksRandomizer, double newSharePrice) {
         boolean isStockCrashEnabled = plugin.getConfig().getBoolean("BlockStreet.StockCrash.Enabled", true);
-        double dangerZonePercentage = plugin.getConfig().getDouble("BlockStreet.StockCrash.Aggressiveness", 0.0);
+        double dangerZonePercentage = plugin.getConfig().getDouble("BlockStreet.StockCrash.Aggressiveness", 0.7);
 
         // Stock crash is disabled or aggressiveness is not set
         if (!isStockCrashEnabled || dangerZonePercentage <= 0) {

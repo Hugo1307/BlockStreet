@@ -1,7 +1,7 @@
 name: BlockStreet
 main: dev.hugog.minecraft.blockstreet.BlockStreet
-version: 2.3.0
-description: This plugin allows you to make investments with your money.
+version: 2.4.0
+description: This plugin allows you to make investments with your in-game money.
 prefix: 'BlockStreet'
 api-version: 1.16
 depend:
