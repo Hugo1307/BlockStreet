@@ -55,7 +55,7 @@ public class PortfolioCommand extends BukkitDevCommand {
         playersService.getInvestments(player.getUniqueId())
                 .forEach(investment -> {
 
-                    CompanyDao investedCompany = companiesService.getCompanyDaoById(investment.getCompanyId());
+                    CompanyDao investedCompany = companiesService.getCompanyById(investment.getCompanyId());
 
                     if (investedCompany == null) return;
 
