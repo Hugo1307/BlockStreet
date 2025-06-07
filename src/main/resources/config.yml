@@ -4,4 +4,5 @@ BlockStreet:
   Updates:
     Remainder: true
   StockCrash:
+    Enabled: true              # Enable or disable stock crashes.
     Aggressiveness: 0.7        # Value between 0 and 1. A higher value means more frequent crashes.
