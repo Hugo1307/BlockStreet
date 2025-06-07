@@ -59,6 +59,11 @@ public class BuyCommand extends BukkitDevCommand {
 			return;
 		}
 
+		if (companiesService.getCompanyById(companyId).isBankrupt()) {
+			player.sendMessage(messages.getPluginPrefix() + messages.getCannotBuyBankruptCompany());
+			return;
+		}
+
 		if (!companiesService.hasEnoughShares(companyId, numberOfSharesToBuy)) {
 			player.sendMessage(messages.getPluginPrefix() + messages.getInsufficientActions());
 			return;

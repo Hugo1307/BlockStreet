@@ -29,7 +29,7 @@ public class CompaniesService implements Service {
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public CompanyDao getCompanyDaoById(long companyId) {
+    public CompanyDao getCompanyById(long companyId) {
         return (CompanyDao) companiesRepository.getById(companyId)
                 .map(companyEntity -> new CompanyDao().fromEntity(companyEntity))
                 .orElse(null);

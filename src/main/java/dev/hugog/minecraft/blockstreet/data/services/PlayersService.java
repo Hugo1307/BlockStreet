@@ -88,7 +88,7 @@ public class PlayersService implements Service {
         if (playerExists(playerId)) {
             return (PlayerDao) playersRepository.getById(playerId)
                     .map(playerEntity -> new PlayerDao().fromEntity(playerEntity))
-                    .orElse(null);
+                    .orElseThrow();
         } else {
             return PlayerDao.builder()
                     .name("Unknown")
