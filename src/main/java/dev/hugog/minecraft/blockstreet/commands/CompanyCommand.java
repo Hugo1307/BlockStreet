@@ -51,7 +51,7 @@ public class CompanyCommand extends BukkitDevCommand {
         Player player = (Player) getCommandSender();
 
         long companyId = Long.parseLong(getArgs()[0]);
-        CompanyDao companyDao = companiesService.getCompanyDaoById(companyId);
+        CompanyDao companyDao = companiesService.getCompanyById(companyId);
 
         if (companyDao == null) {
             player.sendMessage(messages.getPluginPrefix() + messages.getInvalidCompany());
@@ -87,6 +87,7 @@ public class CompanyCommand extends BukkitDevCommand {
         player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + currentCompany.getName());
         player.sendMessage("");
         player.sendMessage(ChatColor.GRAY + "Id: " + ChatColor.GREEN + currentCompany.getId());
+        player.sendMessage(ChatColor.GRAY + messages.getCompanyStatus() + ": " + (currentCompany.isBankrupt() ? messages.getCompanyStatusBankrupt() : messages.getCompanyStatusTrading()));
         player.sendMessage(ChatColor.GRAY + messages.getPrice() + ": " + ChatColor.GREEN + FormattingUtils.formatDouble(currentCompany.getCurrentSharePrice()));
         player.sendMessage(ChatColor.GRAY + messages.getRisk() + ": " + ChatColor.GREEN + currentCompany.getRisk());
 

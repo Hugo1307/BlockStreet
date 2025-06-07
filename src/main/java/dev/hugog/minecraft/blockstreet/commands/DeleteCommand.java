@@ -48,7 +48,7 @@ public class DeleteCommand extends BukkitDevCommand {
             return;
         }
 
-        CompanyDao companyToDelete = companiesService.getCompanyDaoById(companyId);
+        CompanyDao companyToDelete = companiesService.getCompanyById(companyId);
         companiesService.deleteCompany(companyId);
 
         getCommandSender().sendMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getDeletedCompany(), companyToDelete.getName()));

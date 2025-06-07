@@ -27,7 +27,7 @@ public class PortfolioSummaryItem extends SimpleItem {
                 .mapToInt(InvestmentDao::getSharesAmount)
                 .sum();
         double totalValue = playerInvestments.stream()
-                .mapToDouble(investment -> investment.getSharesAmount() * companiesService.getCompanyDaoById(investment.getCompanyId()).getCurrentSharePrice())
+                .mapToDouble(investment -> investment.getSharesAmount() * companiesService.getCompanyById(investment.getCompanyId()).getCurrentSharePrice())
                 .sum();
 
         return new ItemBuilder(Material.DARK_OAK_SIGN)

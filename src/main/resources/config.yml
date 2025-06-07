@@ -3,3 +3,5 @@ BlockStreet:
   InterestInterval: 10
   Updates:
     Remainder: true
+  StockCrash:
+    Aggressiveness: 0.7        # Value between 0 and 1. A higher value means more frequent crashes.
