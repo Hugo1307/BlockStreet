@@ -2,12 +2,12 @@ package dev.hugog.minecraft.blockstreet.commands;
 
 import dev.hugog.minecraft.blockstreet.commands.validators.CompanyRiskArgumentParser;
 import dev.hugog.minecraft.blockstreet.commands.validators.PositiveIntegerArgumentParser;
+import dev.hugog.minecraft.blockstreet.commands.validators.SharePriceArgumentParser;
 import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
 import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
 import dev.hugog.minecraft.blockstreet.data.services.PlayersService;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
 import dev.hugog.minecraft.dev_command.annotations.*;
-import dev.hugog.minecraft.dev_command.arguments.parsers.DoubleArgumentParser;
 import dev.hugog.minecraft.dev_command.arguments.parsers.StringArgumentParser;
 import dev.hugog.minecraft.dev_command.commands.BukkitDevCommand;
 import dev.hugog.minecraft.dev_command.commands.data.BukkitCommandData;
@@ -34,7 +34,7 @@ import java.util.List;
         @Argument(name = "name", description = "The name of the company to create.", position = 0, parser = StringArgumentParser.class),
         @Argument(name = "risk", description = "The risk of the company to create.", position = 1, parser = CompanyRiskArgumentParser.class),
         @Argument(name = "shares", description = "The amount of shares to create for the company.", position = 2, parser = PositiveIntegerArgumentParser.class),
-        @Argument(name = "price", description = "The price of each share.", position = 3, parser = DoubleArgumentParser.class)
+        @Argument(name = "price", description = "The price of each share.", position = 3, parser = SharePriceArgumentParser.class)
 })
 public class CreateCommand extends BukkitDevCommand {
 
