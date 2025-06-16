@@ -73,7 +73,7 @@ public class BuyCommand extends BukkitDevCommand {
 		double investmentPrice = companiesService.getCompanyInvestmentValue(companyId, numberOfSharesToBuy);
 
 		if (playerMoney < investmentPrice) {
-			player.sendMessage(messages.getPluginPrefix() + messages.getInsufficientMoney());
+			player.sendMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getInsufficientMoney(), investmentPrice));
 			return;
 		}
 

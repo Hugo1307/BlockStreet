@@ -1,5 +1,6 @@
 package dev.hugog.minecraft.blockstreet.data.services;
 
+import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
 import dev.hugog.minecraft.blockstreet.data.dao.QuoteDao;
 import dev.hugog.minecraft.blockstreet.data.repositories.Repository;
@@ -13,10 +14,12 @@ import java.util.stream.Collectors;
 
 public class CompaniesService implements Service {
 
+    private final BlockStreet plugin;
     private final CompaniesRepository companiesRepository;
 
     @Inject
-    public CompaniesService(CompaniesRepository companiesRepository) {
+    public CompaniesService(BlockStreet plugin, CompaniesRepository companiesRepository) {
+        this.plugin = plugin;
         this.companiesRepository = companiesRepository;
     }
 
@@ -35,12 +38,8 @@ public class CompaniesService implements Service {
                 .orElse(null);
     }
 
-    public CompanyDao createCompany(String companyName, int companyRisk, int companyShares, double companySharePrice) {
-
-        Long companyId = companiesRepository.getNextId();
-
-        CompanyDao newCompany = CompanyDao.builder()
-                .id(companyId.intValue())
+    public CompanyDao createPlayerCompany(String companyName, int companyRisk, int companyShares, double companySharePrice) {
+        return this.createCompany(CompanyDao.builder()
                 .name(companyName)
                 .risk(companyRisk)
                 .totalShares(companyShares)
@@ -48,23 +47,38 @@ public class CompaniesService implements Service {
                 .initialSharePrice(companySharePrice)
                 .currentSharePrice(companySharePrice)
                 .historic(new SizedStack<>(500))
-                .build();
+                .build()
+        );
+    }
 
-        companiesRepository.save(newCompany.toEntity());
-
-        return newCompany;
-
+    public CompanyDao createAdminCompany(String companyName, int companyRisk, int companyShares, double companySharePrice) {
+        return this.createCompany(CompanyDao.builder()
+                .name(companyName)
+                .risk(companyRisk)
+                .totalShares(companyShares)
+                .availableShares(companyShares - 1) // Reserve one share for the server, preventing players to assume full control over the company
+                .initialSharePrice(companySharePrice)
+                .currentSharePrice(companySharePrice)
+                .historic(new SizedStack<>(500))
+                .build()
+        );
     }
 
     public CompanyDao createCompany(CompanyDao companyToCreate) {
 
         Long companyId = companiesRepository.getNextId();
-
         companyToCreate.setId(companyId.intValue());
+
         companiesRepository.save(companyToCreate.toEntity());
+        companiesRepository.incrementNextId();
 
         return companyToCreate;
 
+    }
+
+    public double getCompanyCreationTax(long sharesAmount, double sharePrice, int risk) {
+        List<Double> extraTaxPerRisk = plugin.getConfig().getDoubleList("BlockStreet.Taxes.CompanyCreation");
+        return sharePrice * sharesAmount * (extraTaxPerRisk.get(risk - 1) + 1);
     }
 
     public void deleteCompany(long companyId) {
