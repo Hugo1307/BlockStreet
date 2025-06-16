@@ -51,13 +51,12 @@ public class CreateCommand extends BukkitDevCommand {
         Economy vaultEconomy = getDependency(Economy.class);
         Player player = (Player) getCommandSender();
 
-
         String companyName = getArgs()[0];
         int companyRisk = Integer.parseInt(getArgs()[1]);
         int companySharesAmount = Integer.parseInt(getArgs()[2]);
         double companySharePrice = Double.parseDouble(getArgs()[3]);
 
-        double companyCreationTax = companiesService.getCompanyCreationTax(companySharesAmount, companySharePrice);
+        double companyCreationTax = companiesService.getCompanyCreationTax(companySharesAmount, companySharePrice, companyRisk);
         if (!vaultEconomy.has(player, companyCreationTax)) {
             getCommandSender().sendMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getInsufficientMoney(), companyCreationTax));
             return;

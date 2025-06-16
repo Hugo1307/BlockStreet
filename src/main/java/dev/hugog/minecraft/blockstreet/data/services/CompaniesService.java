@@ -1,5 +1,6 @@
 package dev.hugog.minecraft.blockstreet.data.services;
 
+import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
 import dev.hugog.minecraft.blockstreet.data.dao.QuoteDao;
 import dev.hugog.minecraft.blockstreet.data.repositories.Repository;
@@ -13,10 +14,12 @@ import java.util.stream.Collectors;
 
 public class CompaniesService implements Service {
 
+    private final BlockStreet plugin;
     private final CompaniesRepository companiesRepository;
 
     @Inject
-    public CompaniesService(CompaniesRepository companiesRepository) {
+    public CompaniesService(BlockStreet plugin, CompaniesRepository companiesRepository) {
+        this.plugin = plugin;
         this.companiesRepository = companiesRepository;
     }
 
@@ -64,8 +67,9 @@ public class CompaniesService implements Service {
 
     }
 
-    public double getCompanyCreationTax(long sharesAmount, double sharePrice) {
-        return sharePrice * sharesAmount * 1.1;
+    public double getCompanyCreationTax(long sharesAmount, double sharePrice, int risk) {
+        List<Double> extraTaxPerRisk = plugin.getConfig().getDoubleList("BlockStreet.Taxes.CompanyCreation");
+        return sharePrice * sharesAmount * (extraTaxPerRisk.get(risk - 1) + 1);
     }
 
     public void deleteCompany(long companyId) {

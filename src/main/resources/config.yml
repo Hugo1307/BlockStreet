@@ -6,5 +6,10 @@ BlockStreet:
   StockCrash:
     Enabled: true              # Enable or disable stock crashes.
     Aggressiveness: 0.7        # Value between 0 and 1. A higher value means more frequent crashes.
-  Tax:
-    CompanyCreation: 0.1       # Tax on company creation (0 to 1, 0.1 = 10%)
+  Taxes:
+    CompanyCreation:           # Tax applied when creating company, applied over the valuation, per risk level
+      - 0.1                    # Risk 1
+      - 0.2                    # Risk 2
+      - 0.3                    # Risk 3
+      - 0.4                    # Risk 4
+      - 0.5                    # Risk 5
