@@ -13,7 +13,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Delete Company Command
@@ -74,7 +76,14 @@ public class DeleteCommand extends BukkitDevCommand {
     }
 
     @Override
-    public List<String> onTabComplete(String[] strings) {
-        return List.of();
+    public List<String> onTabComplete(String[] args) {
+        Player player = (Player) getCommandSender();
+        if (args.length == 1) {
+            return playersService.getInvestments(player.getUniqueId()).stream()
+                    .filter(investment -> companiesService.companyExists(investment.getCompanyId()) && companiesService.getCompanyById(investment.getCompanyId()).getTotalShares() <= investment.getSharesAmount())
+                    .map(investment -> String.valueOf(investment.getCompanyId()))
+                    .collect(Collectors.toList());
+        }
+        return Collections.emptyList();
     }
 }

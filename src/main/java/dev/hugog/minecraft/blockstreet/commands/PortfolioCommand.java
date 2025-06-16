@@ -62,7 +62,7 @@ public class PortfolioCommand extends BukkitDevCommand {
                     TextComponent clickableCompanyDetails = new TextComponent(ChatColor.GREEN + "[Details]");
                     clickableCompanyDetails.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                             new ComponentBuilder(ChatColor.GRAY + "Click to see company's details.").create()));
-                    clickableCompanyDetails.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/invest company " + investedCompany.getId()));
+                    clickableCompanyDetails.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/invest company info " + investedCompany.getId()));
 
                     DecimalFormat df = new DecimalFormat("#.##");
 

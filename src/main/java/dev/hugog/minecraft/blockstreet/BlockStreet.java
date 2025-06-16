@@ -2,6 +2,7 @@ package dev.hugog.minecraft.blockstreet;
 
 import com.google.inject.Injector;
 import dev.hugog.minecraft.blockstreet.api.services.AutoUpdateService;
+import dev.hugog.minecraft.blockstreet.data.repositories.implementations.CompaniesRepository;
 import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
 import dev.hugog.minecraft.blockstreet.data.services.PlayersService;
 import dev.hugog.minecraft.blockstreet.data.services.SignsService;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.Objects;
+import java.util.OptionalInt;
 import java.util.logging.Level;
 import javax.inject.Inject;
 import lombok.Getter;
@@ -110,9 +112,9 @@ public class BlockStreet extends JavaPlugin {
     }
 
     public void checkForUpdates() {
-        autoUpdateService.isUpdateAvailable().thenAcceptAsync((isUpdateAvailable) -> {
+        autoUpdateService.isUpdateAvailable().thenAcceptAsync(isUpdateAvailable -> {
             if (isUpdateAvailable) {
-                getLogger().warning("An update is available! Download it at: https://www.spigotmc.org/resources/blockstreet.75791/");
+                getLogger().warning("An update is available! Download it at: https://modrinth.com/plugin/blockstreet");
             } else {
                 getLogger().info("You are using the latest version of BlockStreet!");
             }
@@ -169,26 +171,42 @@ public class BlockStreet extends JavaPlugin {
 
     private void initializeCompaniesData() {
         File companiesDirectory = new File(getDataFolder(), DataFilePath.COMPANIES.getDataPath());
-        if (!companiesDirectory.exists()) {
-            if (companiesDirectory.mkdir()) {
-                File defaultCompanyFile = new File(getDataFolder(), DataFilePath.COMPANIES.getFullPathById("0"));
-                try {
-                    byte[] buffer = Objects.requireNonNull(getResource("companies/0.yml")).readAllBytes();
+        File companiesDataFile = new File(getDataFolder(), DataFilePath.COMPANIES.getFullPathById("data"));
 
-                    OutputStream outStream = Files.newOutputStream(defaultCompanyFile.toPath());
-                    outStream.write(buffer);
+        if (companiesDirectory.exists() && companiesDataFile.exists()) {
+            return;
+        }
 
-                    outStream.close();
+        companiesDirectory.mkdirs();
 
-                } catch (IOException e) {
-                    getLogger().warning("Unable to create default company file.");
-                    throw new RuntimeException(e);
-                }
-            } else {
-                getLogger().warning("Unable to create companies directory.");
+        // Create the default company file by copying from resources
+        File defaultCompanyFile = new File(getDataFolder(), DataFilePath.COMPANIES.getFullPathById("0"));
+        try (OutputStream outStream = Files.newOutputStream(defaultCompanyFile.toPath())) {
+            byte[] defaultCompanyBuffer = Objects.requireNonNull(getResource("companies/0.yml")).readAllBytes();
+            outStream.write(defaultCompanyBuffer);
+        } catch (IOException e) {
+            getLogger().log(Level.WARNING, "Unable to create default company data file.", e);
+            return;
+        }
+
+        // Create the companies data file and write the nextId in it
+        try {
+            if (companiesDataFile.createNewFile()) {
+                OptionalInt maxId = ((CompaniesRepository) companiesService.getRepository()).getAllIds().stream()
+                        .mapToInt(Long::intValue)
+                        .max();
+
+                maxId.ifPresent(companyMaxId -> {
+                    try {
+                        Files.writeString(companiesDataFile.toPath(), String.format("nextId: %s", companyMaxId + 1));
+                    } catch (IOException e) {
+                        getLogger().log(Level.WARNING, "Unable to write nextId to companies data file.", e);
+                    }
+                });
+                getLogger().info("Companies data file created successfully.");
             }
-        } else {
-            getLogger().info("Companies directory already exists. Skipping default initialization.");
+        } catch (IOException e) {
+            getLogger().log(Level.WARNING, "Unable to create companies data file.", e);
         }
     }
 
