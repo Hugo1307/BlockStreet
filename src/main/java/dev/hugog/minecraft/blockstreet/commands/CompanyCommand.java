@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  * @since v1.0.0
  */
 @AutoValidation
-@Command(alias = "company", description = "Get details about a company", permission = "blockstreet.command.company", isPlayerOnly = true)
+@Command(alias = "company info", description = "Get details about a company", permission = "blockstreet.command.company", isPlayerOnly = true)
 @Arguments(
         @Argument(name = "companyId", description = "The ID of the company to get details from.", position = 0, parser = IntegerArgumentParser.class)
 )
