@@ -58,7 +58,7 @@ public class InfoCommand extends BukkitDevCommand {
 
             if (isUpdateAvailable) {
                 player.sendMessage(ChatColor.GRAY + "New version available!");
-                player.sendMessage(ChatColor.GRAY + "Download it on: https://www.spigotmc.org/resources/blockstreet.75712/");
+                player.sendMessage(ChatColor.GRAY + "Download it on: https://modrinth.com/plugin/blockstreet");
             } else {
                 player.sendMessage(ChatColor.GRAY + "Your plugin is up to date.");
             }
