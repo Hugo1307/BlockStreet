@@ -45,7 +45,7 @@ public class BasicBinderModule extends AbstractModule {
         this.bind(FileConfiguration.class).annotatedWith(Names.named("pluginConfig")).toInstance(YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "config.yml")));
 
         // TODO: Change bindings depending on the data source being used
-        this.bind(CompaniesRepository.class).toInstance(new CompaniesRepository(new CompaniesYml(plugin.getDataFolder())));
+        this.bind(CompaniesRepository.class).toInstance(new CompaniesRepository(plugin.getDataFolder(), new CompaniesYml(plugin.getDataFolder())));
         this.bind(PlayersRepository.class).toInstance(new PlayersRepository(new PlayersYml(plugin.getDataFolder())));
         this.bind(SignsRepository.class).toInstance(new SignsRepository(new SignsYml(plugin.getDataFolder())));
 

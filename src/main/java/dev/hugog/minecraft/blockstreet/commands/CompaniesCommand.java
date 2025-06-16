@@ -64,7 +64,7 @@ public class CompaniesCommand extends BukkitDevCommand {
         TextComponent companyDetails = new TextComponent(ChatColor.GRAY + "[Details]");
         companyDetails.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 new ComponentBuilder(ChatColor.GRAY + "Click to see company's details.").create()));
-        companyDetails.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/invest company " + currentCompany.getId()));
+        companyDetails.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/invest company info " + currentCompany.getId()));
 
         if (currentCompany.getName() != null) {
             player.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + currentCompany.getName());
