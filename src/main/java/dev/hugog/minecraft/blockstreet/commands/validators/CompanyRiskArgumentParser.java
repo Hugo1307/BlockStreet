@@ -20,7 +20,7 @@ public class CompanyRiskArgumentParser extends CommandArgumentParser<Integer> {
 
     @Override
     public boolean isValid() {
-        return this.getArgument().matches("[0-5]");
+        return this.getArgument().matches("[1-5]");
     }
 
     @Override
