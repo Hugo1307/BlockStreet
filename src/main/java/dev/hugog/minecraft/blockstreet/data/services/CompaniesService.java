@@ -36,7 +36,6 @@ public class CompaniesService implements Service {
     }
 
     public CompanyDao createCompany(String companyName, int companyRisk, int companyShares, double companySharePrice) {
-
         Long companyId = companiesRepository.getNextId();
 
         CompanyDao newCompany = CompanyDao.builder()
@@ -51,9 +50,7 @@ public class CompaniesService implements Service {
                 .build();
 
         companiesRepository.save(newCompany.toEntity());
-
         return newCompany;
-
     }
 
     public CompanyDao createCompany(CompanyDao companyToCreate) {
@@ -65,6 +62,10 @@ public class CompaniesService implements Service {
 
         return companyToCreate;
 
+    }
+
+    public double getCompanyCreationTax(long sharesAmount, double sharePrice) {
+        return sharePrice * sharesAmount * 1.1;
     }
 
     public void deleteCompany(long companyId) {

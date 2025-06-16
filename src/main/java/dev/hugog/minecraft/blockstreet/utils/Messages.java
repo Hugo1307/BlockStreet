@@ -55,6 +55,8 @@ public class Messages {
 	private final String createdCompany;
 	private final String deletedCompany;
 	private final String cannotBuyBankruptCompany;
+	private final String cannotDeleteNotOwnedCompany;
+
 	private final String invalidCmd;
 	private final String interestRate;
 	private final String updatedInterestRate;
@@ -159,6 +161,8 @@ public class Messages {
 		this.createdCompany = messagesConfig.getConfig().getString("createdCompany");
 		this.deletedCompany = messagesConfig.getConfig().getString("deletedCompany");
 		this.cannotBuyBankruptCompany = messagesConfig.getConfig().getString("cannotBuyBankruptCompany");
+		this.cannotDeleteNotOwnedCompany = messagesConfig.getConfig().getString("cannotDeleteNotOwnedCompany");
+
 		this.invalidCmd = messagesConfig.getConfig().getString("invalidCmd");
 		this.interestRate = messagesConfig.getConfig().getString("interestRate");
 		this.updatedInterestRate = messagesConfig.getConfig().getString("updatedInterestRate");

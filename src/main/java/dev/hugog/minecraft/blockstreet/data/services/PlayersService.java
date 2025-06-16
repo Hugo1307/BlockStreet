@@ -6,10 +6,7 @@ import dev.hugog.minecraft.blockstreet.data.repositories.Repository;
 import dev.hugog.minecraft.blockstreet.data.repositories.implementations.PlayersRepository;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayersService implements Service {
 
@@ -28,7 +25,6 @@ public class PlayersService implements Service {
         boolean hasInvestedInCompany = playerDao.getInvestments().stream().anyMatch(playerInvestment -> playerInvestment.getCompanyId() == recentInvestment.getCompanyId());
 
         if (hasInvestedInCompany) {
-
             playerDao.getInvestments().stream()
                     .filter(playerInvestment -> playerInvestment.getCompanyId() == recentInvestment.getCompanyId())
                     .findFirst()
@@ -73,6 +69,13 @@ public class PlayersService implements Service {
 
     public List<InvestmentDao> getInvestments(UUID playerId) {
         return Collections.unmodifiableList(getOrCreatePlayer(playerId).getInvestments());
+    }
+
+    public Optional<InvestmentDao> getInvestmentInCompany(UUID playerId, long companyId) {
+        PlayerDao playerDao = getOrCreatePlayer(playerId);
+        return playerDao.getInvestments().stream()
+                .filter(investment -> investment.getCompanyId() == companyId)
+                .findFirst();
     }
 
     public boolean hasAnyInvestments(UUID playerId) {
