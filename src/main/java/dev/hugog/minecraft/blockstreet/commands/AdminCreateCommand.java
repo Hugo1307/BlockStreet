@@ -49,7 +49,7 @@ public class AdminCreateCommand extends BukkitDevCommand {
         int companySharesAmount = Integer.parseInt(getArgs()[2]);
         double companySharePrice = Double.parseDouble(getArgs()[3]);
 
-        companiesService.createCompany(companyName, companyRisk, companySharesAmount, companySharePrice);
+        companiesService.createAdminCompany(companyName, companyRisk, companySharesAmount, companySharePrice);
         getCommandSender().sendMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getCreatedCompany(), companyName));
 
     }

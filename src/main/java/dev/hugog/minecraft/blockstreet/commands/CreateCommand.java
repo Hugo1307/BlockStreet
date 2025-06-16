@@ -66,7 +66,7 @@ public class CreateCommand extends BukkitDevCommand {
         vaultEconomy.withdrawPlayer(player, companyCreationTax);
 
         // Create the company and move the shares to the player
-        CompanyDao createdCompany = companiesService.createCompany(companyName, companyRisk, companySharesAmount, companySharePrice);
+        CompanyDao createdCompany = companiesService.createPlayerCompany(companyName, companyRisk, companySharesAmount, companySharePrice);
         companiesService.removeSharesFromCompany(createdCompany.getId(), companySharesAmount);
         playersService.addSharesToPlayer(player.getUniqueId(), createdCompany.getId(), companySharesAmount);
 
