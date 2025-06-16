@@ -38,11 +38,8 @@ public class CompaniesService implements Service {
                 .orElse(null);
     }
 
-    public CompanyDao createCompany(String companyName, int companyRisk, int companyShares, double companySharePrice) {
-        Long companyId = companiesRepository.getNextId();
-
-        CompanyDao newCompany = CompanyDao.builder()
-                .id(companyId.intValue())
+    public CompanyDao createPlayerCompany(String companyName, int companyRisk, int companyShares, double companySharePrice) {
+        return this.createCompany(CompanyDao.builder()
                 .name(companyName)
                 .risk(companyRisk)
                 .totalShares(companyShares)
@@ -50,10 +47,21 @@ public class CompaniesService implements Service {
                 .initialSharePrice(companySharePrice)
                 .currentSharePrice(companySharePrice)
                 .historic(new SizedStack<>(500))
-                .build();
+                .build()
+        );
+    }
 
-        companiesRepository.save(newCompany.toEntity());
-        return newCompany;
+    public CompanyDao createAdminCompany(String companyName, int companyRisk, int companyShares, double companySharePrice) {
+        return this.createCompany(CompanyDao.builder()
+                .name(companyName)
+                .risk(companyRisk)
+                .totalShares(companyShares)
+                .availableShares(companyShares - 1) // Reserve one share for the server, preventing players to assume full control over the company
+                .initialSharePrice(companySharePrice)
+                .currentSharePrice(companySharePrice)
+                .historic(new SizedStack<>(500))
+                .build()
+        );
     }
 
     public CompanyDao createCompany(CompanyDao companyToCreate) {
