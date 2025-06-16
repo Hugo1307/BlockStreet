@@ -74,7 +74,9 @@ public class InvestmentItem extends AbstractItem {
         devCommand.getCommandHandler().executeCommand(Integration.createFromPlugin(plugin), player, SellCommand.class,
                 String.valueOf(investment.getCompanyId()), String.valueOf(sharesToSell));
 
-        investment.setSharesAmount(investment.getSharesAmount() - sharesToSell);
+        if (investment.getSharesAmount() - sharesToSell >= 0) {
+            investment.setSharesAmount(investment.getSharesAmount() - sharesToSell);
+        }
         notifyWindows();
     }
 
