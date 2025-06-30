@@ -44,6 +44,7 @@ createdCompany: "You created the company {0}."
 deletedCompany: "You deleted the company {0}."
 cannotBuyBankruptCompany: "You cannot buy stocks from a bankrupt company."
 cannotDeleteNotOwnedCompany: "You cannot delete a company you do not own completely!"
+cannotOwnMoreThanMaxShares: "You cannot own more than {0} shares in total."
 
 invalidCmd: "Invalid Command! Try again."
 interestRate: "Commercial stocks will be updated within {0} minutes."
