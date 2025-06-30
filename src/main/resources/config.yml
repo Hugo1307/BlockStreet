@@ -8,8 +8,11 @@ BlockStreet:
     Aggressiveness: 0.7        # Value between 0 and 1. A higher value means more frequent crashes.
   Taxes:
     CompanyCreation:           # Tax applied when creating company, applied over the valuation, per risk level
-      - 0.1                    # Risk 1
-      - 0.2                    # Risk 2
-      - 0.3                    # Risk 3
-      - 0.4                    # Risk 4
-      - 0.5                    # Risk 5
+      - 0.1                    # Risk 1 (10% of the total valuation)
+      - 0.2                    # Risk 2 (20% of the total valuation)
+      - 0.3                    # Risk 3 (30% of the total valuation)
+      - 0.4                    # Risk 4 (40% of the total valuation)
+      - 0.5                    # Risk 5 (50% of the total valuation)
+  Limits:
+    MinBalance: 0.1            # Minimum balance a player must have after buying stocks as % of total investment value (defaults to 10 %)
+    MaxSharesPerPlayer: 1000   # Maximum number of shares a player can own (set -1 to disable)

@@ -67,6 +67,18 @@ public class PlayersService implements Service {
 
     }
 
+    public long getTotalPlayerSharesCount(UUID playerId) {
+        return getOrCreatePlayer(playerId).getInvestments().stream()
+                .mapToLong(InvestmentDao::getSharesAmount)
+                .sum();
+    }
+
+    public double getTotalPortfolioValue(UUID playerId, CompaniesService companiesService) {
+        return getOrCreatePlayer(playerId).getInvestments().stream()
+                .mapToDouble(investment -> companiesService.getCompanyInvestmentValue(investment.getCompanyId(), investment.getSharesAmount()))
+                .sum();
+    }
+
     public List<InvestmentDao> getInvestments(UUID playerId) {
         return Collections.unmodifiableList(getOrCreatePlayer(playerId).getInvestments());
     }
