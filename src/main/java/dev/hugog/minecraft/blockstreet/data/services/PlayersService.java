@@ -73,6 +73,12 @@ public class PlayersService implements Service {
                 .sum();
     }
 
+    public double getTotalPortfolioValue(UUID playerId, CompaniesService companiesService) {
+        return getOrCreatePlayer(playerId).getInvestments().stream()
+                .mapToDouble(investment -> companiesService.getCompanyInvestmentValue(investment.getCompanyId(), investment.getSharesAmount()))
+                .sum();
+    }
+
     public List<InvestmentDao> getInvestments(UUID playerId) {
         return Collections.unmodifiableList(getOrCreatePlayer(playerId).getInvestments());
     }

@@ -14,5 +14,5 @@ BlockStreet:
       - 0.4                    # Risk 4 (40% of the total valuation)
       - 0.5                    # Risk 5 (50% of the total valuation)
   Limits:
-    MinBalance: 1000.0         # The minimum balance a player must have after buying stocks (set 0 to disable)
+    MinBalance: 0.1            # Minimum balance a player must have after buying stocks as % of total investment value (defaults to 10 %)
     MaxSharesPerPlayer: 1000   # Maximum number of shares a player can own (set -1 to disable)

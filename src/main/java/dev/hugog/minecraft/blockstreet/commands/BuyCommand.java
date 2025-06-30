@@ -78,7 +78,7 @@ public class BuyCommand extends BukkitDevCommand {
         double playerMoney = vaultEconomy.getBalance(player);
         double investmentPrice = companiesService.getCompanyInvestmentValue(companyId, numberOfSharesToBuy);
         double minimumBalance = plugin.getConfig().getDouble("BlockStreet.Limits.MinBalance");
-        double totalCost = investmentPrice + minimumBalance;
+        double totalCost = investmentPrice + playersService.getTotalPortfolioValue(player.getUniqueId(), companiesService) * minimumBalance;
         if (playerMoney < totalCost) {
             player.sendMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getInsufficientMoney(), totalCost));
             return;
