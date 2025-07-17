@@ -1,10 +1,13 @@
 package dev.hugog.minecraft.blockstreet.listeners;
 
 import dev.hugog.minecraft.blockstreet.BlockStreet;
+import dev.hugog.minecraft.blockstreet.commands.CompanyCommand;
 import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
 import dev.hugog.minecraft.blockstreet.data.dao.SignDao;
 import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
 import dev.hugog.minecraft.blockstreet.data.services.SignsService;
+import dev.hugog.minecraft.dev_command.DevCommand;
+import dev.hugog.minecraft.dev_command.integration.Integration;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
@@ -33,21 +36,22 @@ public class SignsListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-
             Block clickedBlock = event.getClickedBlock();
-
-            if (clickedBlock == null) return;
+            if (clickedBlock == null) {
+                return;
+            }
 
             SignDao signAtLocation = signsService.getSignByLocation(clickedBlock.getLocation());
+            if (signAtLocation == null) {
+                return;
+            }
 
-            if (signAtLocation == null) return;
-
-            event.getPlayer().performCommand("invest company " + signAtLocation.getCompanyId());
-
+            // Execute the command to show company info
+            DevCommand devCommand = DevCommand.getOrCreateInstance();
+            devCommand.getCommandHandler().executeCommand(Integration.createFromPlugin(plugin), event.getPlayer(),
+                    CompanyCommand.class, String.valueOf(signAtLocation.getCompanyId()));
         }
-
     }
 
     @EventHandler
