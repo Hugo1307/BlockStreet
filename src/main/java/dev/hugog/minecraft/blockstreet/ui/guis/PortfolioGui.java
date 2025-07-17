@@ -29,8 +29,7 @@ public class PortfolioGui extends AbstractPluginGui {
                 .filter(investment -> guiManager.getCompaniesService().companyExists(investment.getCompanyId()))
                 .collect(Collectors.toList());
         List<Item> investmentsItems = playerInvestments.stream()
-                .map(investment -> new InvestmentItem(guiManager.getPlugin(), messages, investment,
-                        guiManager.getCompaniesService().getCompanyById(investment.getCompanyId())))
+                .map(investment -> new InvestmentItem(guiManager.getPlugin(), messages, guiManager.getCompaniesService(), investment))
                 .collect(Collectors.toList());
 
         return PagedGui.items()

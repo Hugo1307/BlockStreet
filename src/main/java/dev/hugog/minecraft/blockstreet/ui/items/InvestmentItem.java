@@ -4,6 +4,7 @@ import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.commands.SellCommand;
 import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
 import dev.hugog.minecraft.blockstreet.data.dao.InvestmentDao;
+import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
 import dev.hugog.minecraft.blockstreet.utils.FormattingUtils;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
 import dev.hugog.minecraft.blockstreet.utils.VisualizationUtils;
@@ -18,27 +19,24 @@ import org.bukkit.inventory.ItemFlag;
 import org.jetbrains.annotations.NotNull;
 import xyz.xenondevs.invui.item.ItemProvider;
 import xyz.xenondevs.invui.item.builder.ItemBuilder;
-import xyz.xenondevs.invui.item.impl.AbstractItem;
+import xyz.xenondevs.invui.item.impl.AutoUpdateItem;
 
 import java.text.MessageFormat;
 import java.util.List;
 
-public class InvestmentItem extends AbstractItem {
+public class InvestmentItem extends AutoUpdateItem {
 
     private final BlockStreet plugin;
-    private final Messages messages;
     private final InvestmentDao investment;
-    private final CompanyDao company;
 
-    public InvestmentItem(BlockStreet plugin, Messages messages, InvestmentDao investment, CompanyDao company) {
+    public InvestmentItem(BlockStreet plugin, Messages messages, CompaniesService companiesService, InvestmentDao investment) {
+        super(20 * 5, () -> getItemProvider(messages, companiesService, investment));
         this.plugin = plugin;
-        this.messages = messages;
         this.investment = investment;
-        this.company = company;
     }
 
-    @Override
-    public ItemProvider getItemProvider() {
+    public static ItemProvider getItemProvider(Messages messages, CompaniesService companiesService, InvestmentDao investment) {
+        CompanyDao company = companiesService.getCompanyById(investment.getCompanyId());
         double currentValue = investment.getSharesAmount() * company.getCurrentSharePrice();
         double lastVariation = !company.getHistoric().isEmpty() ? company.getHistoric().peek().getVariation() * 100 : 0;
 
