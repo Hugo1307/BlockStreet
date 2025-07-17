@@ -3,6 +3,7 @@ package dev.hugog.minecraft.blockstreet.ui.items;
 import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.commands.BuyCommand;
 import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
+import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
 import dev.hugog.minecraft.blockstreet.utils.FormattingUtils;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
 import dev.hugog.minecraft.blockstreet.utils.VisualizationUtils;
@@ -17,27 +18,25 @@ import org.bukkit.inventory.ItemFlag;
 import org.jetbrains.annotations.NotNull;
 import xyz.xenondevs.invui.item.ItemProvider;
 import xyz.xenondevs.invui.item.builder.ItemBuilder;
-import xyz.xenondevs.invui.item.impl.AbstractItem;
+import xyz.xenondevs.invui.item.impl.AutoUpdateItem;
 
 import java.text.MessageFormat;
 import java.util.List;
 
-public class CompanyItem extends AbstractItem {
+public class CompanyItem extends AutoUpdateItem {
 
     private final BlockStreet plugin;
-    private final Messages messages;
     private final CompanyDao company;
 
-    public CompanyItem(BlockStreet plugin, Messages messages, CompanyDao company) {
+    public CompanyItem(BlockStreet plugin, Messages messages, CompaniesService companiesService, int companyId) {
+        super(20 * 5, () -> getItemProvider(companiesService.getCompanyById(companyId), messages));
         this.plugin = plugin;
-        this.messages = messages;
-        this.company = company;
+        this.company = companiesService.getCompanyById(companyId);
     }
 
-    @Override
-    public ItemProvider getItemProvider() {
+    public static ItemProvider getItemProvider(CompanyDao company, Messages messages) {
         double marketCap = company.getCurrentSharePrice() * company.getTotalShares();
-        double totalVariation = (company.getCurrentSharePrice() -  company.getInitialSharePrice()) /  company.getInitialSharePrice() * 100;
+        double totalVariation = (company.getCurrentSharePrice() - company.getInitialSharePrice()) / company.getInitialSharePrice() * 100;
         double lastVariation = !company.getHistoric().isEmpty() ? company.getHistoric().peek().getVariation() * 100 : 0;
 
         return new ItemBuilder(Material.EMERALD)

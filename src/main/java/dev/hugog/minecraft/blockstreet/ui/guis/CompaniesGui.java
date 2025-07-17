@@ -29,7 +29,7 @@ public class CompaniesGui extends AbstractPluginGui {
     public Gui build() {
         List<Item> companiesItems = guiManager.getCompaniesService().getAllCompanies()
                 .stream()
-                .map(company -> new CompanyItem(guiManager.getPlugin(), messages, company))
+                .map(company -> new CompanyItem(guiManager.getPlugin(), messages, guiManager.getCompaniesService(), company.getId()))
                 .collect(Collectors.toList());
 
         return PagedGui.items()
