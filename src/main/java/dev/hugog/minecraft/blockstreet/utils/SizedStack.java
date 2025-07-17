@@ -1,10 +1,16 @@
 package dev.hugog.minecraft.blockstreet.utils;
 
+import com.google.common.collect.Lists;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
+/**
+ * Implements a stack that has a maximum size.
+ *
+ * @param <T> the type of elements in the stack
+ */
 public class SizedStack<T> extends Stack<T> {
 
     private final int maxSize;
@@ -23,25 +29,31 @@ public class SizedStack<T> extends Stack<T> {
         return super.push(object);
     }
 
-    // Inverts the list so that the first elements of the list are the most recent ones.
+    /**
+     * Convert the stack to a list.
+     *
+     * <p>The first elements of the list will be the elements on the top of the stack.
+     *
+     * @return a list containing the elements of the stack
+     */
     public List<T> toList() {
-        List<T> list = new ArrayList<>(this);
-        Collections.reverse(list);
-        return list;
+        return Lists.reverse(new ArrayList<>(this));
     }
 
+    /**
+     * Create a new SizedStack from a list.
+     *
+     * <p>The elements of the list will be pushed onto the stack, respecting the maximum size.
+     *
+     * @param list the list to convert to a SizedStack
+     * @return a new SizedStack containing the elements of the list
+     */
     public SizedStack<T> fromList(List<T> list) {
-
         final SizedStack<T> stack = new SizedStack<>(maxSize);
-
-        // Reverse the list because the first elements in the list are the most recent ones.
-        // Therefore, we need to invert it so that the first elements are pushed in last, i.e.,
-        // become the most recent.
-        Collections.reverse(list);
-        for (T t : list) stack.push(t);
-
+        for (T t : list) {
+            stack.push(t);
+        }
         return stack;
-
     }
 
 }
