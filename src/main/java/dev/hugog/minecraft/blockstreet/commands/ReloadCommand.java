@@ -32,17 +32,16 @@ public class ReloadCommand extends BukkitDevCommand {
 
 	@Override
 	public void execute() {
-
-		Messages messages = (Messages) getDependency(Messages.class);
-		BlockStreet plugin = (BlockStreet) getDependency(BlockStreet.class);
+		Messages messages = getDependency(Messages.class);
+		BlockStreet plugin = getDependency(BlockStreet.class);
 
 		plugin.reloadConfig();
+		messages.reload();
 
 		plugin.stopSchedulers();
 		plugin.registerSchedulers();
 
 		getCommandSender().sendMessage(messages.getPluginPrefix() + ChatColor.GREEN + messages.getPluginReload());
-
 	}
 
 	@Override
