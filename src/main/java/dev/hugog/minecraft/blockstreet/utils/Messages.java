@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.enums.ConfigurationFiles;
 import lombok.Getter;
-import org.bukkit.ChatColor;
 
 @Getter
 public class Messages {

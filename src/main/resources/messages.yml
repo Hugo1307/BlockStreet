@@ -1,8 +1,8 @@
 pluginReload: "Plugin's config successfully reloaded."
 
-pluginPrefix: "BlockStreet"
-pluginHeader: "-=-=-=-=-=-=-=-=-=-= BlockStreet =-=-=-=-=-=-=-=-=-=-"
-pluginFooter: "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+pluginPrefix: "§a§lBlockStreet §6> §r§7"
+pluginHeader: "§7-=-=-=-=-=-=-=-=-=-= [§aBlockStreet§7] =-=-=-=-=-=-=-=-=-=-"
+pluginFooter: "§7-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 
 menuMainCmd: "Show all plugin's commands."
 menuCompaniesCmd: "List all companies."
