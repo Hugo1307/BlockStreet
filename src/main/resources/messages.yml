@@ -1,5 +1,9 @@
 pluginReload: "Plugin's config successfully reloaded."
 
+pluginPrefix: "BlockStreet"
+pluginHeader: "-=-=-=-=-=-=-=-=-=-= BlockStreet =-=-=-=-=-=-=-=-=-=-"
+pluginFooter: "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+
 menuMainCmd: "Show all plugin's commands."
 menuCompaniesCmd: "List all companies."
 menuCompanyCmd: "Show details of a company."
