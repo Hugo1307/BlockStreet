@@ -117,9 +117,9 @@ public class Messages {
 
 		final ConfigAccessor messagesConfig = new ConfigAccessor(plugin, ConfigurationFiles.MESSAGES.getFileName());
 
-		this.pluginPrefix = ChatColor.BOLD + "" + ChatColor.GREEN + "BlockStreet" + ChatColor.GOLD + ChatColor.BOLD + " > " + ChatColor.RESET  + ChatColor.RESET + ChatColor.GRAY;
-		this.pluginHeader = ChatColor.GRAY + "-=-=-=-=-=-=-=-=-=-= [" + ChatColor.GREEN  + "BlockStreet" + ChatColor.GRAY + "] =-=-=-=-=-=-=-=-=-=-";
-		this.pluginFooter = ChatColor.GRAY + "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-";
+		this.pluginPrefix = messagesConfig.getConfig().getString("pluginPrefix");
+		this.pluginHeader = messagesConfig.getConfig().getString("pluginHeader");
+		this.pluginFooter = messagesConfig.getConfig().getString("pluginFooter");
 		this.pluginReload = messagesConfig.getConfig().getString("pluginReload");
 		this.menuMainCmd = messagesConfig.getConfig().getString("menuMainCmd");
 		this.menuCompaniesCmd = messagesConfig.getConfig().getString("menuCompaniesCmd");
