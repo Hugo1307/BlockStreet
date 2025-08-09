@@ -36,7 +36,11 @@ public class PlayerDao implements Dao<PlayerEntity> {
         return new PlayerDao(
                 entity.getUniqueId(),
                 entity.getName(),
-                entity.getInvestments().stream().map(investment -> new InvestmentDao(investment.getCompanyId(), investment.getSharesAmount())).collect(Collectors.toList())
+                entity.getInvestments().stream().map(investment -> new InvestmentDao(
+                                investment.getCompanyId(),
+                                investment.getSharesAmount(),
+                                investment.getAverageBuyPrice() != null ? investment.getAverageBuyPrice() : 0.0))
+                        .collect(Collectors.toList())
         );
     }
 

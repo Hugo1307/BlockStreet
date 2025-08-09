@@ -38,16 +38,17 @@ public class InvestmentItem extends AutoUpdateItem {
     public static ItemProvider getItemProvider(Messages messages, CompaniesService companiesService, InvestmentDao investment) {
         CompanyDao company = companiesService.getCompanyById(investment.getCompanyId());
         double currentValue = investment.getSharesAmount() * company.getCurrentSharePrice();
-        double lastVariation = !company.getHistoric().isEmpty() ? company.getHistoric().peek().getVariation() * 100 : 0;
+        double investmentVariation = 100 - (investment.getAverageBuyPrice() * 100 / company.getCurrentSharePrice());
 
         return new ItemBuilder(Material.DIAMOND)
-                .setDisplayName(ChatColor.GOLD + company.getName() + (!company.isBankrupt() ? MessageFormat.format(messages.getUiCompanyItemLastVariation(), VisualizationUtils.formatCompanyVariation(lastVariation)) : ""))
+                .setDisplayName(ChatColor.GOLD + company.getName() + (!company.isBankrupt() ? MessageFormat.format(messages.getUiCompanyItemLastVariation(), VisualizationUtils.formatCompanyVariation(investmentVariation)) : ""))
                 .setItemFlags(List.of(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_POTION_EFFECTS))
                 .addLoreLines(
                         company.isBankrupt() ? messages.getCompanyStatusBankrupt() : messages.getCompanyStatusTrading(),
                         "",
                         MessageFormat.format(messages.getUiInvestmentItemShares(), investment.getSharesAmount()),
                         MessageFormat.format(messages.getUiInvestmentItemCurrentValue(), FormattingUtils.formatDouble(currentValue)),
+                        MessageFormat.format(messages.getUiInvestmentItemAverageBuyPrice(), FormattingUtils.formatDouble(investment.getAverageBuyPrice())),
                         "",
                         messages.getUiInvestmentItemSellOne(),
                         messages.getUiInvestmentItemSellAll()

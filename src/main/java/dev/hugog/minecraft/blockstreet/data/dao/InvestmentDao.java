@@ -14,13 +14,15 @@ public class InvestmentDao implements Dao<InvestmentEntity> {
     private long companyId;
     @Setter
     private int sharesAmount;
-
+    @Setter
+    private double averageBuyPrice;
 
     @Override
     public InvestmentEntity toEntity() {
         final InvestmentEntity entity = new InvestmentEntity();
         entity.setCompanyId(companyId);
         entity.setSharesAmount(sharesAmount);
+        entity.setAverageBuyPrice(averageBuyPrice);
         return entity;
     }
 
@@ -28,7 +30,8 @@ public class InvestmentDao implements Dao<InvestmentEntity> {
     public Dao<InvestmentEntity> fromEntity(InvestmentEntity entity) {
         return new InvestmentDao(
                 entity.getCompanyId(),
-                entity.getSharesAmount()
+                entity.getSharesAmount(),
+                entity.getAverageBuyPrice() != null ? entity.getAverageBuyPrice() : 0.0
         );
     }
 

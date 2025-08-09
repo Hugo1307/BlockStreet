@@ -94,6 +94,7 @@ public class Messages {
     private String uiPortfolioTitle;
     private String uiInvestmentItemShares;
     private String uiInvestmentItemCurrentValue;
+    private String uiInvestmentItemAverageBuyPrice;
     private String uiInvestmentItemSellOne;
     private String uiInvestmentItemSellAll;
     private String uiCompaniesTitle;
@@ -209,6 +210,7 @@ public class Messages {
         this.uiPortfolioTitle = messagesConfig.getConfig().getString("uiPortfolioTitle");
         this.uiInvestmentItemShares = messagesConfig.getConfig().getString("uiInvestmentItemShares");
         this.uiInvestmentItemCurrentValue = messagesConfig.getConfig().getString("uiInvestmentItemCurrentValue");
+        this.uiInvestmentItemAverageBuyPrice = messagesConfig.getConfig().getString("uiInvestmentItemAverageBuyPrice");
         this.uiInvestmentItemSellOne = messagesConfig.getConfig().getString("uiInvestmentItemSellOne");
         this.uiInvestmentItemSellAll = messagesConfig.getConfig().getString("uiInvestmentItemSellAll");
         this.uiCompaniesTitle = messagesConfig.getConfig().getString("uiCompaniesTitle");

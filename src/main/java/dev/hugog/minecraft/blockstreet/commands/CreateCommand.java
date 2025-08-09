@@ -68,7 +68,7 @@ public class CreateCommand extends BukkitDevCommand {
         // Create the company and move the shares to the player
         CompanyDao createdCompany = companiesService.createPlayerCompany(companyName, companyRisk, companySharesAmount, companySharePrice);
         companiesService.removeSharesFromCompany(createdCompany.getId(), companySharesAmount);
-        playersService.addSharesToPlayer(player.getUniqueId(), createdCompany.getId(), companySharesAmount);
+        playersService.addSharesToPlayer(player.getUniqueId(), createdCompany, companySharesAmount);
 
         getCommandSender().sendMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getCreatedCompany(), companyName));
 

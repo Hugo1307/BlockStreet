@@ -19,10 +19,10 @@ public class PlayersService implements Service {
         this.playersRepository = playersRepository;
     }
 
-    public void addSharesToPlayer(UUID playerId, long companyId, int sharesAmount) {
+    public void addSharesToPlayer(UUID playerId, CompanyDao company, int sharesAmount) {
 
         PlayerDao playerDao = getOrCreatePlayer(playerId);
-        InvestmentDao recentInvestment = new InvestmentDao(companyId, sharesAmount);
+        InvestmentDao recentInvestment = new InvestmentDao(company.getId(), sharesAmount, company.getCurrentSharePrice());
 
         boolean hasInvestedInCompany = playerDao.getInvestments().stream().anyMatch(playerInvestment -> playerInvestment.getCompanyId() == recentInvestment.getCompanyId());
 
@@ -30,8 +30,10 @@ public class PlayersService implements Service {
             playerDao.getInvestments().stream()
                     .filter(playerInvestment -> playerInvestment.getCompanyId() == recentInvestment.getCompanyId())
                     .findFirst()
-                    .ifPresent(playerInvestment -> playerInvestment.setSharesAmount(playerInvestment.getSharesAmount() + recentInvestment.getSharesAmount()));
-
+                    .ifPresent(playerInvestment -> {
+                        playerInvestment.setSharesAmount(playerInvestment.getSharesAmount() + recentInvestment.getSharesAmount());
+                        playerInvestment.setAverageBuyPrice(calculateNewAverageBuyPrice(playerInvestment, recentInvestment));
+                    });
         } else {
             playerDao.getInvestments().add(recentInvestment);
         }
@@ -123,6 +125,16 @@ public class PlayersService implements Service {
         });
     }
 
+    private double calculateNewAverageBuyPrice(InvestmentDao existingInvestment, InvestmentDao newInvestment) {
+        if (existingInvestment.getAverageBuyPrice() <= 0.0) {
+            return newInvestment.getAverageBuyPrice();
+        }
+        double existingTotalValue = existingInvestment.getSharesAmount() * existingInvestment.getAverageBuyPrice();
+        double newTotalValue = newInvestment.getSharesAmount() * newInvestment.getAverageBuyPrice();
+        int totalShares = existingInvestment.getSharesAmount() + newInvestment.getSharesAmount();
+        return totalShares > 0 ? (existingTotalValue + newTotalValue) / totalShares : 0.0;
+    }
+
     private boolean playerExists(UUID playerId) {
         return playersRepository.exists(playerId);
     }
@@ -142,7 +154,6 @@ public class PlayersService implements Service {
         }
 
     }
-
 
     @Override
     public Repository<?, ?> getRepository() {

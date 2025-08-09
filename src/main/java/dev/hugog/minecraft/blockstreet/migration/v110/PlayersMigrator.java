@@ -1,5 +1,6 @@
 package dev.hugog.minecraft.blockstreet.migration.v110;
 
+import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
 import dev.hugog.minecraft.blockstreet.data.services.PlayersService;
 import dev.hugog.minecraft.blockstreet.migration.Migrator;
 import org.bukkit.Bukkit;
@@ -45,10 +46,12 @@ public class PlayersMigrator implements Migrator {
             UUID playerId = player.getUniqueId();
 
             companiesIds.forEach(companyId -> {
-
                 int sharesAmount = playersConfiguration.getInt("Players." + playerName + ".Companies." + companyId + ".Amount");
-                playersService.addSharesToPlayer(playerId, Long.parseLong(companyId), sharesAmount);
-
+                CompanyDao companyDao = CompanyDao.builder()
+                        .id(Integer.parseInt(companyId))
+                        .currentSharePrice(0.0)
+                        .build();
+                playersService.addSharesToPlayer(playerId, companyDao, sharesAmount);
             });
 
         });
