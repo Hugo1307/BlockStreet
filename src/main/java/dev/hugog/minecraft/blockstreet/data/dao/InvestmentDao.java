@@ -17,6 +17,18 @@ public class InvestmentDao implements Dao<InvestmentEntity> {
     @Setter
     private double averageBuyPrice;
 
+    /**
+     * Get the variation of the investment in percentage.
+     *
+     * <p>Used to calculate how much the investment has changed (in percentage) since the shares were bought.
+     *
+     * @param currentSharePrice the current share price of the company
+     * @return the percentage variation of the investment
+     */
+    public double getInvestmentVariation(double currentSharePrice) {
+        return 100 - (averageBuyPrice * 100 / currentSharePrice);
+    }
+
     @Override
     public InvestmentEntity toEntity() {
         final InvestmentEntity entity = new InvestmentEntity();

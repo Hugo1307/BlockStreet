@@ -38,10 +38,10 @@ public class InvestmentItem extends AutoUpdateItem {
     public static ItemProvider getItemProvider(Messages messages, CompaniesService companiesService, InvestmentDao investment) {
         CompanyDao company = companiesService.getCompanyById(investment.getCompanyId());
         double currentValue = investment.getSharesAmount() * company.getCurrentSharePrice();
-        double investmentVariation = 100 - (investment.getAverageBuyPrice() * 100 / company.getCurrentSharePrice());
 
         return new ItemBuilder(Material.DIAMOND)
-                .setDisplayName(ChatColor.GOLD + company.getName() + (!company.isBankrupt() ? MessageFormat.format(messages.getUiCompanyItemLastVariation(), VisualizationUtils.formatCompanyVariation(investmentVariation)) : ""))
+                .setDisplayName(ChatColor.GOLD + company.getName() + (!company.isBankrupt() ? MessageFormat.format(messages.getUiCompanyItemLastVariation(),
+                        VisualizationUtils.formatCompanyVariation(investment.getInvestmentVariation(company.getCurrentSharePrice()))) : ""))
                 .setItemFlags(List.of(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_POTION_EFFECTS))
                 .addLoreLines(
                         company.isBankrupt() ? messages.getCompanyStatusBankrupt() : messages.getCompanyStatusTrading(),
