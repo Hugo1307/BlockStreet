@@ -1,9 +1,11 @@
 package dev.hugog.minecraft.blockstreet.data.services;
 
+import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
 import dev.hugog.minecraft.blockstreet.data.dao.InvestmentDao;
 import dev.hugog.minecraft.blockstreet.data.dao.PlayerDao;
 import dev.hugog.minecraft.blockstreet.data.repositories.Repository;
 import dev.hugog.minecraft.blockstreet.data.repositories.implementations.PlayersRepository;
+import org.bukkit.Bukkit;
 
 import javax.inject.Inject;
 import java.util.*;
@@ -94,6 +96,33 @@ public class PlayersService implements Service {
         return !getInvestments(playerId).isEmpty();
     }
 
+    /**
+     * Cleans up investments for a player by removing shares from companies that no longer exist.
+     *
+     * @param playerId          the unique identifier of the player
+     * @param existingCompanies a list containing all existing companies
+     */
+    public void cleanUpInvestments(UUID playerId, List<CompanyDao> existingCompanies) {
+        if (!playerExists(playerId)) {
+            return; // No need to clean up if the player does not exist
+        }
+        getInvestments(playerId).stream()
+                .filter(investment -> existingCompanies.stream().noneMatch(company -> company.getId() == investment.getCompanyId()))
+                .forEach(investment -> removeSharesFromPlayer(playerId, investment.getCompanyId(), investment.getSharesAmount()));
+    }
+
+    /**
+     * Cleans up investments for all online players by removing shares from companies that no longer exist.
+     *
+     * @param existingCompanies a list containing all existing companies
+     */
+    public void cleanUpInvestmentsForOnlinePlayers(List<CompanyDao> existingCompanies) {
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            UUID playerId = player.getUniqueId();
+            cleanUpInvestments(playerId, existingCompanies);
+        });
+    }
+
     private boolean playerExists(UUID playerId) {
         return playersRepository.exists(playerId);
     }
@@ -113,6 +142,7 @@ public class PlayersService implements Service {
         }
 
     }
+
 
     @Override
     public Repository<?, ?> getRepository() {
