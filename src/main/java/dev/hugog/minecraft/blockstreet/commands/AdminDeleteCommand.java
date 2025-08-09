@@ -2,6 +2,7 @@ package dev.hugog.minecraft.blockstreet.commands;
 
 import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
 import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
+import dev.hugog.minecraft.blockstreet.data.services.PlayersService;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
 import dev.hugog.minecraft.dev_command.annotations.*;
 import dev.hugog.minecraft.dev_command.arguments.parsers.IntegerArgumentParser;
@@ -31,15 +32,16 @@ import java.util.stream.Collectors;
 public class AdminDeleteCommand extends BukkitDevCommand {
 
     private final CompaniesService companiesService;
+    private final PlayersService playersService;
 
     public AdminDeleteCommand(BukkitCommandData commandData, CommandSender commandSender, String[] args) {
         super(commandData, commandSender, args);
         this.companiesService = getDependency(CompaniesService.class);
+        this.playersService = getDependency(PlayersService.class);
     }
 
     @Override
     public void execute() {
-
         Messages messages = getDependency(Messages.class);
         long companyId = Long.parseLong(getArgs()[0]);
 
@@ -50,9 +52,9 @@ public class AdminDeleteCommand extends BukkitDevCommand {
 
         CompanyDao companyToDelete = companiesService.getCompanyById(companyId);
         companiesService.deleteCompany(companyId);
+        playersService.cleanUpInvestmentsForOnlinePlayers(companiesService.getAllCompanies());
 
         getCommandSender().sendMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getDeletedCompany(), companyToDelete.getName()));
-
     }
 
     @Override
