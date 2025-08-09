@@ -7,5 +7,6 @@ public class InvestmentEntity implements DataEntity {
 
     private long companyId;
     private int sharesAmount;
+    private Double averageBuyPrice;
 
 }

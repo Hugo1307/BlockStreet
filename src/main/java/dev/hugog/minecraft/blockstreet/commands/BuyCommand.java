@@ -2,6 +2,7 @@ package dev.hugog.minecraft.blockstreet.commands;
 
 import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.commands.validators.PositiveIntegerArgumentParser;
+import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
 import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
 import dev.hugog.minecraft.blockstreet.data.services.PlayersService;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
@@ -58,7 +59,8 @@ public class BuyCommand extends BukkitDevCommand {
             return;
         }
 
-        if (companiesService.getCompanyById(companyId).isBankrupt()) {
+        CompanyDao company = companiesService.getCompanyById(companyId);
+        if (company.isBankrupt()) {
             player.sendMessage(messages.getPluginPrefix() + messages.getCannotBuyBankruptCompany());
             return;
         }
@@ -88,7 +90,7 @@ public class BuyCommand extends BukkitDevCommand {
         vaultEconomy.withdrawPlayer(player, investmentPrice);
 
         companiesService.removeSharesFromCompany(companyId, numberOfSharesToBuy);
-        playersService.addSharesToPlayer(player.getUniqueId(), companyId, numberOfSharesToBuy);
+        playersService.addSharesToPlayer(player.getUniqueId(), company, numberOfSharesToBuy);
 
         player.sendMessage(messages.getPluginPrefix() + MessageFormat.format(
                 messages.getBoughtActions().replace("'", "''"),
