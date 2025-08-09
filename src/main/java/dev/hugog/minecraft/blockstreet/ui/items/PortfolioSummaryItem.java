@@ -1,5 +1,6 @@
 package dev.hugog.minecraft.blockstreet.ui.items;
 
+import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
 import dev.hugog.minecraft.blockstreet.data.dao.InvestmentDao;
 import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
 import dev.hugog.minecraft.blockstreet.utils.FormattingUtils;
@@ -30,20 +31,27 @@ public class PortfolioSummaryItem extends AutoUpdateItem {
         double totalValue = playerInvestments.stream()
                 .mapToDouble(investment -> investment.getSharesAmount() * companiesService.getCompanyById(investment.getCompanyId()).getCurrentSharePrice())
                 .sum();
-        double averageInvestmentVariation = playerInvestments.stream()
-                .mapToDouble(investment -> investment.getInvestmentVariation(companiesService.getCompanyById(investment.getCompanyId()).getCurrentSharePrice()))
-                .average()
-                .orElse(0);
+        double averageInvestmentVariation = calculateTotalInvestmentVariation(playerInvestments, totalValue, companiesService);
 
         return new ItemBuilder(Material.DARK_OAK_SIGN)
                 .setDisplayName(messages.getUiPortfolioSummaryItemTitle() + MessageFormat.format(messages.getUiCompanyItemLastVariation(),
-                                VisualizationUtils.formatCompanyVariation(averageInvestmentVariation)))
+                        VisualizationUtils.formatCompanyVariation(averageInvestmentVariation)))
                 .addLoreLines(
                         "",
                         MessageFormat.format(messages.getUiPortfolioSummaryItemCompanies(), companyCount),
                         MessageFormat.format(messages.getUiPortfolioSummaryItemShares(), totalShares),
                         MessageFormat.format(messages.getUiPortfolioSummaryItemTotalValue(), FormattingUtils.formatDouble(totalValue))
                 );
+    }
+
+    private static double calculateTotalInvestmentVariation(List<InvestmentDao> playerInvestments, double totalPortfolioValue, CompaniesService companiesService) {
+        double totalWeightedVariations = 0d;
+        for (InvestmentDao investment : playerInvestments) {
+            CompanyDao company = companiesService.getCompanyById(investment.getCompanyId());
+            double investmentWeight = (investment.getSharesAmount() * company.getCurrentSharePrice()) / totalPortfolioValue;
+            totalWeightedVariations += investment.getInvestmentVariation(company.getCurrentSharePrice()) * investmentWeight;
+        }
+        return totalWeightedVariations;
     }
 
 }
