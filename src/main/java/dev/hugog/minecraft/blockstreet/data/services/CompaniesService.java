@@ -5,7 +5,11 @@ import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
 import dev.hugog.minecraft.blockstreet.data.dao.QuoteDao;
 import dev.hugog.minecraft.blockstreet.data.repositories.Repository;
 import dev.hugog.minecraft.blockstreet.data.repositories.implementations.CompaniesRepository;
+import dev.hugog.minecraft.blockstreet.events.CompanyCreateEvent;
+import dev.hugog.minecraft.blockstreet.events.CompanyDeleteEvent;
+import dev.hugog.minecraft.blockstreet.events.CompanyStockUpdateEvent;
 import dev.hugog.minecraft.blockstreet.utils.SizedStack;
+import org.bukkit.Bukkit;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -72,6 +76,10 @@ public class CompaniesService implements Service {
         companiesRepository.save(companyToCreate.toEntity());
         companiesRepository.incrementNextId();
 
+        // Create and call a CompanyCreateEvent to notify other plugins about the new company creation
+        CompanyCreateEvent createEvent = new CompanyCreateEvent(companyToCreate);
+        Bukkit.getPluginManager().callEvent(createEvent);
+
         return companyToCreate;
 
     }
@@ -82,7 +90,12 @@ public class CompaniesService implements Service {
     }
 
     public void deleteCompany(long companyId) {
+        CompanyDao deletedCompany = getCompanyById(companyId);
         companiesRepository.delete(companyId);
+
+        // Create and call a CompanyDeleteEvent to notify other plugins about the new company deletion
+        CompanyDeleteEvent deleteEvent = new CompanyDeleteEvent(deletedCompany);
+        Bukkit.getPluginManager().callEvent(deleteEvent);
     }
 
     public boolean hasEnoughShares(long companyId, int sharesAmount) {
@@ -178,8 +191,7 @@ public class CompaniesService implements Service {
         return companiesRepository.exists(companyId) && companiesRepository.getById(companyId).isPresent();
     }
 
-    public void updateCompanySharesValue(long companyId, double newSharesValue) {
-
+    public void updateCompanySharesValue(long companyId, double newSharesValue, double variation) {
         CompanyDao companyDao = (CompanyDao) companiesRepository.getById(companyId)
                 .map(companyEntity -> new CompanyDao().fromEntity(companyEntity))
                 .orElse(null);
@@ -188,9 +200,13 @@ public class CompaniesService implements Service {
             return;
         }
 
+        double oldShareValue = companyDao.getCurrentSharePrice();
         companyDao.setCurrentSharePrice(newSharesValue);
         companiesRepository.save(companyDao.toEntity());
 
+        // Create and call a CompanyStockUpdateEvent to notify other plugins about the stock update
+        CompanyStockUpdateEvent stockUpdateEvent = new CompanyStockUpdateEvent(companyDao, oldShareValue, newSharesValue, variation);
+        Bukkit.getPluginManager().callEvent(stockUpdateEvent);
     }
 
     public void updateCompanyHistoric(long companyId, QuoteDao newQuote) {

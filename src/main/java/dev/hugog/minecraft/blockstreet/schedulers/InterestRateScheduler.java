@@ -5,8 +5,10 @@ import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
 import dev.hugog.minecraft.blockstreet.data.dao.QuoteDao;
 import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
 import dev.hugog.minecraft.blockstreet.data.services.SignsService;
+import dev.hugog.minecraft.blockstreet.events.CompanyBankruptEvent;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
 import dev.hugog.minecraft.blockstreet.utils.random.StocksRandomizer;
+import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.inject.Inject;
@@ -52,7 +54,7 @@ public class InterestRateScheduler extends BukkitRunnable {
             }
 
             // Update the company's share price with the new randomized value
-            companiesService.updateCompanySharesValue(company.getId(), newSharePrice);
+            companiesService.updateCompanySharesValue(company.getId(), newSharePrice, newSharesQuote);
 
             // Save the new quote in the company's historic data
             QuoteDao quoteDao = new QuoteDao(newSharesQuote, newSharePrice, System.currentTimeMillis());
@@ -60,6 +62,10 @@ public class InterestRateScheduler extends BukkitRunnable {
 
             // If the company just went bankrupt, we can broadcast a message
             if (newSharePrice <= 0) {
+                // Create and call a CompanyBankruptEvent to notify other plugins about the company bankruptcy
+                CompanyBankruptEvent bankruptEvent = new CompanyBankruptEvent(company);
+                Bukkit.getPluginManager().callEvent(bankruptEvent);
+
                 plugin.getServer().broadcastMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getCompanyStocksCrashed(), company.getName()));
             }
 
