@@ -26,7 +26,7 @@ public class InvestmentDao implements Dao<InvestmentEntity> {
      * @return the percentage variation of the investment
      */
     public double getInvestmentVariation(double currentSharePrice) {
-        return 100 - (averageBuyPrice * 100 / currentSharePrice);
+        return (currentSharePrice - averageBuyPrice) / averageBuyPrice * 100;
     }
 
     @Override
