@@ -1,11 +1,11 @@
 package dev.hugog.minecraft.blockstreet.ui.guis;
 
+import dev.hugog.minecraft.blockstreet.enums.NotificationType;
 import dev.hugog.minecraft.blockstreet.ui.AbstractPluginGui;
 import dev.hugog.minecraft.blockstreet.ui.GuiManager;
-import dev.hugog.minecraft.blockstreet.ui.items.CompanyItem;
+import dev.hugog.minecraft.blockstreet.ui.items.NavigateBackItem;
 import dev.hugog.minecraft.blockstreet.ui.items.NextPageItem;
-import dev.hugog.minecraft.blockstreet.ui.items.NotificationSettingsButtonItem;
-import dev.hugog.minecraft.blockstreet.ui.items.PortfolioButtonItem;
+import dev.hugog.minecraft.blockstreet.ui.items.NotificationToggleItem;
 import dev.hugog.minecraft.blockstreet.ui.items.PreviousPageItem;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
 import org.bukkit.Material;
@@ -17,38 +17,39 @@ import xyz.xenondevs.invui.item.Item;
 import xyz.xenondevs.invui.item.builder.ItemBuilder;
 import xyz.xenondevs.invui.item.impl.SimpleItem;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CompaniesGui extends AbstractPluginGui {
-
-    public CompaniesGui(Player player, GuiManager guiManager, Messages messages) {
-        super(messages.getUiCompaniesTitle(), "blockstreet.ui.companies", player, guiManager, messages);
+public class NotificationsGui extends AbstractPluginGui {
+    public NotificationsGui(Player player, GuiManager guiManager, Messages messages) {
+        super(messages.getUiNotificationsTitle(), "blockstreet.ui.notifications", player, guiManager, messages);
     }
 
     @Override
     public Gui build() {
-        List<Item> companiesItems = guiManager.getCompaniesService().getAllCompanies()
-                .stream()
-                .map(company -> new CompanyItem(guiManager.getPlugin(), messages, guiManager.getCompaniesService(), company.getId()))
+        List<Item> notificationItems = Arrays.stream(NotificationType.values())
+                .map(notificationType -> new NotificationToggleItem(
+                        guiManager.getPlugin(),
+                        guiManager.getPlayersService(),
+                        messages,
+                        notificationType,
+                        player.getUniqueId()
+                ))
                 .collect(Collectors.toList());
 
         return PagedGui.items()
                 .setStructure(
-                        "# # # o # n # # #",
+                        "# # # # # # # # #",
                         "# x x x x x x x #",
                         "# x x x x x x x #",
-                        "# x x x x x x x #",
-                        "# # # < # > # # #"
-                )
+                        "# # # < - > # # #")
+                .addIngredient('x', Markers.CONTENT_LIST_SLOT_HORIZONTAL) // where paged items should be put
                 .addIngredient('#', new SimpleItem(new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).setDisplayName("")))
-                .addIngredient('x', Markers.CONTENT_LIST_SLOT_HORIZONTAL)
+                .addIngredient('-', new NavigateBackItem(guiManager, messages))
                 .addIngredient('<', new PreviousPageItem(messages))
                 .addIngredient('>', new NextPageItem(messages))
-                .addIngredient('o', new PortfolioButtonItem(guiManager, messages))
-                .addIngredient('n', new NotificationSettingsButtonItem(guiManager, messages))
-                .setContent(companiesItems)
+                .setContent(notificationItems)
                 .build();
     }
-
 }

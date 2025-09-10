@@ -38,6 +38,11 @@ public class Messages {
     private String companyStatus;
     private String companyStatusBankrupt;
     private String companyStatusTrading;
+    private String enabledString;
+    private String disabledString;
+
+    private String notificationStocksUpdateName;
+    private String notificationCompanyBankruptName;
 
     private String playerNotFound;
     private String playerOnlyCommand;
@@ -58,6 +63,7 @@ public class Messages {
     private String cannotBuyBankruptCompany;
     private String cannotDeleteNotOwnedCompany;
     private String cannotOwnMoreThanMaxShares;
+    private String notificationToggled;
 
     private String invalidCmd;
     private String interestRate;
@@ -113,6 +119,10 @@ public class Messages {
     private String uiPortfolioSummaryItemCompanies;
     private String uiPortfolioSummaryItemShares;
     private String uiPortfolioSummaryItemTotalValue;
+    private String uiNotificationsTitle;
+    private String uiNotificationsItemTitle;
+    private String uiNotificationsItemDescription;
+    private String uiNotificationsToggleStatus;
 
     @Inject
     public Messages(BlockStreet plugin) {
@@ -123,6 +133,10 @@ public class Messages {
     public void reload() {
         this.messagesConfig.reloadConfig();
         initializeMessages();
+    }
+
+    public String getMessageByKey(String key) {
+        return this.messagesConfig.getConfig().getString(key);
     }
 
     private void initializeMessages() {
@@ -154,6 +168,11 @@ public class Messages {
         this.companyStatus = messagesConfig.getConfig().getString("companyStatus");
         this.companyStatusTrading = messagesConfig.getConfig().getString("companyStatusTrading");
         this.companyStatusBankrupt = messagesConfig.getConfig().getString("companyStatusBankrupt");
+        this.enabledString = messagesConfig.getConfig().getString("enabledString");
+        this.disabledString = messagesConfig.getConfig().getString("disabledString");
+
+        this.notificationStocksUpdateName = messagesConfig.getConfig().getString("notificationStocksUpdateName");
+        this.notificationCompanyBankruptName = messagesConfig.getConfig().getString("notificationCompanyBankruptName");
 
         this.playerNotFound = messagesConfig.getConfig().getString("playerNotFound");
         this.playerOnlyCommand = messagesConfig.getConfig().getString("playerOnlyCommand");
@@ -173,6 +192,7 @@ public class Messages {
         this.cannotBuyBankruptCompany = messagesConfig.getConfig().getString("cannotBuyBankruptCompany");
         this.cannotDeleteNotOwnedCompany = messagesConfig.getConfig().getString("cannotDeleteNotOwnedCompany");
         this.cannotOwnMoreThanMaxShares = messagesConfig.getConfig().getString("cannotOwnMoreThanMaxShares");
+        this.notificationToggled = messagesConfig.getConfig().getString("notificationToggled");
 
         this.invalidCmd = messagesConfig.getConfig().getString("invalidCmd");
         this.interestRate = messagesConfig.getConfig().getString("interestRate");
@@ -229,6 +249,10 @@ public class Messages {
         this.uiPortfolioSummaryItemCompanies = messagesConfig.getConfig().getString("uiPortfolioSummaryItemCompanies");
         this.uiPortfolioSummaryItemShares = messagesConfig.getConfig().getString("uiPortfolioSummaryItemShares");
         this.uiPortfolioSummaryItemTotalValue = messagesConfig.getConfig().getString("uiPortfolioSummaryItemTotalValue");
+        this.uiNotificationsTitle = messagesConfig.getConfig().getString("uiNotificationsTitle");
+        this.uiNotificationsItemTitle = messagesConfig.getConfig().getString("uiNotificationsItemTitle");
+        this.uiNotificationsItemDescription = messagesConfig.getConfig().getString("uiNotificationsItemDescription");
+        this.uiNotificationsToggleStatus = messagesConfig.getConfig().getString("uiNotificationsToggleStatus");
     }
 
 }

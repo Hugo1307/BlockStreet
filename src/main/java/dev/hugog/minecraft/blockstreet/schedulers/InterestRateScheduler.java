@@ -4,7 +4,9 @@ import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
 import dev.hugog.minecraft.blockstreet.data.dao.QuoteDao;
 import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
+import dev.hugog.minecraft.blockstreet.data.services.PlayersService;
 import dev.hugog.minecraft.blockstreet.data.services.SignsService;
+import dev.hugog.minecraft.blockstreet.enums.NotificationType;
 import dev.hugog.minecraft.blockstreet.events.CompanyBankruptEvent;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
 import dev.hugog.minecraft.blockstreet.utils.random.StocksRandomizer;
@@ -20,25 +22,23 @@ public class InterestRateScheduler extends BukkitRunnable {
     private final BlockStreet plugin;
     private final CompaniesService companiesService;
     private final SignsService signsService;
+    private final PlayersService playersService;
     private final Messages messages;
 
     @Inject
-    public InterestRateScheduler(BlockStreet plugin, CompaniesService companiesService, SignsService signsService, Messages messages) {
+    public InterestRateScheduler(BlockStreet plugin, CompaniesService companiesService, SignsService signsService,
+                                 PlayersService playersService, Messages messages) {
         this.plugin = plugin;
         this.companiesService = companiesService;
         this.signsService = signsService;
+        this.playersService = playersService;
         this.messages = messages;
     }
 
     @Override
     public void run() {
-
-        // Broadcast message with the info that the interest rate has been updated
-        plugin.getServer().broadcastMessage(messages.getPluginPrefix() + messages.getUpdatedInterestRate());
-
         List<CompanyDao> allCompanies = companiesService.getAllCompanies();
         for (CompanyDao company : allCompanies) {
-
             // Do not process companies that are bankrupt
             if (company.isBankrupt()) {
                 continue;
@@ -66,14 +66,22 @@ public class InterestRateScheduler extends BukkitRunnable {
                 CompanyBankruptEvent bankruptEvent = new CompanyBankruptEvent(company);
                 Bukkit.getPluginManager().callEvent(bankruptEvent);
 
-                plugin.getServer().broadcastMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getCompanyStocksCrashed(), company.getName()));
+                // Notify all players with notifications enabled about the company bankruptcy
+                plugin.getServer().getOnlinePlayers().stream()
+                        .filter(player -> playersService.hasNotificationEnabled(player.getUniqueId(), NotificationType.COMPANY_BANKRUPT))
+                        .forEach(player -> player.sendMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getCompanyStocksCrashed(), company.getName())));
             }
 
             // Update the signs for the company
             plugin.getServer().getScheduler().runTask(plugin, () -> signsService.updateBukkitSignsByCompany(company.getId()));
-
         }
 
+        // Notify all players with notifications enabled about the interest rate update
+        plugin.getServer().getOnlinePlayers().stream()
+                .filter(player -> playersService.hasNotificationEnabled(player.getUniqueId(), NotificationType.STOCKS_UPDATE))
+                .forEach(player -> player.sendMessage(messages.getPluginPrefix() + messages.getUpdatedInterestRate()));
+        // Log the interest rate update in the console so the server admin can see it
+        plugin.getLogger().info("The values of all stocks have been updated!");
     }
 
     /**
@@ -92,7 +100,6 @@ public class InterestRateScheduler extends BukkitRunnable {
         if (!isStockCrashEnabled || dangerZonePercentage <= 0) {
             return false;
         }
-
         boolean shouldCrash = Math.random() < 0.3 * (Math.pow(1 + 0.35 * dangerZonePercentage, companyRisk)) - 0.35;
         return shouldCrash && stocksRandomizer.canCrash(newSharePrice);
     }
