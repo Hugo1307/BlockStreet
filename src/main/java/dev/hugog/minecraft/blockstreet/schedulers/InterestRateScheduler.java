@@ -66,6 +66,9 @@ public class InterestRateScheduler extends BukkitRunnable {
                 CompanyBankruptEvent bankruptEvent = new CompanyBankruptEvent(company);
                 Bukkit.getPluginManager().callEvent(bankruptEvent);
 
+                // Process the bankrupt company (remove it or keep it based on the configuration)
+                processBankruptCompany(company);
+
                 // Notify all players with notifications enabled about the company bankruptcy
                 plugin.getServer().getOnlinePlayers().stream()
                         .filter(player -> playersService.hasNotificationEnabled(player.getUniqueId(), NotificationType.COMPANY_BANKRUPT))
@@ -102,6 +105,20 @@ public class InterestRateScheduler extends BukkitRunnable {
         }
         boolean shouldCrash = Math.random() < 0.3 * (Math.pow(1 + 0.35 * dangerZonePercentage, companyRisk)) - 0.35;
         return shouldCrash && stocksRandomizer.canCrash(newSharePrice);
+    }
+
+    /**
+     * Processes a bankrupt company by either removing it from the system or keeping it based on the configuration.
+     *
+     * @param company the bankrupt company to process
+     */
+    private void processBankruptCompany(CompanyDao company) {
+        boolean shouldRemoveBankruptCompanies = plugin.getConfig().getBoolean("BlockStreet.StockCrash.RemoveBankrupt", false);
+        if (shouldRemoveBankruptCompanies) {
+            // Remove the company if the config option is enabled
+            companiesService.deleteCompany(company.getId());
+            playersService.cleanUpInvestmentsForOnlinePlayers(companiesService.getAllCompanies());
+        }
     }
 
 }

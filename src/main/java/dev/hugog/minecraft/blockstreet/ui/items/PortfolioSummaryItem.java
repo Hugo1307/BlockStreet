@@ -28,6 +28,7 @@ public class PortfolioSummaryItem extends AutoUpdateItem {
                 .mapToInt(InvestmentDao::getSharesAmount)
                 .sum();
         double totalValue = playerInvestments.stream()
+                .filter(investment -> companiesService.companyExists(investment.getCompanyId()))
                 .mapToDouble(investment -> investment.getSharesAmount() * companiesService.getCompanyById(investment.getCompanyId()).getCurrentSharePrice())
                 .sum();
         double totalInvestment = playerInvestments.stream()
