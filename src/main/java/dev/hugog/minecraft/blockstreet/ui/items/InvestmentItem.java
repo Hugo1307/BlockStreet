@@ -36,6 +36,10 @@ public class InvestmentItem extends AutoUpdateItem {
     }
 
     public static ItemProvider getItemProvider(Messages messages, CompaniesService companiesService, InvestmentDao investment) {
+        if (!companiesService.companyExists(investment.getCompanyId())) {
+            return new ItemBuilder(Material.AIR);
+        }
+
         CompanyDao company = companiesService.getCompanyById(investment.getCompanyId());
         double currentValue = investment.getSharesAmount() * company.getCurrentSharePrice();
 
