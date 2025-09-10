@@ -6,6 +6,7 @@ import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
 import dev.hugog.minecraft.blockstreet.data.services.PlayersService;
 import dev.hugog.minecraft.blockstreet.ui.guis.CompaniesGui;
+import dev.hugog.minecraft.blockstreet.ui.guis.NotificationsGui;
 import dev.hugog.minecraft.blockstreet.ui.guis.PortfolioGui;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
 import java.util.Deque;
@@ -73,6 +74,8 @@ public class GuiManager {
                 return new PortfolioGui(player, this, messages);
             case COMPANIES_GUI:
                 return new CompaniesGui(player, this, messages);
+            case NOTIFICATIONS_GUI:
+                return new NotificationsGui(player, this, messages);
             default:
                 throw new IllegalArgumentException("Unknown GUI type: " + pluginGuiType);
         }

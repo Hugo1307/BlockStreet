@@ -119,6 +119,10 @@ public class Messages {
     private String uiPortfolioSummaryItemCompanies;
     private String uiPortfolioSummaryItemShares;
     private String uiPortfolioSummaryItemTotalValue;
+    private String uiNotificationsTitle;
+    private String uiNotificationsItemTitle;
+    private String uiNotificationsItemDescription;
+    private String uiNotificationsToggleStatus;
 
     @Inject
     public Messages(BlockStreet plugin) {
@@ -245,6 +249,10 @@ public class Messages {
         this.uiPortfolioSummaryItemCompanies = messagesConfig.getConfig().getString("uiPortfolioSummaryItemCompanies");
         this.uiPortfolioSummaryItemShares = messagesConfig.getConfig().getString("uiPortfolioSummaryItemShares");
         this.uiPortfolioSummaryItemTotalValue = messagesConfig.getConfig().getString("uiPortfolioSummaryItemTotalValue");
+        this.uiNotificationsTitle = messagesConfig.getConfig().getString("uiNotificationsTitle");
+        this.uiNotificationsItemTitle = messagesConfig.getConfig().getString("uiNotificationsItemTitle");
+        this.uiNotificationsItemDescription = messagesConfig.getConfig().getString("uiNotificationsItemDescription");
+        this.uiNotificationsToggleStatus = messagesConfig.getConfig().getString("uiNotificationsToggleStatus");
     }
 
 }

@@ -80,6 +80,8 @@ public class InterestRateScheduler extends BukkitRunnable {
         plugin.getServer().getOnlinePlayers().stream()
                 .filter(player -> playersService.hasNotificationEnabled(player.getUniqueId(), NotificationType.STOCKS_UPDATE))
                 .forEach(player -> player.sendMessage(messages.getPluginPrefix() + messages.getUpdatedInterestRate()));
+        // Log the interest rate update in the console so the server admin can see it
+        plugin.getLogger().info("The values of all stocks have been updated!");
     }
 
     /**

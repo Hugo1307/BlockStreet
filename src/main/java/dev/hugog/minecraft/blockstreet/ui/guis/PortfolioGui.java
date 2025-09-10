@@ -34,7 +34,7 @@ public class PortfolioGui extends AbstractPluginGui {
 
         return PagedGui.items()
                 .setStructure(
-                        "# # # # o # # # #",
+                        "# # # o # n # # #",
                         "# x x x x x x x #",
                         "# x x x x x x x #",
                         "# x x x x x x x #",
@@ -46,6 +46,7 @@ public class PortfolioGui extends AbstractPluginGui {
                 .addIngredient('-', new NavigateBackItem(guiManager, messages))
                 .addIngredient('>', new NextPageItem(messages))
                 .addIngredient('o', new PortfolioSummaryItem(guiManager.getCompaniesService(), playerInvestments, messages))
+                .addIngredient('n', new NotificationSettingsButtonItem(guiManager, messages))
                 .setContent(investmentsItems)
                 .build();
     }

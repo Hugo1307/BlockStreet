@@ -5,6 +5,7 @@ import dev.hugog.minecraft.blockstreet.enums.NotificationType;
 import lombok.*;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,7 +30,7 @@ public class PlayerDao implements Dao<PlayerEntity> {
         entity.setUniqueId(uniqueId);
         entity.setName(name);
         entity.setInvestments(investments.stream().map(Dao::toEntity).collect(Collectors.toList()));
-        entity.setBlockedNotifications(blockedNotifications != null ? blockedNotifications : Collections.emptySet());
+        entity.setBlockedNotifications(blockedNotifications != null ? blockedNotifications : new HashSet<>());
 
         return entity;
     }
@@ -44,7 +45,7 @@ public class PlayerDao implements Dao<PlayerEntity> {
                                 investment.getSharesAmount(),
                                 investment.getAverageBuyPrice() != null ? investment.getAverageBuyPrice() : 0.0))
                         .collect(Collectors.toList()),
-                entity.getBlockedNotifications() != null ? entity.getBlockedNotifications() : Collections.emptySet()
+                entity.getBlockedNotifications() != null ? entity.getBlockedNotifications() : new HashSet<>()
         );
     }
 
