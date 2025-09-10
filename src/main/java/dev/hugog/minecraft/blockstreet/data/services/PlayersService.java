@@ -178,6 +178,7 @@ public class PlayersService implements Service {
                     .name("Unknown")
                     .uniqueId(playerId.toString())
                     .investments(new ArrayList<>())
+                    .blockedNotifications(new HashSet<>())
                     .build();
         }
     }
