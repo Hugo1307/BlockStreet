@@ -247,7 +247,7 @@ public class BlockStreet extends JavaPlugin {
     public void registerSchedulers() {
         int interestTime = getConfig().getInt("BlockStreet.InterestInterval"); // In minutes
         interestRateTask = new InterestRateScheduler(this, companiesService, signsService, playersService, messages)
-                .runTaskTimerAsynchronously(this, 20L*10, 20L*interestTime);
+                .runTaskTimerAsynchronously(this, 20L*10, 20L*60*interestTime);
     }
 
     public void stopSchedulers() {
