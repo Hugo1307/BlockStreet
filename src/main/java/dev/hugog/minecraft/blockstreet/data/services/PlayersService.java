@@ -5,6 +5,7 @@ import dev.hugog.minecraft.blockstreet.data.dao.InvestmentDao;
 import dev.hugog.minecraft.blockstreet.data.dao.PlayerDao;
 import dev.hugog.minecraft.blockstreet.data.repositories.Repository;
 import dev.hugog.minecraft.blockstreet.data.repositories.implementations.PlayersRepository;
+import dev.hugog.minecraft.blockstreet.enums.NotificationType;
 import org.bukkit.Bukkit;
 
 import javax.inject.Inject;
@@ -125,6 +126,34 @@ public class PlayersService implements Service {
         });
     }
 
+    /**
+     * Checks if a player has notifications enabled. If the setting is null, it defaults to true.
+     *
+     * @param playerId the unique identifier of the player
+     * @return true if notifications are enabled or the setting is null, false otherwise
+     */
+    public boolean hasNotificationEnabled(UUID playerId, NotificationType notificationType) {
+        PlayerDao playerDao = getOrCreatePlayer(playerId);
+        return playerDao.getBlockedNotifications().stream()
+                .noneMatch(blockedType -> blockedType == notificationType);
+    }
+
+    /**
+     * Toggles the notification setting for a specific type of notification for a player.
+     *
+     * @param playerId         the unique identifier of the player to toggle the notification for
+     * @param notificationType the type of notification to toggle
+     */
+    public void toggleNotification(UUID playerId, NotificationType notificationType) {
+        PlayerDao playerDao = getOrCreatePlayer(playerId);
+        if (hasNotificationEnabled(playerId, notificationType)) {
+            playerDao.getBlockedNotifications().add(notificationType);
+        } else {
+            playerDao.getBlockedNotifications().removeIf(blockedType -> blockedType == notificationType);
+        }
+        playersRepository.save(playerDao.toEntity());
+    }
+
     private double calculateNewAverageBuyPrice(InvestmentDao existingInvestment, InvestmentDao newInvestment) {
         if (existingInvestment.getAverageBuyPrice() <= 0.0) {
             return newInvestment.getAverageBuyPrice();
@@ -140,7 +169,6 @@ public class PlayersService implements Service {
     }
 
     private PlayerDao getOrCreatePlayer(UUID playerId) {
-
         if (playerExists(playerId)) {
             return (PlayerDao) playersRepository.getById(playerId)
                     .map(playerEntity -> new PlayerDao().fromEntity(playerEntity))
@@ -152,7 +180,6 @@ public class PlayersService implements Service {
                     .investments(new ArrayList<>())
                     .build();
         }
-
     }
 
     @Override

@@ -38,6 +38,11 @@ public class Messages {
     private String companyStatus;
     private String companyStatusBankrupt;
     private String companyStatusTrading;
+    private String enabledString;
+    private String disabledString;
+
+    private String notificationStocksUpdateName;
+    private String notificationCompanyBankruptName;
 
     private String playerNotFound;
     private String playerOnlyCommand;
@@ -58,6 +63,7 @@ public class Messages {
     private String cannotBuyBankruptCompany;
     private String cannotDeleteNotOwnedCompany;
     private String cannotOwnMoreThanMaxShares;
+    private String notificationToggled;
 
     private String invalidCmd;
     private String interestRate;
@@ -125,6 +131,10 @@ public class Messages {
         initializeMessages();
     }
 
+    public String getMessageByKey(String key) {
+        return this.messagesConfig.getConfig().getString(key);
+    }
+
     private void initializeMessages() {
         this.pluginPrefix = messagesConfig.getConfig().getString("pluginPrefix");
         this.pluginHeader = messagesConfig.getConfig().getString("pluginHeader");
@@ -154,6 +164,11 @@ public class Messages {
         this.companyStatus = messagesConfig.getConfig().getString("companyStatus");
         this.companyStatusTrading = messagesConfig.getConfig().getString("companyStatusTrading");
         this.companyStatusBankrupt = messagesConfig.getConfig().getString("companyStatusBankrupt");
+        this.enabledString = messagesConfig.getConfig().getString("enabledString");
+        this.disabledString = messagesConfig.getConfig().getString("disabledString");
+
+        this.notificationStocksUpdateName = messagesConfig.getConfig().getString("notificationStocksUpdateName");
+        this.notificationCompanyBankruptName = messagesConfig.getConfig().getString("notificationCompanyBankruptName");
 
         this.playerNotFound = messagesConfig.getConfig().getString("playerNotFound");
         this.playerOnlyCommand = messagesConfig.getConfig().getString("playerOnlyCommand");
@@ -173,6 +188,7 @@ public class Messages {
         this.cannotBuyBankruptCompany = messagesConfig.getConfig().getString("cannotBuyBankruptCompany");
         this.cannotDeleteNotOwnedCompany = messagesConfig.getConfig().getString("cannotDeleteNotOwnedCompany");
         this.cannotOwnMoreThanMaxShares = messagesConfig.getConfig().getString("cannotOwnMoreThanMaxShares");
+        this.notificationToggled = messagesConfig.getConfig().getString("notificationToggled");
 
         this.invalidCmd = messagesConfig.getConfig().getString("invalidCmd");
         this.interestRate = messagesConfig.getConfig().getString("interestRate");
