@@ -28,7 +28,7 @@ import java.util.List;
  * @since v1.0.0
  */
 @AutoValidation
-@Command(alias = "company create", description = "Allow players to create new company.", permission = "blockstreet.command.create", isPlayerOnly = true)
+@Command(alias = "company create", description = "createCommandDescription", permission = "blockstreet.command.create", isPlayerOnly = true)
 @Dependencies(dependencies = {Messages.class, CompaniesService.class})
 @Arguments({
         @Argument(name = "name", description = "The name of the company to create.", position = 0, parser = StringArgumentParser.class),

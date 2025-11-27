@@ -13,7 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @AutoValidation
-@Command(alias = "", description = "Plugin's root command.", permission = "blockstreet.command.main", isPlayerOnly = true)
+@Command(alias = "", description = "mainCommandDescription", permission = "blockstreet.command.main", isPlayerOnly = true)
 @Dependencies(dependencies = {Messages.class})
 @SuppressWarnings("unused")
 public class MainCommand extends BukkitDevCommand {
