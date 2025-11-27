@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  * @since v1.0.0
  */
 @AutoValidation
-@Command(alias = "company delete", description = "Allow players to delete their company.", permission = "blockstreet.command.delete", isPlayerOnly = true)
+@Command(alias = "company delete", description = "deleteCommandDescription", permission = "blockstreet.command.delete", isPlayerOnly = true)
 @Dependencies(dependencies = {Messages.class, CompaniesService.class})
 @Arguments({
         @Argument(name = "id", description = "The id of the company to delete.", position = 0, parser = IntegerArgumentParser.class)

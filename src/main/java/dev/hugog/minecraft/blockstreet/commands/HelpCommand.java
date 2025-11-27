@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  * @since v1.0.0
  */
 @AutoValidation
-@Command(alias = "help", description = "Provides commands information.", permission = "blockstreet.command.help")
+@Command(alias = "help", description = "helpCommandDescription", permission = "blockstreet.command.help")
 @Dependencies(dependencies = {BlockStreet.class, Messages.class})
 public class HelpCommand extends BukkitDevCommand {
 
@@ -71,7 +71,7 @@ public class HelpCommand extends BukkitDevCommand {
             commandComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, commandText));
             commandComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click to suggest command")));
             getCommandSender().spigot().sendMessage(commandComponent);
-            getCommandSender().sendMessage(ChatColor.GREEN + "      ╰ " + ChatColor.GRAY + commandData.getDescription());
+            getCommandSender().sendMessage(ChatColor.GREEN + "      ╰ " + ChatColor.GRAY + messages.getMessageByKey(commandData.getDescription()));
             getCommandSender().sendMessage("");
         });
 

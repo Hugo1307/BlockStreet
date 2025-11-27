@@ -22,7 +22,7 @@ import java.util.List;
  * @since v1.0.0
  */
 @AutoValidation(arguments = false, sender = false)
-@Command(alias = "reload", description = "Reloads the plugin.", permission = "blockstreet.admin.reload")
+@Command(alias = "reload", description = "reloadCommandDescription", permission = "blockstreet.admin.reload")
 @Dependencies(dependencies = {Messages.class, BlockStreet.class})
 public class ReloadCommand extends BukkitDevCommand {
 

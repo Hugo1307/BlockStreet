@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  * @since v2.8.0
  */
 @AutoValidation
-@Command(alias = "notification", description = "Toggle the plugin notifications.", permission = "blockstreet.command.notification", isPlayerOnly = true)
+@Command(alias = "notification", description = "toggleNotificationsCommandDescription", permission = "blockstreet.command.notification", isPlayerOnly = true)
 @Dependencies(dependencies = {Messages.class, PlayersService.class, CompaniesService.class, Economy.class})
 @Arguments({
         @Argument(name = "notificationType", description = "The notification type to toggle the value for.", position = 0, parser = NotificationTypeArgumentParser.class),

@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  * @since v1.0.0
  */
 @AutoValidation
-@Command(alias = "sell", description = "Sell company shares", permission = "blockstreet.command.sell", isPlayerOnly = true)
+@Command(alias = "sell", description = "sellCommandDescription", permission = "blockstreet.command.sell", isPlayerOnly = true)
 @Dependencies(dependencies = {Messages.class, PlayersService.class, CompaniesService.class, Economy.class})
 @Arguments({
         @Argument(name = "companyID", description = "The ID of the company to sell shares from.", position = 0, parser = IntegerArgumentParser.class),
