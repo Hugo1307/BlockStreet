@@ -30,7 +30,7 @@ import java.util.List;
  * @since v1.0.0
  */
 @AutoValidation
-@Command(alias = "portfolio", description = "portfolioCommandDescription", permission = "blockstreet.command.portfolio", isPlayerOnly = true)
+@Command(alias = "portfolio", description = "portfolioCommand.description", permission = "blockstreet.command.portfolio", isPlayerOnly = true)
 @Dependencies(dependencies = {Messages.class, PlayersService.class, CompaniesService.class})
 public class PortfolioCommand extends BukkitDevCommand {
 

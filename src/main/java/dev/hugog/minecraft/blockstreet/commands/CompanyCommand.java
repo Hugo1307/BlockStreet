@@ -32,9 +32,9 @@ import java.util.stream.Collectors;
  * @since v1.0.0
  */
 @AutoValidation
-@Command(alias = "company info", description = "companyCommandDescription", permission = "blockstreet.command.company", isPlayerOnly = true)
+@Command(alias = "company info", description = "companyCommand.description", permission = "blockstreet.command.company", isPlayerOnly = true)
 @Arguments(
-        @Argument(name = "companyId", description = "The ID of the company to get details from.", position = 0, parser = IntegerArgumentParser.class)
+        @Argument(name = "companyId", description = "companyCommand.companyIdArg", position = 0, parser = IntegerArgumentParser.class)
 )
 @Dependencies(dependencies = {Messages.class, CompaniesService.class})
 public class CompanyCommand extends BukkitDevCommand {
