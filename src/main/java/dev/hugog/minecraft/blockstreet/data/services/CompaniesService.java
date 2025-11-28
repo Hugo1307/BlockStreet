@@ -10,6 +10,7 @@ import dev.hugog.minecraft.blockstreet.events.CompanyDeleteEvent;
 import dev.hugog.minecraft.blockstreet.events.CompanyStockUpdateEvent;
 import dev.hugog.minecraft.blockstreet.utils.SizedStack;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -45,6 +46,7 @@ public class CompaniesService implements Service {
     public CompanyDao createPlayerCompany(String companyName, int companyRisk, int companyShares, double companySharePrice) {
         return this.createCompany(CompanyDao.builder()
                 .name(companyName)
+                .icon(Material.EMERALD)
                 .risk(companyRisk)
                 .totalShares(companyShares)
                 .availableShares(companyShares)
@@ -58,6 +60,7 @@ public class CompaniesService implements Service {
     public CompanyDao createAdminCompany(String companyName, int companyRisk, int companyShares, double companySharePrice) {
         return this.createCompany(CompanyDao.builder()
                 .name(companyName)
+                .icon(Material.DIAMOND)
                 .risk(companyRisk)
                 .totalShares(companyShares)
                 .availableShares(companyShares - 1) // Reserve one share for the server, preventing players to assume full control over the company

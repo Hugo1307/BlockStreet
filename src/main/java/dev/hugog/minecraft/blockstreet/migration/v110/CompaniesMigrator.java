@@ -4,6 +4,7 @@ import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
 import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
 import dev.hugog.minecraft.blockstreet.migration.Migrator;
 import dev.hugog.minecraft.blockstreet.utils.SizedStack;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -16,7 +17,7 @@ public class CompaniesMigrator implements Migrator {
     private final File pluginDataDirectory;
     private final CompaniesService companiesService;
 
-    public CompaniesMigrator(File pluginDataDirectory,CompaniesService companiesService) {
+    public CompaniesMigrator(File pluginDataDirectory, CompaniesService companiesService) {
         this.pluginDataDirectory = pluginDataDirectory;
         this.companiesService = companiesService;
     }
@@ -47,6 +48,7 @@ public class CompaniesMigrator implements Migrator {
 
             CompanyDao companyDao = CompanyDao.builder()
                     .name(companyName)
+                    .icon(Material.EMERALD)
                     .risk(risk)
                     .totalShares(sharesAmount)
                     .availableShares(sharesAmount)
