@@ -89,6 +89,7 @@ public class CreateCommand extends BukkitDevCommand {
         } else if (args.length == 5) {
             return Arrays.stream(Material.values())
                     .map(Material::toString)
+                    .filter(name -> name.toLowerCase().startsWith(args[4].toLowerCase()))
                     .collect(Collectors.toList());
         }
         return List.of();
