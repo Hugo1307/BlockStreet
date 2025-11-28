@@ -43,7 +43,7 @@ public class InvestmentItem extends AutoUpdateItem {
         CompanyDao company = companiesService.getCompanyById(investment.getCompanyId());
         double currentValue = investment.getSharesAmount() * company.getCurrentSharePrice();
 
-        return new ItemBuilder(Material.DIAMOND)
+        return new ItemBuilder(company.getIcon() != null ? company.getIcon() : Material.DIAMOND)
                 .setDisplayName(ChatColor.GOLD + company.getName() + (!company.isBankrupt() ? MessageFormat.format(messages.getUiCompanyItemLastVariation(),
                         VisualizationUtils.formatCompanyVariation(investment.getInvestmentVariation(company.getCurrentSharePrice()))) : ""))
                 .setItemFlags(List.of(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_POTION_EFFECTS))

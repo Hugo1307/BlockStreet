@@ -39,7 +39,7 @@ public class CompanyItem extends AutoUpdateItem {
         double totalVariation = (company.getCurrentSharePrice() - company.getInitialSharePrice()) / company.getInitialSharePrice() * 100;
         double lastVariation = !company.getHistoric().isEmpty() ? company.getHistoric().peek().getVariation() * 100 : 0;
 
-        return new ItemBuilder(Material.EMERALD)
+        return new ItemBuilder(company.getIcon() != null ? company.getIcon() : Material.EMERALD)
                 .setDisplayName(ChatColor.GOLD + company.getName() + (!company.isBankrupt() ? MessageFormat.format(messages.getUiCompanyItemLastVariation(), VisualizationUtils.formatCompanyVariation(lastVariation)) : ""))
                 .setItemFlags(List.of(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_POTION_EFFECTS))
                 .addLoreLines(
