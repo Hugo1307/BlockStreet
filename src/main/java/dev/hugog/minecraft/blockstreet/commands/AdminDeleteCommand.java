@@ -24,10 +24,10 @@ import java.util.stream.Collectors;
  * @since v1.0.0
  */
 @AutoValidation
-@Command(alias = "admin delete", description = "adminDeleteCommandDescription", permission = "blockstreet.admin.command.delete")
+@Command(alias = "admin delete", description = "adminDeleteCommand.description", permission = "blockstreet.admin.command.delete")
 @Dependencies(dependencies = {Messages.class, CompaniesService.class})
 @Arguments({
-        @Argument(name = "companyId", description = "The ID of the company to delete.", position = 0, parser = IntegerArgumentParser.class)
+        @Argument(name = "companyId", description = "adminDeleteCommand.companyIdArg", position = 0, parser = IntegerArgumentParser.class)
 })
 public class AdminDeleteCommand extends BukkitDevCommand {
 

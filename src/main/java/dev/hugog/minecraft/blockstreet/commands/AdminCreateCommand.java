@@ -29,14 +29,14 @@ import java.util.stream.IntStream;
  * @since v1.0.0
  */
 @AutoValidation
-@Command(alias = "admin create", description = "adminCreateCommandDescription", permission = "blockstreet.admin.command.create")
+@Command(alias = "admin create", description = "adminCreateCommand.description", permission = "blockstreet.admin.command.create")
 @Dependencies(dependencies = {Messages.class, CompaniesService.class})
 @Arguments({
-        @Argument(name = "name", description = "The name of the company to create.", position = 0, parser = StringArgumentParser.class),
-        @Argument(name = "risk", description = "The risk of the company to create.", position = 1, parser = CompanyRiskArgumentParser.class),
-        @Argument(name = "shares", description = "The amount of shares to create for the company.", position = 2, parser = PositiveIntegerArgumentParser.class),
-        @Argument(name = "price", description = "The price of each share.", position = 3, parser = SharePriceArgumentParser.class),
-        @Argument(name = "icon", description = "The icon of the company (optional).", position = 4, parser = MaterialArgumentParser.class, optional = true)
+        @Argument(name = "name", description = "adminCreateCommand.nameArg", position = 0, parser = StringArgumentParser.class),
+        @Argument(name = "risk", description = "adminCreateCommand.riskArg", position = 1, parser = CompanyRiskArgumentParser.class),
+        @Argument(name = "shares", description = "adminCreateCommand.sharesArg", position = 2, parser = PositiveIntegerArgumentParser.class),
+        @Argument(name = "price", description = "adminCreateCommand.priceArg", position = 3, parser = SharePriceArgumentParser.class),
+        @Argument(name = "icon", description = "adminCreateCommand.iconArg", position = 4, parser = MaterialArgumentParser.class, optional = true)
 })
 public class AdminCreateCommand extends BukkitDevCommand {
 

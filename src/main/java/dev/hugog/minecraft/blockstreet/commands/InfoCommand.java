@@ -22,7 +22,7 @@ import java.util.List;
  * @author Hugo1307
  * @version 1.0.0
  */
-@Command(alias = "info", description = "infoCommandDescription", permission = "*", isPlayerOnly = true)
+@Command(alias = "info", description = "infoCommand.description", permission = "*", isPlayerOnly = true)
 @Dependencies(dependencies = {Messages.class, AutoUpdateService.class})
 public class InfoCommand extends BukkitDevCommand {
 

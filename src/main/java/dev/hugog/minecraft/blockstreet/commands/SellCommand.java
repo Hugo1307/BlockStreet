@@ -28,11 +28,11 @@ import java.util.stream.Collectors;
  * @since v1.0.0
  */
 @AutoValidation
-@Command(alias = "sell", description = "sellCommandDescription", permission = "blockstreet.command.sell", isPlayerOnly = true)
+@Command(alias = "sell", description = "sellCommand.description", permission = "blockstreet.command.sell", isPlayerOnly = true)
 @Dependencies(dependencies = {Messages.class, PlayersService.class, CompaniesService.class, Economy.class})
 @Arguments({
-        @Argument(name = "companyID", description = "The ID of the company to sell shares from.", position = 0, parser = IntegerArgumentParser.class),
-        @Argument(name = "amount", description = "The amount of shares to sell.", position = 1, parser = PositiveIntegerArgumentParser.class)
+        @Argument(name = "companyID", description = "sellCommand.companyIdArg", position = 0, parser = IntegerArgumentParser.class),
+        @Argument(name = "amount", description = "sellCommand.amountArg", position = 1, parser = PositiveIntegerArgumentParser.class)
 })
 public class SellCommand extends BukkitDevCommand {
 

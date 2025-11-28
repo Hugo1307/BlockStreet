@@ -4,21 +4,6 @@ pluginPrefix: "§a§lBlockStreet §6> §r§7"
 pluginHeader: "§7-=-=-=-=-=-=-=-=-=-= [§aBlockStreet§7] =-=-=-=-=-=-=-=-=-=-"
 pluginFooter: "§7-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 
-adminCreateCommandDescription: "Allow admins to create new public company."
-adminDeleteCommandDescription: "Allow admins to delete a public company."
-buyCommandDescription: "Buy company shares."
-companiesCommandDescription: "Check the companies with available shares to sell."
-companyCommandDescription: "Get details about a company."
-createCommandDescription: "Allow players to create new company."
-deleteCommandDescription: "Allow players to delete their company."
-helpCommandDescription: "Show all plugin's commands."
-infoCommandDescription: "Get extra information about the plugin."
-mainCommandDescription: "Opens the plugin main menu."
-portfolioCommandDescription: "Check your investments and shares."
-reloadCommandDescription: "Reloads the plugin."
-sellCommandDescription: "Sell company shares."
-toggleNotificationsCommandDescription: "Toggle stock notifications."
-
 menuMainCmd: "Show all plugin's commands."
 menuCompaniesCmd: "List all companies."
 menuCompanyCmd: "Show details of a company."
@@ -109,3 +94,63 @@ uiNotificationsTitle: "Notification Settings"
 uiNotificationsItemTitle: "§6Notification Settings"
 uiNotificationsItemDescription: "§7Configure your notification preferences"
 uiNotificationsToggleStatus: "§7Status: {0}"
+
+adminCreateCommand:
+  description: "Allow admins to create new public company."
+  nameArg: "The name of the company to create."
+  riskArg: "The risk level of the company."
+  sharesArg: "The amount of shares to create for the company."
+  priceArg: "The price of each share."
+  iconArg: "The icon of the company (optional)."
+
+adminDeleteCommand:
+  description: "Allow admins to delete a public company."
+  companyIdArg: "The Id of the company to delete."
+
+buyCommand:
+  description: "Buy company shares."
+  companyIdArg: "The Id of the company to buy shares from."
+  amountArg: "The amount of shares to buy."
+
+companiesCommand:
+  description: "Check the companies with available shares to sell."
+
+companyCommand:
+  description: "Get details about a company."
+  companyIdArg: "The ID of the company to get details from."
+
+createCommand:
+  description: "Allow players to create new company."
+  nameArg: "The name of the company to create."
+  riskArg: "The risk of the company to create."
+  sharesArg: "The amount of shares to create for the company."
+  priceArg: "The price of each share."
+  iconArg: "The icon of the company (optional)."
+
+deleteCommand:
+  description: "Allow players to delete their company."
+  companyIdArg: "The id of the company to delete."
+
+helpCommand:
+  description: "Show all plugin's commands."
+
+infoCommand:
+  description: "Get extra information about the plugin."
+
+mainCommand:
+  description: "Opens the plugin main menu."
+
+portfolioCommand:
+  description: "Check your investments and shares."
+
+reloadCommand:
+  description: "Reloads the plugin."
+
+sellCommand:
+  description: "Sell company shares."
+  companyIdArg: "The ID of the company to sell shares from."
+  amountArg: "The amount of shares to sell."
+
+toggleNotificationsCommand:
+  description: "Toggle stock notifications."
+  notificationTypeArg: "The notification type to toggle the value for."
