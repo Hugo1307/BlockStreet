@@ -5,17 +5,13 @@ import com.google.inject.Singleton;
 import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
 import dev.hugog.minecraft.blockstreet.data.services.PlayersService;
-import dev.hugog.minecraft.blockstreet.ui.guis.CompaniesGui;
 import dev.hugog.minecraft.blockstreet.ui.guis.NotificationsGui;
 import dev.hugog.minecraft.blockstreet.ui.guis.PortfolioGui;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.UUID;
 import lombok.Getter;
 import org.bukkit.entity.Player;
+
+import java.util.*;
 
 @Singleton
 @Getter
@@ -72,8 +68,6 @@ public class GuiManager {
         switch (pluginGuiType) {
             case PORTFOLIO_GUI:
                 return new PortfolioGui(player, this, messages);
-            case COMPANIES_GUI:
-                return new CompaniesGui(player, this, messages);
             case NOTIFICATIONS_GUI:
                 return new NotificationsGui(player, this, messages);
             default:

@@ -151,6 +151,12 @@
       <version>1.49</version>
       <type>pom</type>
     </dependency>
+
+    <dependency>
+      <groupId>io.github.hugo1307</groupId>
+      <artifactId>qub-inventory-lib</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 
   <build>
