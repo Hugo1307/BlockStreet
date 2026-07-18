@@ -5,10 +5,14 @@ import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
 import dev.hugog.minecraft.blockstreet.utils.FormattingUtils;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
 import dev.hugog.minecraft.blockstreet.utils.VisualizationUtils;
+import io.github.hugo1307.qubinventorylib.inventory.Gui;
+import io.github.hugo1307.qubinventorylib.item.RefreshableItem;
+import io.github.hugo1307.qubinventorylib.util.ItemBuilder;
 import org.bukkit.Material;
-import xyz.xenondevs.invui.item.ItemProvider;
-import xyz.xenondevs.invui.item.builder.ItemBuilder;
-import xyz.xenondevs.invui.item.impl.AutoUpdateItem;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -16,13 +20,13 @@ import java.util.List;
 /**
  * Item that provides a summary of the player's portfolio.
  */
-public class PortfolioSummaryItem extends AutoUpdateItem {
+public class PortfolioSummaryItem extends RefreshableItem {
 
     public PortfolioSummaryItem(CompaniesService companiesService, List<InvestmentDao> playerInvestments, Messages messages) {
-        super(20 * 5, () -> getItemProvider(companiesService, playerInvestments, messages));
+        super(() -> getItem(companiesService, playerInvestments, messages));
     }
 
-    private static ItemProvider getItemProvider(CompaniesService companiesService, List<InvestmentDao> playerInvestments, Messages messages) {
+    private static ItemStack getItem(CompaniesService companiesService, List<InvestmentDao> playerInvestments, Messages messages) {
         int companyCount = playerInvestments.size();
         int totalShares = playerInvestments.stream()
                 .mapToInt(InvestmentDao::getSharesAmount)
@@ -37,14 +41,20 @@ public class PortfolioSummaryItem extends AutoUpdateItem {
         double profitPercentage = (totalValue - totalInvestment) / totalInvestment * 100;
 
         return new ItemBuilder(Material.DARK_OAK_SIGN)
-                .setDisplayName(messages.getUiPortfolioSummaryItemTitle() + MessageFormat.format(messages.getUiCompanyItemLastVariation(),
+                .setName(messages.getUiPortfolioSummaryItemTitle() + MessageFormat.format(messages.getUiCompanyItemLastVariation(),
                         VisualizationUtils.formatCompanyVariation(profitPercentage)))
-                .addLoreLines(
+                .setLore(
                         "",
                         MessageFormat.format(messages.getUiPortfolioSummaryItemCompanies(), companyCount),
                         MessageFormat.format(messages.getUiPortfolioSummaryItemShares(), totalShares),
                         MessageFormat.format(messages.getUiPortfolioSummaryItemTotalValue(), FormattingUtils.formatDouble(totalValue))
-                );
+                )
+                .build();
+    }
+
+    @Override
+    public void onClick(ClickType clickType, Player player, Gui clickedGui, InventoryClickEvent event) {
+        // Decorative item, no click behavior
     }
 
 }

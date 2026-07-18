@@ -146,10 +146,9 @@
     </dependency>
 
     <dependency>
-      <groupId>xyz.xenondevs.invui</groupId>
-      <artifactId>invui</artifactId>
-      <version>1.49</version>
-      <type>pom</type>
+      <groupId>io.github.hugo1307</groupId>
+      <artifactId>qub-inventory-lib</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
     </dependency>
   </dependencies>
 

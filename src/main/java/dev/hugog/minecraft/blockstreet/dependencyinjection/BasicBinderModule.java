@@ -12,6 +12,8 @@ import dev.hugog.minecraft.blockstreet.data.sources.yml.implementations.Companie
 import dev.hugog.minecraft.blockstreet.data.sources.yml.implementations.PlayersYml;
 import dev.hugog.minecraft.blockstreet.data.sources.yml.implementations.SignsYml;
 import dev.hugog.minecraft.blockstreet.listeners.PlayerJoinListener;
+import dev.hugog.minecraft.dev_command.integration.Integration;
+import io.github.hugo1307.qubinventorylib.QubInventoryLib;
 import org.bukkit.Server;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -50,6 +52,9 @@ public class BasicBinderModule extends AbstractModule {
         this.bind(SignsRepository.class).toInstance(new SignsRepository(new SignsYml(plugin.getDataFolder())));
 
         this.bind(PlayerJoinListener.class);
+
+        this.bind(QubInventoryLib.class).toInstance(new QubInventoryLib(plugin));
+        this.bind(Integration.class).toInstance(Integration.createFromPlugin(plugin));
 
     }
 

@@ -13,7 +13,6 @@ import dev.hugog.minecraft.blockstreet.listeners.PlayerJoinListener;
 import dev.hugog.minecraft.blockstreet.listeners.SignsListener;
 import dev.hugog.minecraft.blockstreet.migration.MigrationHandler;
 import dev.hugog.minecraft.blockstreet.schedulers.InterestRateScheduler;
-import dev.hugog.minecraft.blockstreet.ui.GuiManager;
 import dev.hugog.minecraft.blockstreet.utils.BlockStreetValidationConfiguration;
 import dev.hugog.minecraft.blockstreet.utils.ConfigAccessor;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
@@ -22,6 +21,15 @@ import dev.hugog.minecraft.dev_command.commands.executors.DevCommandExecutor;
 import dev.hugog.minecraft.dev_command.commands.handler.CommandHandler;
 import dev.hugog.minecraft.dev_command.dependencies.DependencyHandler;
 import dev.hugog.minecraft.dev_command.integration.Integration;
+import io.github.hugo1307.qubinventorylib.QubInventoryLib;
+import lombok.Getter;
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
+
+import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -29,13 +37,6 @@ import java.nio.file.Files;
 import java.util.Objects;
 import java.util.OptionalInt;
 import java.util.logging.Level;
-import javax.inject.Inject;
-import lombok.Getter;
-import net.milkbowl.vault.economy.Economy;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitTask;
 
 public class BlockStreet extends JavaPlugin {
 
@@ -61,13 +62,15 @@ public class BlockStreet extends JavaPlugin {
 
     // UI
     @Inject
-    private GuiManager guiManager;
+    public QubInventoryLib qubInventoryLib;
 
     // Utils
     @Inject
     private Messages messages;
     @Inject
     private MigrationHandler migrationHandler;
+    @Inject
+    private Integration commandsIntegration;
 
     @Override
     public void onEnable() {
@@ -96,12 +99,16 @@ public class BlockStreet extends JavaPlugin {
         // Check if the plugin needs to migrate data and do it if necessary
         migrationHandler.checkMigrations();
 
+        // Initialize the library for custom UIs
+        qubInventoryLib.initialize();
+
         getLogger().info("Plugin successfully enabled!");
 
     }
 
     @Override
     public void onDisable() {
+        qubInventoryLib.cleanUp();
         getLogger().info("Plugin successfully disabled!");
     }
 
@@ -124,45 +131,42 @@ public class BlockStreet extends JavaPlugin {
     private void initializeDevCommands() {
 
         PluginCommand mainPluginCommand = getCommand("invest");
-        Integration pluginDevCommandsIntegration = Integration.createFromPlugin(this);
 
         if (mainPluginCommand != null) {
-            DevCommandExecutor commandExecutor = new DevCommandExecutor("invest", pluginDevCommandsIntegration);
+            DevCommandExecutor commandExecutor = new DevCommandExecutor("invest", commandsIntegration);
             mainPluginCommand.setExecutor(commandExecutor);
             mainPluginCommand.setTabCompleter(commandExecutor);
 
             DevCommand devCommand = DevCommand.getOrCreateInstance();
             CommandHandler commandHandler = devCommand.getCommandHandler();
 
-            commandHandler.initCommandsAutoConfiguration(pluginDevCommandsIntegration);
+            commandHandler.initCommandsAutoConfiguration(commandsIntegration);
             commandHandler.useAutoValidationConfiguration(new BlockStreetValidationConfiguration(messages));
         }
 
     }
 
     private void registerCommandsDependencies() {
-
         DevCommand devCommand = DevCommand.getOrCreateInstance();
         DependencyHandler dependencyHandler = devCommand.getDependencyHandler();
-        Integration pluginDevCommandsIntegration = Integration.createFromPlugin(this);
 
-        dependencyHandler.registerDependency(pluginDevCommandsIntegration, this);
-        dependencyHandler.registerDependency(pluginDevCommandsIntegration, messages);
-        dependencyHandler.registerDependency(pluginDevCommandsIntegration, getLogger());
+        dependencyHandler.registerDependency(commandsIntegration, this);
+        dependencyHandler.registerDependency(commandsIntegration, messages);
+        dependencyHandler.registerDependency(commandsIntegration, getLogger());
 
-        dependencyHandler.registerDependency(pluginDevCommandsIntegration, economy);
+        dependencyHandler.registerDependency(commandsIntegration, economy);
 
-        dependencyHandler.registerDependency(pluginDevCommandsIntegration, autoUpdateService);
-        dependencyHandler.registerDependency(pluginDevCommandsIntegration, companiesService);
-        dependencyHandler.registerDependency(pluginDevCommandsIntegration, playersService);
+        dependencyHandler.registerDependency(commandsIntegration, autoUpdateService);
+        dependencyHandler.registerDependency(commandsIntegration, companiesService);
+        dependencyHandler.registerDependency(commandsIntegration, playersService);
 
-        dependencyHandler.registerDependency(pluginDevCommandsIntegration, guiManager);
-
+        dependencyHandler.registerDependency(commandsIntegration, qubInventoryLib);
+        dependencyHandler.registerDependency(commandsIntegration, commandsIntegration);
     }
 
-    private void configureConfig(){
+    private void configureConfig() {
         if (!new File(getDataFolder(), ConfigurationFiles.CONFIG.getFileName()).exists())
-        	this.saveDefaultConfig();
+            this.saveDefaultConfig();
         else {
             this.getConfig().options().copyDefaults(true);
             this.saveConfig();
@@ -230,9 +234,9 @@ public class BlockStreet extends JavaPlugin {
 
 
     private void configureMessages() {
-    	ConfigAccessor messagesConfig = new ConfigAccessor(this, ConfigurationFiles.MESSAGES.getFileName());
-		if(!new File(getDataFolder(), ConfigurationFiles.MESSAGES.getFileName()).exists())
-			messagesConfig.saveDefaultConfig();
+        ConfigAccessor messagesConfig = new ConfigAccessor(this, ConfigurationFiles.MESSAGES.getFileName());
+        if (!new File(getDataFolder(), ConfigurationFiles.MESSAGES.getFileName()).exists())
+            messagesConfig.saveDefaultConfig();
         else {
             messagesConfig.getConfig().options().copyDefaults(true);
             messagesConfig.saveConfig();
@@ -247,7 +251,7 @@ public class BlockStreet extends JavaPlugin {
     public void registerSchedulers() {
         int interestTime = getConfig().getInt("BlockStreet.InterestInterval"); // In minutes
         interestRateTask = new InterestRateScheduler(this, companiesService, signsService, playersService, messages)
-                .runTaskTimerAsynchronously(this, 20L*10, 20L*60*interestTime);
+                .runTaskTimerAsynchronously(this, 20L * 10, 20L * 60 * interestTime);
     }
 
     public void stopSchedulers() {
