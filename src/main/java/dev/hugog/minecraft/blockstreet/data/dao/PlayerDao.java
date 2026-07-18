@@ -1,10 +1,8 @@
 package dev.hugog.minecraft.blockstreet.data.dao;
 
 import dev.hugog.minecraft.blockstreet.data.entities.PlayerEntity;
-import dev.hugog.minecraft.blockstreet.enums.NotificationType;
 import lombok.*;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,7 +19,7 @@ public class PlayerDao implements Dao<PlayerEntity> {
     private String uniqueId;
     private String name;
     private List<InvestmentDao> investments;
-    private Set<NotificationType> blockedNotifications;
+    private Set<NotificationPreference> notificationPreferences;
 
     @Override
     public PlayerEntity toEntity() {
@@ -30,7 +28,7 @@ public class PlayerDao implements Dao<PlayerEntity> {
         entity.setUniqueId(uniqueId);
         entity.setName(name);
         entity.setInvestments(investments.stream().map(Dao::toEntity).collect(Collectors.toList()));
-        entity.setBlockedNotifications(blockedNotifications != null ? blockedNotifications : new HashSet<>());
+        entity.setNotificationPreferences(notificationPreferences != null ? notificationPreferences : new HashSet<>());
 
         return entity;
     }
@@ -45,7 +43,7 @@ public class PlayerDao implements Dao<PlayerEntity> {
                                 investment.getSharesAmount(),
                                 investment.getAverageBuyPrice() != null ? investment.getAverageBuyPrice() : 0.0))
                         .collect(Collectors.toList()),
-                entity.getBlockedNotifications() != null ? entity.getBlockedNotifications() : new HashSet<>()
+                entity.getNotificationPreferences() != null ? entity.getNotificationPreferences() : new HashSet<>()
         );
     }
 

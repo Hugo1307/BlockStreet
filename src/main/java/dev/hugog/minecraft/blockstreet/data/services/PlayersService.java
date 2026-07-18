@@ -1,7 +1,9 @@
 package dev.hugog.minecraft.blockstreet.data.services;
 
+import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
 import dev.hugog.minecraft.blockstreet.data.dao.InvestmentDao;
+import dev.hugog.minecraft.blockstreet.data.dao.NotificationPreference;
 import dev.hugog.minecraft.blockstreet.data.dao.PlayerDao;
 import dev.hugog.minecraft.blockstreet.data.repositories.Repository;
 import dev.hugog.minecraft.blockstreet.data.repositories.implementations.PlayersRepository;
@@ -13,10 +15,12 @@ import java.util.*;
 
 public class PlayersService implements Service {
 
+    private final BlockStreet plugin;
     private final PlayersRepository playersRepository;
 
     @Inject
-    public PlayersService(PlayersRepository playersRepository) {
+    public PlayersService(BlockStreet plugin, PlayersRepository playersRepository) {
+        this.plugin = plugin;
         this.playersRepository = playersRepository;
     }
 
@@ -127,15 +131,19 @@ public class PlayersService implements Service {
     }
 
     /**
-     * Checks if a player has notifications enabled. If the setting is null, it defaults to true.
+     * Checks if a player has a given notification type enabled. If the player has never
+     * explicitly toggled it, falls back to the server-configured default for that type.
      *
      * @param playerId the unique identifier of the player
-     * @return true if notifications are enabled or the setting is null, false otherwise
+     * @return true if the notification should be sent to the player
      */
     public boolean hasNotificationEnabled(UUID playerId, NotificationType notificationType) {
         PlayerDao playerDao = getOrCreatePlayer(playerId);
-        return playerDao.getBlockedNotifications().stream()
-                .noneMatch(blockedType -> blockedType == notificationType);
+        return playerDao.getNotificationPreferences().stream()
+                .filter(preference -> preference.getNotificationType() == notificationType)
+                .findFirst()
+                .map(NotificationPreference::isEnabled)
+                .orElseGet(() -> getNotificationDefault(notificationType));
     }
 
     /**
@@ -146,12 +154,17 @@ public class PlayersService implements Service {
      */
     public void toggleNotification(UUID playerId, NotificationType notificationType) {
         PlayerDao playerDao = getOrCreatePlayer(playerId);
-        if (hasNotificationEnabled(playerId, notificationType)) {
-            playerDao.getBlockedNotifications().add(notificationType);
-        } else {
-            playerDao.getBlockedNotifications().removeIf(blockedType -> blockedType == notificationType);
-        }
+        boolean newState = !hasNotificationEnabled(playerId, notificationType);
+
+        playerDao.getNotificationPreferences().removeIf(preference -> preference.getNotificationType() == notificationType);
+        playerDao.getNotificationPreferences().add(new NotificationPreference(notificationType, newState));
+
         playersRepository.save(playerDao.toEntity());
+    }
+
+    private boolean getNotificationDefault(NotificationType notificationType) {
+        return plugin.getConfig().getBoolean(
+                "BlockStreet.Notifications." + notificationType.name() + ".EnabledByDefault", true);
     }
 
     private double calculateNewAverageBuyPrice(InvestmentDao existingInvestment, InvestmentDao newInvestment) {
@@ -178,7 +191,7 @@ public class PlayersService implements Service {
                     .name("Unknown")
                     .uniqueId(playerId.toString())
                     .investments(new ArrayList<>())
-                    .blockedNotifications(new HashSet<>())
+                    .notificationPreferences(new HashSet<>())
                     .build();
         }
     }

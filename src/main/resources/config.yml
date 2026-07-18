@@ -3,6 +3,11 @@ BlockStreet:
   InterestInterval: 10
   Updates:
     Remainder: true
+  Notifications:                # Default notification settings for players (players can override these individually)
+    STOCKS_UPDATE:
+      EnabledByDefault: true
+    COMPANY_BANKRUPT:
+      EnabledByDefault: true
   StockCrash:
     Enabled: true              # Enable or disable stock crashes.
     Aggressiveness: 0.7        # Value between 0 and 1. A higher value means more frequent crashes.
