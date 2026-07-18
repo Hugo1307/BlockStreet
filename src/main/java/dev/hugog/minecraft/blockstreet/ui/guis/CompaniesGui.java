@@ -28,7 +28,7 @@ public class CompaniesGui extends AutoUpdatePagedGui {
     private final Messages messages;
 
     public CompaniesGui(BlockStreet plugin, Player player, GuiManager guiManager, CompaniesService companiesService,
-                         PlayersService playersService, Messages messages) {
+                        PlayersService playersService, Messages messages) {
         super(messages.getUiCompaniesTitle(), 5, player, plugin, 5 * 20L);
 
         this.plugin = plugin;
@@ -42,6 +42,7 @@ public class CompaniesGui extends AutoUpdatePagedGui {
     private List<InventoryItem> buildContent() {
         return companiesService.getAllCompanies()
                 .stream()
+                .sorted((company1, company2) -> company1.getName().compareToIgnoreCase(company2.getName()))
                 .map(company -> new CompanyItem(Integration.createFromPlugin(plugin), messages, companiesService, company.getId()))
                 .collect(Collectors.toList());
     }
