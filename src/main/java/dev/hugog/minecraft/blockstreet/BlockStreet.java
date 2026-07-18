@@ -13,7 +13,6 @@ import dev.hugog.minecraft.blockstreet.listeners.PlayerJoinListener;
 import dev.hugog.minecraft.blockstreet.listeners.SignsListener;
 import dev.hugog.minecraft.blockstreet.migration.MigrationHandler;
 import dev.hugog.minecraft.blockstreet.schedulers.InterestRateScheduler;
-import dev.hugog.minecraft.blockstreet.ui.GuiManager;
 import dev.hugog.minecraft.blockstreet.utils.BlockStreetValidationConfiguration;
 import dev.hugog.minecraft.blockstreet.utils.ConfigAccessor;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
@@ -62,8 +61,6 @@ public class BlockStreet extends JavaPlugin {
     private SignsService signsService;
 
     // UI
-    @Inject
-    private GuiManager guiManager;
     @Inject
     public QubInventoryLib qubInventoryLib;
 
@@ -163,7 +160,6 @@ public class BlockStreet extends JavaPlugin {
         dependencyHandler.registerDependency(commandsIntegration, companiesService);
         dependencyHandler.registerDependency(commandsIntegration, playersService);
 
-        dependencyHandler.registerDependency(commandsIntegration, guiManager);
         dependencyHandler.registerDependency(commandsIntegration, qubInventoryLib);
         dependencyHandler.registerDependency(commandsIntegration, commandsIntegration);
     }
