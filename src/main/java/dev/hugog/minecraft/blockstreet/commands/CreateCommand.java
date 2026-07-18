@@ -1,5 +1,6 @@
 package dev.hugog.minecraft.blockstreet.commands;
 
+import dev.hugog.minecraft.blockstreet.BlockStreet;
 import dev.hugog.minecraft.blockstreet.commands.validators.CompanyRiskArgumentParser;
 import dev.hugog.minecraft.blockstreet.commands.validators.MaterialArgumentParser;
 import dev.hugog.minecraft.blockstreet.commands.validators.PositiveIntegerArgumentParser;
@@ -7,6 +8,7 @@ import dev.hugog.minecraft.blockstreet.commands.validators.SharePriceArgumentPar
 import dev.hugog.minecraft.blockstreet.data.dao.CompanyDao;
 import dev.hugog.minecraft.blockstreet.data.services.CompaniesService;
 import dev.hugog.minecraft.blockstreet.data.services.PlayersService;
+import dev.hugog.minecraft.blockstreet.enums.NotificationType;
 import dev.hugog.minecraft.blockstreet.utils.Messages;
 import dev.hugog.minecraft.dev_command.annotations.*;
 import dev.hugog.minecraft.dev_command.arguments.parsers.StringArgumentParser;
@@ -55,6 +57,7 @@ public class CreateCommand extends BukkitDevCommand {
         CompaniesService companiesService = getDependency(CompaniesService.class);
         PlayersService playersService = getDependency(PlayersService.class);
         Economy vaultEconomy = getDependency(Economy.class);
+        BlockStreet plugin = getDependency(BlockStreet.class);
         Player player = (Player) getCommandSender();
 
         String companyName = getArgs()[0];
@@ -79,6 +82,12 @@ public class CreateCommand extends BukkitDevCommand {
         playersService.addSharesToPlayer(player.getUniqueId(), createdCompany, companySharesAmount);
 
         getCommandSender().sendMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getCreatedCompany(), companyName));
+
+        // Notify all other online players with notifications enabled about the new company
+        plugin.getServer().getOnlinePlayers().stream()
+                .filter(onlinePlayer -> !onlinePlayer.getUniqueId().equals(player.getUniqueId()))
+                .filter(onlinePlayer -> playersService.hasNotificationEnabled(onlinePlayer.getUniqueId(), NotificationType.COMPANY_CREATED))
+                .forEach(onlinePlayer -> onlinePlayer.sendMessage(messages.getPluginPrefix() + MessageFormat.format(messages.getNewCompanyCreated(), player.getName(), companyName)));
 
     }
 

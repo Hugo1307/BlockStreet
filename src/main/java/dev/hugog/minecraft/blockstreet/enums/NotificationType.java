@@ -16,7 +16,11 @@ public enum NotificationType {
     /**
      * Notification for when a company goes bankrupt.
      */
-    COMPANY_BANKRUPT("notificationCompanyBankruptName");
+    COMPANY_BANKRUPT("notificationCompanyBankruptName"),
+    /**
+     * Notification for when a new company is created by a player.
+     */
+    COMPANY_CREATED("notificationCompanyCreatedName");
 
     private final String messageKey;
 }

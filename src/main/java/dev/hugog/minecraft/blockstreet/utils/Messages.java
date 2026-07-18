@@ -43,6 +43,7 @@ public class Messages {
 
     private String notificationStocksUpdateName;
     private String notificationCompanyBankruptName;
+    private String notificationCompanyCreatedName;
 
     private String playerNotFound;
     private String playerOnlyCommand;
@@ -59,6 +60,7 @@ public class Messages {
     private String boughtActions;
     private String soldActions;
     private String createdCompany;
+    private String newCompanyCreated;
     private String deletedCompany;
     private String cannotBuyBankruptCompany;
     private String cannotDeleteNotOwnedCompany;
@@ -173,6 +175,7 @@ public class Messages {
 
         this.notificationStocksUpdateName = messagesConfig.getConfig().getString("notificationStocksUpdateName");
         this.notificationCompanyBankruptName = messagesConfig.getConfig().getString("notificationCompanyBankruptName");
+        this.notificationCompanyCreatedName = messagesConfig.getConfig().getString("notificationCompanyCreatedName");
 
         this.playerNotFound = messagesConfig.getConfig().getString("playerNotFound");
         this.playerOnlyCommand = messagesConfig.getConfig().getString("playerOnlyCommand");
@@ -188,6 +191,7 @@ public class Messages {
         this.boughtActions = messagesConfig.getConfig().getString("boughtActions");
         this.soldActions = messagesConfig.getConfig().getString("soldActions");
         this.createdCompany = messagesConfig.getConfig().getString("createdCompany");
+        this.newCompanyCreated = messagesConfig.getConfig().getString("newCompanyCreated");
         this.deletedCompany = messagesConfig.getConfig().getString("deletedCompany");
         this.cannotBuyBankruptCompany = messagesConfig.getConfig().getString("cannotBuyBankruptCompany");
         this.cannotDeleteNotOwnedCompany = messagesConfig.getConfig().getString("cannotDeleteNotOwnedCompany");
